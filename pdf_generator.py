@@ -171,6 +171,19 @@ def generate_sale_receipt_pdf(
         lines_count = len(name_lines)
         row_height = max(6*mm, (3 + lines_count * 3) * mm)
 
+        # 1. AVVAL: Narx ustuni uchun sariq fon (background)
+        c.setFillColor(colors.Color(1, 1, 0.7))  # Och sariq rang
+        c.rect(table_left + col1_width + col2_width, y - row_height, col3_width, row_height, stroke=0, fill=1)
+
+        # 2. Qator borderlari (sariq fondan keyin, matndan oldin)
+        c.setFillColor(colors.black)
+        c.rect(table_left, y - row_height, table_width, row_height, stroke=1, fill=0)
+        c.line(table_left + col1_width, y - row_height, table_left + col1_width, y)
+        c.line(table_left + col1_width + col2_width, y - row_height, table_left + col1_width + col2_width, y)
+
+        # 3. KEYIN: Barcha matnlarni rectangllar ustidan chizish
+        c.setFillColor(colors.black)
+
         # Mahsulot nomini chizish (bir necha qator bo'lishi mumkin)
         name_y = y - 4*mm
         for line in name_lines:
@@ -181,12 +194,7 @@ def generate_sale_receipt_pdf(
         quantity = item['quantity']
         c.drawCentredString(table_left + col1_width + col2_width/2, y - 4*mm, str(int(quantity)))
 
-        # Narx ustuni uchun sariq fon
-        c.setFillColor(colors.Color(1, 1, 0.7))  # Och sariq rang
-        c.rect(table_left + col1_width + col2_width, y - row_height, col3_width, row_height, stroke=0, fill=1)
-
         # Narx (valyutaga qarab, yuqori qatorda)
-        c.setFillColor(colors.black)  # Matn uchun qora rang
         if currency == 'usd':
             unit_price = item.get('unit_price_usd', item.get('unit_price', 0))
             price_str = f"${unit_price:.2f}"
@@ -195,11 +203,6 @@ def generate_sale_receipt_pdf(
             price_str = f"{unit_price:,.0f}"
 
         c.drawRightString(table_right - 2*mm, y - 4*mm, price_str)
-
-        # Qator borderlari (fill=0 bo'lgani uchun fillColor o'rnatish shart emas)
-        c.rect(table_left, y - row_height, table_width, row_height, stroke=1, fill=0)
-        c.line(table_left + col1_width, y - row_height, table_left + col1_width, y)
-        c.line(table_left + col1_width + col2_width, y - row_height, table_left + col1_width + col2_width, y)
 
         y -= row_height
 
