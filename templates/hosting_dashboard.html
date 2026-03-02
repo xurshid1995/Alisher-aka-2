@@ -390,11 +390,12 @@ async function loadClients() {
                 <td>${statusBadge}</td>
                 <td>${payBadge}</td>
                 <td class="money">
-                    <span class="editable-balance" onclick="editBalance(${c.id}, ${c.balance || 0})" title="Bosib tahrirlash" style="cursor:pointer; border-bottom: 1px dashed #667eea; color: #667eea;">
-                        ${formatMoney(c.balance || 0)}
-                    </span>
+                    ${formatMoney(c.balance || 0)}
                 </td>
                 <td>
+                    <button class="btn-hosting btn-sm btn-outline" onclick="editBalance(${c.id}, ${c.balance || 0})" title="Balansni tahrirlash">
+                        <i class="fas fa-wallet"></i>
+                    </button>
                     <button class="btn-hosting btn-sm btn-outline" onclick="editClient(${c.id})" title="Tahrirlash">
                         <i class="fas fa-edit"></i>
                     </button>
