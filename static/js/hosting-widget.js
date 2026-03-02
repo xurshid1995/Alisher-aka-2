@@ -206,7 +206,6 @@
             <div id="hw-content">
                 <p style="text-align:center;color:#999;">Yuklanmoqda...</p>
             </div>
-            <div class="hw-footer">sergeli0606.uz</div>
         </div>
         <div style="position:relative;display:inline-block;">
             <button class="hw-toggle ok" id="hw-toggle" onclick="toggleHostingWidget()">🖥️</button>
