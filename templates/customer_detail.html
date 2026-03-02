@@ -1796,60 +1796,58 @@ function exportSaleToExcel() {
     let itemsHtml = '';
     sale.items.forEach((item, index) => {
         itemsHtml += '<tr>' +
-            '<td style="border:1px solid #000;font-size:12pt;text-align:center;"></td>' +
-            '<td style="border:1px solid #000;font-size:12pt;text-align:center;mso-number-format:\'\\@\'">' + String(index+1).padStart(2,'0') + '</td>' +
-            '<td colspan="10" style="border:1px solid #000;font-size:12pt;">' + (item.product_name||'') + '</td>' +
-            '<td style="border:1px solid #000;font-size:12pt;text-align:center;">' + item.quantity + '</td>' +
-            '<td style="border:1px solid #000;font-size:12pt;">' + parseFloat(item.unit_price).toFixed(2) + '$</td>' +
-            '<td style="border:1px solid #000;font-size:12pt;">' + parseFloat(item.total_price).toFixed(2) + '$</td>' +
+            '<td colspan="1"></td>' +
+            '<td colspan="1" style="mso-number-format:\'\\@\'">' + String(index+1).padStart(2,'0') + '</td>' +
+            '<td colspan="10">' + (item.product_name||'') + '</td>' +
+            '<td colspan="1" style="text-align:center;">' + item.quantity + '</td>' +
+            '<td colspan="1">' + parseFloat(item.unit_price).toFixed(2) + '$</td>' +
+            '<td colspan="1">' + parseFloat(item.total_price).toFixed(2) + '$</td>' +
             '</tr>';
     });
 
     const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
     '<head><meta charset="UTF-8">' +
+    '<style>table{width:100%;border-collapse:collapse;font-size:20pt;table-layout:fixed;}td,th{padding:12px 10px;word-wrap:break-word;overflow:hidden;}</style>' +
     '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
     '<x:Name>Savdo ' + sale.id + '</x:Name>' +
-    '<x:WorksheetOptions><x:PageSetup><x:Layout x:Orientation="Landscape"/></x:PageSetup></x:WorksheetOptions>' +
+    '<x:WorksheetOptions><x:Print><x:ValidPrinterInfo/><x:PaperSizeIndex>9</x:PaperSizeIndex><x:HorizontalResolution>600</x:HorizontalResolution><x:VerticalResolution>600</x:VerticalResolution></x:Print><x:FitToPage/><x:DoNotDisplayGridlines/><x:PageSetup><x:Layout x:Orientation="Landscape"/></x:PageSetup></x:WorksheetOptions>' +
     '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
-    '<style>@page{size:landscape;margin:0.4in 0.4in 0.5in 0.4in;}td{mso-number-format:"\\@";}</style></head><body>' +
-    '<table border="0" cellpadding="2" cellspacing="0" style="border-collapse:collapse;font-family:Calibri;width:100%;">' +
-    '<col width="25"><col width="35">' +
-    '<col width="45"><col width="45"><col width="45"><col width="45"><col width="45"><col width="45"><col width="45"><col width="45"><col width="45"><col width="45">' +
-    '<col width="55"><col width="80"><col width="80">' +
-    '<tr><td colspan="15" style="border:1px solid #000;font-size:18pt;font-weight:bold;text-align:center;background:#D9E2F3;height:30pt;">' + storeName + '</td></tr>' +
-    '<tr><td colspan="15" style="border:1px solid #000;"></td></tr>' +
-    '<tr>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Sana</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Mijoz</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Mijoz telefoni</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Sotuvchi</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Sotuvchi telefoni</td>' +
+    '</head><body>' +
+    '<table border="1" width="100%">' +
+    '<tr><td colspan="15" style="text-align:center;font-size:22pt;font-weight:bold;background-color:#d9e2f3;">' + storeName + '</td></tr>' +
+    '<tr><td colspan="15">&nbsp;</td></tr>' +
+    '<tr style="background-color:#f0f0f0;font-weight:bold;">' +
+        '<td colspan="3">Sana</td>' +
+        '<td colspan="4">Mijoz</td>' +
+        '<td colspan="2">Mijoz telefoni</td>' +
+        '<td colspan="4">Sotuvchi</td>' +
+        '<td colspan="2">Sotuvchi telefoni</td>' +
     '</tr>' +
     '<tr>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;">' + dateStr + '</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;">' + (sale.customer_name||'Noma\'lum') + '</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;">' + custPhone + '</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;">' + (sale.seller_name||'Admin') + '</td>' +
-        '<td colspan="3" style="border:1px solid #000;font-size:12pt;">' + (sale.seller_phone||'') + '</td>' +
+        '<td colspan="3">' + dateStr + '</td>' +
+        '<td colspan="4">' + (sale.customer_name||'Noma\'lum') + '</td>' +
+        '<td colspan="2">' + custPhone + '</td>' +
+        '<td colspan="4">' + (sale.seller_name||'Admin') + '</td>' +
+        '<td colspan="2">' + (sale.seller_phone||'') + '</td>' +
     '</tr>' +
-    '<tr><td colspan="15" style="border:1px solid #000;"></td></tr>' +
-    '<tr>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">✓</td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">№</td>' +
-        '<td colspan="10" style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Mahsulot nomi</td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;text-align:center;">Miqdor</td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Birlik narxi</td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;background:#F0F0F0;">Jami narx</td>' +
+    '<tr><td colspan="15">&nbsp;</td></tr>' +
+    '<tr style="background-color:#f0f0f0;font-weight:bold;">' +
+        '<td colspan="1">✓</td>' +
+        '<td colspan="1">№</td>' +
+        '<td colspan="10">Mahsulot nomi</td>' +
+        '<td colspan="1" style="text-align:center;">Miqdor</td>' +
+        '<td colspan="1">Birlik narxi</td>' +
+        '<td colspan="1">Jami narx</td>' +
     '</tr>' +
     itemsHtml +
-    '<tr><td colspan="15" style="border:1px solid #000;"></td></tr>' +
+    '<tr><td colspan="15">&nbsp;</td></tr>' +
     '<tr>' +
-        '<td style="border:1px solid #000;"></td>' +
-        '<td style="border:1px solid #000;"></td>' +
-        '<td colspan="10" style="border:1px solid #000;"></td>' +
-        '<td style="border:1px solid #000;"></td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;">Jami:</td>' +
-        '<td style="border:1px solid #000;font-size:12pt;font-weight:bold;">' + parseFloat(sale.total_amount).toFixed(2) + '$</td>' +
+        '<td colspan="1"></td>' +
+        '<td colspan="1"></td>' +
+        '<td colspan="10"></td>' +
+        '<td colspan="1"></td>' +
+        '<td colspan="1" style="font-weight:bold;">Jami:</td>' +
+        '<td colspan="1" style="font-weight:bold;">' + parseFloat(sale.total_amount).toFixed(2) + '$</td>' +
     '</tr>' +
     '</table></body></html>';
 
