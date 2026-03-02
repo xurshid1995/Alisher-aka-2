@@ -100,7 +100,12 @@ def main():
 
         # Bot polling rejimida ishga tushirish
         application.run_polling(
-            allowed_updates=["message", "callback_query"]
+            allowed_updates=[
+                "message",
+                "callback_query",
+                "pre_checkout_query",
+                "shipping_query"
+            ]
         )
 
     except KeyboardInterrupt:
