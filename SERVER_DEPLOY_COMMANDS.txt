@@ -6,7 +6,7 @@
 ssh root@sergeli0606.uz
 
 # 2. Loyiha papkasiga o'tish
-cd /var/www/XURSHID
+cd /var/www/xurshid
 
 # 3. Yangi kodlarni GitHub dan pull qilish
 git pull origin main
@@ -21,16 +21,21 @@ pip install psutil==5.9.0
 chmod +x check_logs.sh
 
 # 7. Gunicorn service restart
-sudo systemctl restart XURSHID
+sudo systemctl restart gunicorn
 
 # 8. Service holatini tekshirish
-sudo systemctl status XURSHID
+sudo systemctl status gunicorn
 
 # 9. Health check test
 curl http://localhost:5000/health
 
 # 10. Loglarni tekshirish
 ./check_logs.sh
+
+# ========================================
+# TEZKOR DEPLOY (bitta buyruq bilan)
+# ========================================
+ssh root@sergeli0606.uz "cd /var/www/xurshid && git pull origin main && source venv/bin/activate && sudo systemctl restart gunicorn && sleep 3 && sudo systemctl status gunicorn --no-pager"
 
 # ========================================
 # TEKSHIRISH
@@ -48,7 +53,7 @@ curl http://localhost:5000/health
 tail -50 logs/error.log
 
 # Gunicorn loglarni ko'rish:
-sudo journalctl -u XURSHID -n 50
+sudo journalctl -u gunicorn -n 50
 
 # Service restart:
-sudo systemctl restart XURSHID
+sudo systemctl restart gunicorn
