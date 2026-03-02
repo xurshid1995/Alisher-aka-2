@@ -1840,28 +1840,28 @@ function generateExcelHTML(sale) {
 <body>
     <table border="1" width="100%">
         <tr>
-            <td colspan="12" style="text-align: center; font-size: 22pt; font-weight: bold; background-color: #d9e2f3;">${sale.store_name || "Do'kon"}</td>
+            <td colspan="15" style="text-align: center; font-size: 22pt; font-weight: bold; background-color: #d9e2f3;">${sale.store_name || "Do'kon"}</td>
         </tr>
-        <tr><td colspan="12">&nbsp;</td></tr>
+        <tr><td colspan="15">&nbsp;</td></tr>
         <tr style="background-color: #f0f0f0; font-weight: bold;">
-            <td colspan="4">Sana</td>
-            <td colspan="3">Mijoz</td>
+            <td colspan="5">Sana</td>
+            <td colspan="4">Mijoz</td>
             <td colspan="1">Telefon</td>
-            <td colspan="3">Sotuvchi</td>
+            <td colspan="4">Sotuvchi</td>
             <td colspan="1">Telefon</td>
         </tr>
         <tr>
-            <td colspan="4">${new Date(sale.sale_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' })}</td>
-            <td colspan="3">${sale.customer_name || 'Noma\'lum'}</td>
+            <td colspan="5">${new Date(sale.sale_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' })}</td>
+            <td colspan="4">${sale.customer_name || 'Noma\'lum'}</td>
             <td colspan="1">${(sale.customer_phone && sale.customer_phone !== '+998 XX XXX XX XX') ? sale.customer_phone : ''}</td>
-            <td colspan="3">${sale.seller_name || 'Admin'}</td>
+            <td colspan="4">${sale.seller_name || 'Admin'}</td>
             <td colspan="1">${sale.seller_phone || ''}</td>
         </tr>
-        <tr><td colspan="12">&nbsp;</td></tr>
+        <tr><td colspan="15">&nbsp;</td></tr>
         <tr style="background-color: #f0f0f0; font-weight: bold;">
             <td colspan="1">✓</td>
             <td colspan="1">№</td>
-            <td colspan="7">Mahsulot nomi</td>
+            <td colspan="10">Mahsulot nomi</td>
             <td colspan="1" style="text-align: center;">Miqdor</td>
             <td colspan="1">Birlik narxi</td>
             <td colspan="1">Jami narx</td>
@@ -1872,7 +1872,7 @@ function generateExcelHTML(sale) {
         <tr>
             <td colspan="1"></td>
             <td colspan="1" style="mso-number-format:'\@'">${String(index + 1).padStart(2, '0')}</td>
-            <td colspan="7">${item.product_name}</td>
+            <td colspan="10">${item.product_name}</td>
             <td colspan="1" style="text-align: center;">${item.quantity}</td>
             <td colspan="1">${parseFloat(item.unit_price).toFixed(2)}$</td>
             <td colspan="1">${parseFloat(item.total_price).toFixed(2)}$</td>
@@ -1880,11 +1880,11 @@ function generateExcelHTML(sale) {
     });
     
     html += `
-        <tr><td colspan="12">&nbsp;</td></tr>
+        <tr><td colspan="15">&nbsp;</td></tr>
         <tr style="font-weight: bold;">
             <td colspan="1"></td>
             <td colspan="1"></td>
-            <td colspan="7"></td>
+            <td colspan="10"></td>
             <td colspan="1"></td>
             <td colspan="1">Jami:</td>
             <td colspan="1">${parseFloat(sale.total_amount).toFixed(2)}$</td>
