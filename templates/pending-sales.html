@@ -2615,10 +2615,10 @@ function exportSaleToExcel() {
 
     ws['!cols'] = [
         {wch:3},{wch:4},
-        {wch:5},{wch:5},{wch:5},{wch:5},{wch:7},{wch:7},{wch:7},{wch:5},{wch:5},{wch:5},
+        {wch:5},{wch:5},{wch:5},{wch:5},{wch:8},{wch:8},{wch:8},{wch:5},{wch:5},{wch:5},
         {wch:7},{wch:11},{wch:11}
     ];
-    ws['!rows'] = [{hpt:30}];
+    ws['!rows'] = [{hpt:30}, null, {hpt:22}, {hpt:22}];
     ws['!pageSetup'] = {paperSize:9, orientation:'landscape', fitToWidth:1, fitToHeight:0, scale:100};
     ws['!margins'] = {left:0.4, right:0.4, top:0.5, bottom:0.5, header:0.3, footer:0.3};
 
