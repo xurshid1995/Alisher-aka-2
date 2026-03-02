@@ -1862,7 +1862,7 @@ function generateExcelHTML(sale) {
         <tr style="background-color: #f0f0f0; font-weight: bold;">
             <td colspan="1">№</td>
             <td colspan="6">Mahsulot nomi</td>
-            <td colspan="1">Miqdor</td>
+            <td colspan="1" style="text-align: center;">Miqdor</td>
             <td colspan="2">Birlik narxi ($)</td>
             <td colspan="2">Jami narx ($)</td>
         </tr>`;
@@ -1872,7 +1872,7 @@ function generateExcelHTML(sale) {
         <tr>
             <td colspan="1" style="mso-number-format:'\@'">${String(index + 1).padStart(2, '0')}</td>
             <td colspan="6">${item.product_name}</td>
-            <td colspan="1">${item.quantity}</td>
+            <td colspan="1" style="text-align: center;">${item.quantity}</td>
             <td colspan="2">$${parseFloat(item.unit_price).toFixed(2)}</td>
             <td colspan="2">$${parseFloat(item.total_price).toFixed(2)}</td>
         </tr>`;
