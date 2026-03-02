@@ -376,11 +376,22 @@ async function loadClients() {
                                c.server_status === 'suspended' ? '<span class="badge badge-suspended">⏸️ Bloklangan</span>' :
                                '<span class="badge">' + (c.server_status || '?') + '</span>';
 
-            const payBadge = c.payment_status === 'ok' ? `<span class="badge badge-ok">${c.days_left} kun</span>` :
-                            c.payment_status === 'warning' ? `<span class="badge badge-warning">⚠️ ${c.days_left} kun</span>` :
-                            c.payment_status === 'overdue' ? `<span class="badge badge-overdue">❌ ${Math.abs(c.days_left)} kun o'tgan</span>` :
-                            c.payment_status === 'never_paid' ? '<span class="badge badge-never-paid">Hali to\'lanmagan</span>' :
-                            '<span class="badge">—</span>';
+            const payBadge = (() => {
+                if (c.payment_status === 'ok') {
+                    return `<span class="badge badge-ok">${c.balance_end_date}gacha</span>
+                            <br><small style="color:#888">${c.days_left} kun qoldi</small>`;
+                } else if (c.payment_status === 'warning') {
+                    return `<span class="badge badge-warning">⚠️ ${c.balance_end_date}gacha</span>
+                            <br><small style="color:#e67e22">${c.days_left} kun qoldi</small>`;
+                } else if (c.payment_status === 'overdue') {
+                    return `<span class="badge badge-overdue">❌ Muddat tugagan</span>
+                            <br><small style="color:#e74c3c">To'lov: ${c.next_payment_date || 'hozir'}</small>`;
+                } else if (c.payment_status === 'never_paid') {
+                    return '<span class="badge badge-never-paid">Hali to\'lanmagan</span>';
+                } else {
+                    return '<span class="badge">—</span>';
+                }
+            })();
 
             return `<tr>
                 <td><strong>${c.name}</strong>${c.telegram_username ? '<br><small style="color:#888">' + c.telegram_username + '</small>' : ''}</td>

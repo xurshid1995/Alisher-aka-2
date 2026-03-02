@@ -13659,33 +13659,48 @@ def api_hosting_clients():
         result = []
         for c in clients:
             data = c.to_dict()
-            # Oxirgi to'lov
+            today = get_tashkent_time().date()
+
+            # Balansga asosan to'lov muddatini hisoblash
+            balance = float(c.balance or 0)
+            monthly_price = float(c.monthly_price_uzs or 0)
+
+            if monthly_price > 0 and balance > 0:
+                # Balans necha kunga yetadi
+                daily_price = monthly_price / 30
+                balance_days = int(balance / daily_price)
+                balance_end_date = today + timedelta(days=balance_days)
+                data['balance_end_date'] = balance_end_date.strftime('%d.%m.%Y')
+                data['balance_days_left'] = balance_days
+                data['next_payment_date'] = balance_end_date.strftime('%d.%m.%Y')
+
+                if balance_days < 0:
+                    data['payment_status'] = 'overdue'
+                elif balance_days <= 3:
+                    data['payment_status'] = 'warning'
+                elif balance_days <= 7:
+                    data['payment_status'] = 'warning'
+                else:
+                    data['payment_status'] = 'ok'
+                data['days_left'] = balance_days
+            elif monthly_price > 0 and balance <= 0:
+                data['balance_end_date'] = None
+                data['balance_days_left'] = 0
+                data['next_payment_date'] = today.strftime('%d.%m.%Y')
+                data['payment_status'] = 'overdue'
+                data['days_left'] = 0
+            else:
+                data['balance_end_date'] = None
+                data['balance_days_left'] = None
+                data['next_payment_date'] = None
+                data['payment_status'] = 'never_paid'
+                data['days_left'] = None
+
+            # Oxirgi to'lov sanasi
             last_payment = HostingPayment.query.filter_by(
                 client_id=c.id
             ).order_by(HostingPayment.payment_date.desc()).first()
-
-            if last_payment:
-                data['last_payment_date'] = last_payment.payment_date.strftime('%d.%m.%Y') if last_payment.payment_date else None
-                data['period_end'] = last_payment.period_end.isoformat() if last_payment.period_end else None
-
-                if last_payment.period_end:
-                    today = get_tashkent_time().date()
-                    days_left = (last_payment.period_end - today).days
-                    data['days_left'] = days_left
-                    if days_left < 0:
-                        data['payment_status'] = 'overdue'
-                    elif days_left <= 3:
-                        data['payment_status'] = 'warning'
-                    else:
-                        data['payment_status'] = 'ok'
-                else:
-                    data['days_left'] = None
-                    data['payment_status'] = 'unknown'
-            else:
-                data['last_payment_date'] = None
-                data['period_end'] = None
-                data['days_left'] = None
-                data['payment_status'] = 'never_paid'
+            data['last_payment_date'] = last_payment.payment_date.strftime('%d.%m.%Y') if last_payment and last_payment.payment_date else None
 
             # Pending buyurtmalar soni
             pending_count = HostingPaymentOrder.query.filter(
