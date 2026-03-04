@@ -790,7 +790,10 @@ async function toggleServer(dropletId, currentStatus, clientName) {
 
         if (result.success) {
             alert(`✅ Server ${actionText}ilmoqda...`);
-            setTimeout(() => loadClients(), 3000);
+            loadClients();
+            loadStats();
+            setTimeout(() => { loadClients(); loadStats(); }, 3000);
+            setTimeout(() => { loadClients(); loadStats(); }, 8000);
         } else {
             alert('Xatolik: ' + (result.error || 'Noma\'lum'));
         }
