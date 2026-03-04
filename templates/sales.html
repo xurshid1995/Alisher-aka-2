@@ -1891,7 +1891,6 @@
             // Universal qidiruv inputiga fokus va matnni belgilash
             const universalSearch = getActiveTabElement('universalSearch');
             if (universalSearch) { universalSearch.focus(); universalSearch.select(); }
-            await loadProducts();
             
         } catch (error) {
             console.error('❌ Barcode qidiruv xatosi:', error);
@@ -3565,16 +3564,15 @@
         // Mahsulotlar jadvalida faqat o'sha mahsulotning miqdorini yangilash (tezroq)
         updateProductQuantityInTable(addedProduct.id, quantity);
         
-        // Fokusni universal qidiruv maydoniga qaytarish va barcha mahsulotlarni ko'rsatish
-        setTimeout(async () => {
+        // Fokusni universal qidiruv maydoniga qaytarish
+        setTimeout(() => {
             const activeTab = document.querySelector('.sales-tab.active');
             if (activeTab) {
                 const tabId = activeTab.dataset.tabId;
                 const universalSearch = document.getElementById(`universalSearch_tab${tabId}`);
-                await loadProducts();
                 if (universalSearch) {
                     universalSearch.focus();
-                    universalSearch.select(); // Matnni belgilash
+                    universalSearch.select();
                 }
             }
         }, 200);
@@ -4491,7 +4489,6 @@
             // Qidiruv maydoniga fokus va matnni belgilash
             const universalSearch = getActiveTabElement('universalSearch');
             if (universalSearch) { universalSearch.focus(); universalSearch.select(); }
-            await loadProducts();
             clearProductSelection();
         } else if (productId && quantity <= 0) {
             console.log('⛔ Mahsulot miqdori 0:', { productId, productName });
