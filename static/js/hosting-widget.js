@@ -282,8 +282,8 @@
                         <span class="hw-server ${serverClass}">${serverText}</span>
                     </div>
                     <div class="hw-row" style="justify-content:center;">
-                      <a href="https://t.me/YOUR_BOT_USERNAME" target="_blank" class="btn-hosting btn-primary" style="margin-top:10px;display:inline-block;text-decoration:none;padding:8px 18px;border-radius:8px;background:#667eea;color:#fff;font-weight:600;">
-                        To'lov: Bot orqali
+                      <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="margin-top:10px;display:inline-block;text-decoration:none;padding:10px 22px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(102,126,234,0.4);transition:transform 0.2s;">
+                        🤖 To'lov: Bot orqali
                       </a>
                     </div>
                 `;
