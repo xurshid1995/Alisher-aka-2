@@ -2565,21 +2565,18 @@
             const universalSearch = document.getElementById(`universalSearch_tab${tabId}`);
             const searchText = universalSearch ? universalSearch.value : '';
             
-            // Filtr bilan jadvalni yangilash
-            if (searchText.trim()) {
-                await filterProducts();
-            } else {
-                await loadProducts(currentPage);
-            }
+            // Avval loadProducts chaqirish (yangi ma'lumotlar yuklash)
+            await loadProducts(currentPage);
             
-            // Qidiruv matnini qaytarish va select qilish
-            if (universalSearch && searchText) {
+            // Keyin qidiruv matni bo'lsa filtr ishlaydi
+            if (searchText.trim() && universalSearch) {
                 universalSearch.value = searchText;
+                await filterProducts();
                 universalSearch.focus();
                 universalSearch.select();
             }
             
-            console.log(`🔄 Mahsulotlar jadvali yangilandi (filtr saqlandi)`);
+            console.log(`🔄 Mahsulotlar jadvali yangilandi`);
         } catch (error) {
             console.error('Jadvalni yangilashda xatolik:', error);
         }
