@@ -771,7 +771,8 @@ async function toggleServer(dropletId, currentStatus) {
     const action = currentStatus === 'active' ? 'off' : 'on';
     const actionText = action === 'on' ? 'yoqish' : 'o\'chirish';
 
-    if (!confirm(`Serverni ${actionText}moqchimisiz?`)) return;
+    if (!confirm(`⚠️ Serverni ${actionText}moqchimisiz?`)) return;
+    if (!confirm(`🔴 DIQQAT! Rostdan ham serverni ${actionText}moqchimisiz?\n\nBu amalni qaytarib bo'lmaydi!`)) return;
 
     try {
         const res = await fetch(`/api/hosting/droplets/${dropletId}/power`, {
