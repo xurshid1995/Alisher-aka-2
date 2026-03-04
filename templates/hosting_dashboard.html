@@ -424,7 +424,7 @@ async function loadClients() {
                     <button class="btn-hosting btn-sm btn-success-hosting" onclick="showPaymentModal(${c.id}, '${c.name}', ${c.monthly_price_uzs})" title="To'lov qo'shish">
                         <i class="fas fa-money-bill"></i>
                     </button>
-                    ${c.droplet_id ? `<button class="btn-hosting btn-sm ${c.server_status === 'active' ? 'btn-danger-hosting' : 'btn-success-hosting'}" onclick="toggleServer(${c.droplet_id}, '${c.server_status}')" title="${c.server_status === 'active' ? 'O\'chirish' : 'Yoqish'}">
+                    ${c.droplet_id ? `<button class="btn-hosting btn-sm ${c.server_status === 'active' ? 'btn-danger-hosting' : 'btn-success-hosting'}" onclick="toggleServer(${c.droplet_id}, '${c.server_status}', '${c.name.replace(/'/g, "\\'")}')" title="${c.server_status === 'active' ? 'O\'chirish' : 'Yoqish'}">
                         <i class="fas ${c.server_status === 'active' ? 'fa-power-off' : 'fa-play'}"></i>
                     </button>` : ''}
                 </td>
@@ -767,12 +767,18 @@ async function approveOrder(orderId) {
 // SERVER POWER CONTROL
 // ==========================================
 
-async function toggleServer(dropletId, currentStatus) {
+async function toggleServer(dropletId, currentStatus, clientName) {
     const action = currentStatus === 'active' ? 'off' : 'on';
     const actionText = action === 'on' ? 'yoqish' : 'o\'chirish';
 
-    if (!confirm(`⚠️ Serverni ${actionText}moqchimisiz?`)) return;
-    if (!confirm(`🔴 DIQQAT! Rostdan ham serverni ${actionText}moqchimisiz?\n\nBu amalni qaytarib bo'lmaydi!`)) return;
+    if (!confirm(`⚠️ "${clientName}" serverini ${actionText}moqchimisiz?`)) return;
+
+    const inputName = prompt(`🔴 DIQQAT! Tasdiqlash uchun mijoz ismini kiriting:\n\n"${clientName}"`);
+    if (inputName === null) return;
+    if (inputName.trim() !== clientName.trim()) {
+        alert('❌ Ism mos kelmadi! Amal bekor qilindi.');
+        return;
+    }
 
     try {
         const res = await fetch(`/api/hosting/droplets/${dropletId}/power`, {
