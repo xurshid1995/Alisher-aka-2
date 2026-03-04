@@ -281,9 +281,13 @@
                         <span class="hw-label">Server</span>
                         <span class="hw-server ${serverClass}">${serverText}</span>
                     </div>
-                    <div class="hw-row" style="justify-content:center;">
-                      <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="margin-top:10px;display:inline-block;text-decoration:none;padding:10px 22px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(102,126,234,0.4);transition:transform 0.2s;">
-                        🤖 To'lov: Bot orqali
+                    <div style="margin-top:12px;padding:10px;background:linear-gradient(135deg,#0088cc,#0077b5);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                      <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="text-decoration:none;color:white;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;">
+                        <img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width:24px;height:24px;">
+                        @DgitaloceanHostingTolov_bot
+                      </a>
+                      <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="display:inline-flex;background:white;padding:3px;border-radius:6px;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DgitaloceanHostingTolov_bot&color=000000&bgcolor=ffffff" alt="QR" style="width:32px;height:32px;border-radius:4px;display:block;">
                       </a>
                     </div>
                 `;
