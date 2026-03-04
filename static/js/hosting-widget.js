@@ -170,18 +170,30 @@
             color: #bbb;
         }
 
-        #hosting-widget .hw-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 18px;
+        #hw-qr-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        #hw-qr-modal.show { display: flex; }
+        #hw-qr-modal .hw-qr-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
             text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: hwQrZoom 0.3s ease;
+            position: relative;
+            max-width: 350px;
+        }
+        @keyframes hwQrZoom {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         @media (max-width: 480px) {
@@ -209,7 +221,22 @@
         </div>
         <div style="position:relative;display:inline-block;">
             <button class="hw-toggle ok" id="hw-toggle" onclick="toggleHostingWidget()">🖥️</button>
-            <span class="hw-badge" id="hw-badge" style="display:none;"></span>
+        </div>
+        <div id="hw-qr-modal" onclick="if(event.target===this) this.classList.remove('show')">
+            <div class="hw-qr-box">
+                <button onclick="document.getElementById('hw-qr-modal').classList.remove('show')" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;line-height:1;">&times;</button>
+                <div style="margin-bottom:16px;">
+                    <img src="https://img.icons8.com/fluency/120/telegram-app.png" alt="Telegram" style="width:48px;height:48px;">
+                    <h3 style="margin:8px 0 4px;color:#333;font-size:18px;">@DgitaloceanHostingTolov_bot</h3>
+                    <p style="color:#888;font-size:13px;margin:0;">Telegram botga o'tish uchun skanerlang</p>
+                </div>
+                <div style="background:#f8f9fa;border-radius:12px;padding:20px;display:inline-block;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://t.me/DgitaloceanHostingTolov_bot&color=000000&bgcolor=f8f9fa" alt="QR Code" style="width:200px;height:200px;display:block;">
+                </div>
+                <div style="margin-top:16px;">
+                    <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="display:inline-block;background:#0088cc;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">Telegram'da ochish</a>
+                </div>
+            </div>
         </div>
     `;
     document.body.appendChild(widget);
@@ -237,21 +264,9 @@
 
                 var status = data.status;
                 var toggle = document.getElementById('hw-toggle');
-                var badge = document.getElementById('hw-badge');
                 
                 // Toggle rang
                 toggle.className = 'hw-toggle ' + status;
-
-                // Badge
-                if (status === 'danger' || status === 'overdue') {
-                    badge.style.display = 'block';
-                    badge.textContent = status === 'overdue' ? '!' : data.days_left;
-                } else if (status === 'warning') {
-                    badge.style.display = 'block';
-                    badge.textContent = data.days_left;
-                } else {
-                    badge.style.display = 'none';
-                }
 
                 // Server holati
                 var serverText = data.server_status === 'active' ? '🟢 Faol' :
@@ -286,7 +301,7 @@
                         <img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width:24px;height:24px;">
                         @DgitaloceanHostingTolov_bot
                       </a>
-                      <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="display:inline-flex;background:white;padding:3px;border-radius:6px;">
+                      <a href="javascript:void(0)" onclick="document.getElementById('hw-qr-modal').classList.add('show')" style="display:inline-flex;background:white;padding:3px;border-radius:6px;cursor:pointer;" title="QR Code ko'rish">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DgitaloceanHostingTolov_bot&color=000000&bgcolor=ffffff" alt="QR" style="width:32px;height:32px;border-radius:4px;display:block;">
                       </a>
                     </div>
@@ -309,15 +324,7 @@
             .then(function(data) {
                 if (!data.success) return;
                 var toggle = document.getElementById('hw-toggle');
-                var badge = document.getElementById('hw-badge');
                 toggle.className = 'hw-toggle ' + data.status;
-                if (data.status === 'danger' || data.status === 'overdue') {
-                    badge.style.display = 'block';
-                    badge.textContent = data.status === 'overdue' ? '!' : data.days_left;
-                } else if (data.status === 'warning') {
-                    badge.style.display = 'block';
-                    badge.textContent = data.days_left;
-                }
             })
             .catch(function() {});
     }, 1000);
