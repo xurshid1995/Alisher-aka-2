@@ -170,7 +170,7 @@
             color: #bbb;
         }
 
-        #hw-qr-modal {
+        #hw-qr-modal, #hw-qr-modal-contact {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -180,8 +180,8 @@
             align-items: center;
             backdrop-filter: blur(4px);
         }
-        #hw-qr-modal.show { display: flex; }
-        #hw-qr-modal .hw-qr-box {
+        #hw-qr-modal.show, #hw-qr-modal-contact.show { display: flex; }
+        #hw-qr-modal .hw-qr-box, #hw-qr-modal-contact .hw-qr-box {
             background: white;
             border-radius: 16px;
             padding: 30px;
@@ -235,6 +235,22 @@
                 </div>
                 <div style="margin-top:16px;">
                     <a href="https://t.me/DgitaloceanHostingTolov_bot" target="_blank" style="display:inline-block;background:#0088cc;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">Telegram'da ochish</a>
+                </div>
+            </div>
+        </div>
+        <div id="hw-qr-modal-contact" onclick="if(event.target===this) this.classList.remove('show')">
+            <div class="hw-qr-box">
+                <button onclick="document.getElementById('hw-qr-modal-contact').classList.remove('show')" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;line-height:1;">&times;</button>
+                <div style="margin-bottom:16px;">
+                    <img src="https://img.icons8.com/fluency/120/telegram-app.png" alt="Telegram" style="width:48px;height:48px;">
+                    <h3 style="margin:8px 0 4px;color:#333;font-size:18px;">DIAMONDaccesories</h3>
+                    <p style="color:#888;font-size:13px;margin:0;">Biz bilan bog'lanish uchun skanerlang</p>
+                </div>
+                <div style="background:#f8f9fa;border-radius:12px;padding:20px;display:inline-block;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://t.me/DIAMONDaccesories&color=000000&bgcolor=f8f9fa" alt="QR Code" style="width:200px;height:200px;display:block;">
+                </div>
+                <div style="margin-top:16px;">
+                    <a href="https://t.me/DIAMONDaccesories" target="_blank" style="display:inline-block;background:#28a745;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">Telegram'da ochish</a>
                 </div>
             </div>
         </div>
@@ -303,6 +319,15 @@
                       </a>
                       <a href="javascript:void(0)" onclick="document.getElementById('hw-qr-modal').classList.add('show')" style="display:inline-flex;background:white;padding:3px;border-radius:6px;cursor:pointer;" title="QR Code ko'rish">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DgitaloceanHostingTolov_bot&color=000000&bgcolor=ffffff" alt="QR" style="width:32px;height:32px;border-radius:4px;display:block;">
+                      </a>
+                    </div>
+                    <div style="margin-top:8px;padding:10px;background:linear-gradient(135deg,#28a745,#20c997);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                      <a href="https://t.me/DIAMONDaccesories" target="_blank" style="text-decoration:none;color:white;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;">
+                        <img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width:24px;height:24px;">
+                        Biz bilan bog'laning
+                      </a>
+                      <a href="javascript:void(0)" onclick="document.getElementById('hw-qr-modal-contact').classList.add('show')" style="display:inline-flex;background:white;padding:3px;border-radius:6px;cursor:pointer;" title="QR Code ko'rish">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DIAMONDaccesories&color=000000&bgcolor=ffffff" alt="QR" style="width:32px;height:32px;border-radius:4px;display:block;">
                       </a>
                     </div>
                 `;
