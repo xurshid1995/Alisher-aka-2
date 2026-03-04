@@ -114,14 +114,6 @@
             <div class="stat-value" id="stat-clients">-</div>
             <div class="stat-label">Jami mijozlar</div>
         </div>
-        <div class="stat-card success">
-            <div class="stat-value" id="stat-monthly">-</div>
-            <div class="stat-label">Joriy oy tushumlari</div>
-        </div>
-        <div class="stat-card info">
-            <div class="stat-value" id="stat-total">-</div>
-            <div class="stat-label">Umumiy tushum</div>
-        </div>
         <div class="stat-card warning">
             <div class="stat-value" id="stat-pending">-</div>
             <div class="stat-label">Kutilayotgan buyurtmalar</div>
@@ -357,8 +349,6 @@ async function loadStats() {
         if (data.success) {
             const s = data.stats;
             document.getElementById('stat-clients').textContent = s.total_clients;
-            document.getElementById('stat-monthly').textContent = formatMoney(s.monthly_revenue) + ' so\'m';
-            document.getElementById('stat-total').textContent = formatMoney(s.total_revenue) + ' so\'m';
             document.getElementById('stat-pending').textContent = s.pending_orders;
             document.getElementById('stat-overdue').textContent = s.overdue_clients;
         }
