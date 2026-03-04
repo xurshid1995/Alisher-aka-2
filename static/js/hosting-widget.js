@@ -326,6 +326,7 @@
                         <img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width:24px;height:24px;">
                         Biz bilan bog'laning
                       </a>
+                      <a href="tel:+998946350606" style="text-decoration:none;color:white;font-size:13px;font-weight:600;">📞 +998(94) 635-06-06</a>
                       <a href="javascript:void(0)" onclick="document.getElementById('hw-qr-modal-contact').classList.add('show')" style="display:inline-flex;background:white;padding:3px;border-radius:6px;cursor:pointer;" title="QR Code ko'rish">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DIAMONDaccesories&color=000000&bgcolor=ffffff" alt="QR" style="width:32px;height:32px;border-radius:4px;display:block;">
                       </a>
