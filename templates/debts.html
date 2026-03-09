@@ -1248,22 +1248,27 @@
 
 <!-- Qarz muddati tahrirlash modal -->
 <div id="dueDateEditModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
-    <div style="background:#fff; border-radius:12px; padding:24px; max-width:400px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+    <div style="background:#fff; border-radius:12px; padding:24px; max-width:500px; width:95%; box-shadow:0 8px 32px rgba(0,0,0,0.3); max-height:80vh; overflow-y:auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 style="margin:0; font-size:18px;">📅 Qarz muddatini tahrirlash</h3>
+            <h3 style="margin:0; font-size:18px;">📅 Qarz muddatlarini tahrirlash</h3>
             <button onclick="closeDueDateEditModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#999;">&times;</button>
         </div>
-        <div style="margin-bottom:16px;">
-            <label style="display:block; font-weight:600; margin-bottom:6px; color:#495057;">Yangi muddat:</label>
-            <input type="date" id="editDueDateInput" style="width:100%; padding:10px 12px; border:2px solid #dee2e6; border-radius:8px; font-size:14px; box-sizing:border-box;">
+        
+        <!-- Har bir savdo uchun alohida muddat -->
+        <div id="dueDateSalesList" style="margin-bottom:16px;"></div>
+        
+        <!-- Barchaga bir xil muddat berish -->
+        <div style="border-top:2px solid #dee2e6; padding-top:12px; margin-top:12px;">
+            <label style="display:block; font-weight:600; margin-bottom:8px; color:#495057; font-size:13px;">⚡ Barchaga bir xil muddat:</label>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+                <button onclick="setAllDueDates(3)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">3 kun</button>
+                <button onclick="setAllDueDates(7)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">1 hafta</button>
+                <button onclick="setAllDueDates(14)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">2 hafta</button>
+                <button onclick="setAllDueDates(30)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">1 oy</button>
+                <button onclick="clearAllDueDates()" style="padding:6px 12px; border:1px solid #dc3545; background:#fff0f0; color:#dc3545; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">❌ Barchasini o'chirish</button>
+            </div>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-            <button onclick="setEditDueDate(3)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">3 kun</button>
-            <button onclick="setEditDueDate(7)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">1 hafta</button>
-            <button onclick="setEditDueDate(14)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">2 hafta</button>
-            <button onclick="setEditDueDate(30)" style="padding:6px 12px; border:1px solid #17a2b8; background:#e8f8fb; color:#17a2b8; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">1 oy</button>
-            <button onclick="clearEditDueDate()" style="padding:6px 12px; border:1px solid #dc3545; background:#fff0f0; color:#dc3545; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;">❌ O'chirish</button>
-        </div>
+        
         <div style="display:flex; gap:10px;">
             <button onclick="closeDueDateEditModal()" style="flex:1; padding:10px; background:#6c757d; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:14px;">Bekor qilish</button>
             <button onclick="saveDueDateEdit()" style="flex:1; padding:10px; background:#17a2b8; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;">✅ Saqlash</button>
@@ -1579,30 +1584,53 @@
     }
 
     // Qarz muddati ustuni uchun yordamchi funksiya
-    function formatDueDateCell(nearestDueDate, customerId) {
-        const editBtn = `<button onclick="openDueDateEditModal(${customerId}, ${nearestDueDate ? "'" + nearestDueDate + "'" : 'null'})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;" title="Muddatni tahrirlash">✏️</button>`;
+    function formatDueDateCell(saleDueDates, customerId) {
+        const editBtn = `<button onclick="openDueDateEditModal(${customerId})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;" title="Muddatni tahrirlash">✏️</button>`;
         
-        if (!nearestDueDate) return `<span style="color: #999;">—</span> ${editBtn}`;
+        if (!saleDueDates || saleDueDates.length === 0) return `<span style="color: #999;">—</span> ${editBtn}`;
         
-        const dueDate = new Date(nearestDueDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        dueDate.setHours(0, 0, 0, 0);
-        const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
-        const formatted = dueDate.toLocaleDateString('uz-UZ', {day: '2-digit', month: '2-digit', year: 'numeric'});
         
-        let color, icon, label;
-        if (diffDays < 0) {
-            color = '#dc3545'; icon = '🔴'; label = `${Math.abs(diffDays)} kun o'tgan`;
-        } else if (diffDays === 0) {
-            color = '#e65100'; icon = '🟡'; label = 'Bugun!';
-        } else if (diffDays <= 3) {
-            color = '#f57c00'; icon = '🟠'; label = `${diffDays} kun qoldi`;
-        } else {
-            color = '#2e7d32'; icon = '🟢'; label = `${diffDays} kun qoldi`;
+        // Faqat muddati bor savdolarni ko'rsatish, aks holda umumiy holat
+        const withDueDates = saleDueDates.filter(s => s.payment_due_date);
+        const withoutDueDates = saleDueDates.filter(s => !s.payment_due_date);
+        
+        if (withDueDates.length === 0) {
+            // Hech qanday savdoda muddat yo'q
+            return `<span style="color: #999;">—</span> ${editBtn}`;
         }
         
-        return `<span style="color: ${color}; font-weight: 600; font-size: 12px;">${icon} ${formatted}<br><small>${label}</small></span> ${editBtn}`;
+        let html = '<div style="font-size:11px; line-height:1.6;">';
+        
+        withDueDates.forEach(sale => {
+            const dueDate = new Date(sale.payment_due_date);
+            dueDate.setHours(0, 0, 0, 0);
+            const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
+            const formatted = dueDate.toLocaleDateString('uz-UZ', {day: '2-digit', month: '2-digit', year: 'numeric'});
+            
+            let color, icon;
+            if (diffDays < 0) {
+                color = '#dc3545'; icon = '🔴';
+            } else if (diffDays === 0) {
+                color = '#e65100'; icon = '🟡';
+            } else if (diffDays <= 3) {
+                color = '#f57c00'; icon = '🟠';
+            } else {
+                color = '#2e7d32'; icon = '🟢';
+            }
+            
+            const label = diffDays < 0 ? `${Math.abs(diffDays)}kun o'tgan` : diffDays === 0 ? 'bugun' : `${diffDays}kun`;
+            html += `<div style="color:${color}; white-space:nowrap;">${icon} $${sale.debt_usd.toFixed(0)} — ${formatted} <small>(${label})</small></div>`;
+        });
+        
+        if (withoutDueDates.length > 0) {
+            const noDateTotal = withoutDueDates.reduce((s, x) => s + x.debt_usd, 0);
+            html += `<div style="color:#999;">⚪ $${noDateTotal.toFixed(0)} — muddatsiz</div>`;
+        }
+        
+        html += '</div>';
+        return html + ' ' + editBtn;
     }
 
     // Jadvalni render qilish
@@ -1621,7 +1649,7 @@
             const lastPayment = debt.last_payment_date || '-';
             const lastPaymentAmount = debt.last_payment_amount || 0;
             const lastPaymentRate = debt.last_payment_rate || exchangeRate;
-            const dueDateHtml = formatDueDateCell(debt.nearest_due_date, debt.customer_id);
+            const dueDateHtml = formatDueDateCell(debt.sale_due_dates || [], debt.customer_id);
 
             return `
                 <tr>
@@ -1687,7 +1715,7 @@
             const lastPayment = debt.last_payment_date || '-';
             const lastPaymentAmount = debt.last_payment_amount || 0;
             const lastPaymentRate = debt.last_payment_rate || exchangeRate;
-            const dueDateHtml = formatDueDateCell(debt.nearest_due_date, debt.customer_id);
+            const dueDateHtml = formatDueDateCell(debt.sale_due_dates || [], debt.customer_id);
 
             return `
                 <tr>
@@ -1931,40 +1959,104 @@
     // QARZ MUDDATI TAHRIRLASH FUNKSIYALARI
     // =============================================
     let editDueDateCustomerId = null;
+    let editDueDateSales = [];
 
-    function openDueDateEditModal(customerId, currentDueDate) {
+    function openDueDateEditModal(customerId) {
         editDueDateCustomerId = customerId;
-        const input = document.getElementById('editDueDateInput');
-        if (currentDueDate) {
-            input.value = currentDueDate;
-        } else {
-            // Default: 1 hafta keyin
-            const d = new Date();
-            d.setDate(d.getDate() + 7);
-            input.value = d.toISOString().split('T')[0];
+        
+        // Mijozning qarzli savdolarini topish
+        const debt = debts.find(d => d.customer_id === customerId);
+        if (!debt || !debt.sale_due_dates) {
+            alert("Savdolar topilmadi");
+            return;
         }
+        
+        editDueDateSales = debt.sale_due_dates;
+        
+        // Savdolar ro'yxatini render qilish
+        const container = document.getElementById('dueDateSalesList');
+        
+        if (editDueDateSales.length === 0) {
+            container.innerHTML = '<p style="color:#999; text-align:center;">Qarzli savdolar yo\'q</p>';
+            return;
+        }
+        
+        let html = '';
+        editDueDateSales.forEach((sale, idx) => {
+            const saleDate = sale.sale_date || '—';
+            const debtUsd = sale.debt_usd.toFixed(2);
+            
+            // Muddat holatini aniqlash
+            let statusHtml = '';
+            if (sale.payment_due_date) {
+                const dueDate = new Date(sale.payment_due_date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                dueDate.setHours(0, 0, 0, 0);
+                const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
+                if (diffDays < 0) {
+                    statusHtml = `<span style="color:#dc3545; font-size:11px;">🔴 ${Math.abs(diffDays)} kun o'tgan</span>`;
+                } else if (diffDays === 0) {
+                    statusHtml = `<span style="color:#e65100; font-size:11px;">🟡 Bugun!</span>`;
+                } else {
+                    statusHtml = `<span style="color:#2e7d32; font-size:11px;">🟢 ${diffDays} kun qoldi</span>`;
+                }
+            }
+            
+            html += `
+                <div style="background:#f8f9fa; border-radius:8px; padding:10px 12px; margin-bottom:8px; border-left:4px solid ${sale.payment_due_date ? '#17a2b8' : '#dee2e6'};">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-weight:600; color:#333; font-size:13px;">💰 $${debtUsd}</span>
+                        <span style="color:#888; font-size:11px;">📅 Savdo: ${saleDate}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <label style="font-size:12px; color:#666; white-space:nowrap;">Muddat:</label>
+                        <input type="date" id="saleDueDate_${sale.sale_id}" value="${sale.payment_due_date || ''}" 
+                               style="flex:1; padding:6px 8px; border:1px solid #dee2e6; border-radius:6px; font-size:13px;">
+                        ${statusHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
         document.getElementById('dueDateEditModal').style.display = 'flex';
     }
 
     function closeDueDateEditModal() {
         document.getElementById('dueDateEditModal').style.display = 'none';
         editDueDateCustomerId = null;
+        editDueDateSales = [];
     }
 
-    function setEditDueDate(days) {
+    function setAllDueDates(days) {
         const d = new Date();
         d.setDate(d.getDate() + days);
-        document.getElementById('editDueDateInput').value = d.toISOString().split('T')[0];
+        const dateStr = d.toISOString().split('T')[0];
+        editDueDateSales.forEach(sale => {
+            const input = document.getElementById(`saleDueDate_${sale.sale_id}`);
+            if (input) input.value = dateStr;
+        });
     }
 
-    function clearEditDueDate() {
-        document.getElementById('editDueDateInput').value = '';
+    function clearAllDueDates() {
+        editDueDateSales.forEach(sale => {
+            const input = document.getElementById(`saleDueDate_${sale.sale_id}`);
+            if (input) input.value = '';
+        });
     }
 
     async function saveDueDateEdit() {
-        if (!editDueDateCustomerId) return;
+        if (!editDueDateCustomerId || editDueDateSales.length === 0) return;
         
-        const dueDateValue = document.getElementById('editDueDateInput').value;
+        // Har bir savdoning muddatini yig'ish
+        const updates = editDueDateSales.map(sale => {
+            const input = document.getElementById(`saleDueDate_${sale.sale_id}`);
+            return {
+                sale_id: sale.sale_id,
+                payment_due_date: input ? (input.value || null) : sale.payment_due_date
+            };
+        });
         
         try {
             const response = await fetch('/api/debts/update-due-date', {
@@ -1972,14 +2064,14 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     customer_id: editDueDateCustomerId,
-                    payment_due_date: dueDateValue || null
+                    sales: updates
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
-                alert(`✅ Qarz muddati ${dueDateValue ? 'yangilandi' : "o'chirildi"}!`);
+                alert(`✅ ${result.updated_sales} ta savdo muddati yangilandi!`);
                 closeDueDateEditModal();
                 loadDebts(); // Jadvalni yangilash
             } else {

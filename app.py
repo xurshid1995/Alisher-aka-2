@@ -6167,6 +6167,56 @@ def api_debts():
                 'nearest_due_date': row.nearest_due_date.strftime('%Y-%m-%d') if row.nearest_due_date else None
             })
 
+        # Har bir mijozning qarzli savdolarini alohida olish (sale_due_dates)
+        if debts:
+            customer_ids = [d['customer_id'] for d in debts]
+
+            # Location shartini qo'shish
+            if location_id:
+                sales_query = text("""
+                    SELECT s.id as sale_id, s.customer_id, s.debt_usd, s.payment_due_date, s.created_at
+                    FROM sales s
+                    WHERE s.customer_id = ANY(:customer_ids)
+                      AND s.debt_usd > 0
+                      AND s.location_id = :location_id
+                    ORDER BY s.payment_due_date ASC NULLS LAST, s.created_at DESC
+                """)
+                sales_result = db.session.execute(sales_query, {'customer_ids': customer_ids, 'location_id': location_id})
+            elif allowed_location_ids is not None:
+                sales_query = text("""
+                    SELECT s.id as sale_id, s.customer_id, s.debt_usd, s.payment_due_date, s.created_at
+                    FROM sales s
+                    WHERE s.customer_id = ANY(:customer_ids)
+                      AND s.debt_usd > 0
+                      AND s.location_id = ANY(:location_ids)
+                    ORDER BY s.payment_due_date ASC NULLS LAST, s.created_at DESC
+                """)
+                sales_result = db.session.execute(sales_query, {'customer_ids': customer_ids, 'location_ids': allowed_location_ids})
+            else:
+                sales_query = text("""
+                    SELECT s.id as sale_id, s.customer_id, s.debt_usd, s.payment_due_date, s.created_at
+                    FROM sales s
+                    WHERE s.customer_id = ANY(:customer_ids)
+                      AND s.debt_usd > 0
+                    ORDER BY s.payment_due_date ASC NULLS LAST, s.created_at DESC
+                """)
+                sales_result = db.session.execute(sales_query, {'customer_ids': customer_ids})
+
+            # customer_id bo'yicha guruhlash
+            from collections import defaultdict
+            sales_by_customer = defaultdict(list)
+            for srow in sales_result:
+                sales_by_customer[srow.customer_id].append({
+                    'sale_id': srow.sale_id,
+                    'debt_usd': float(srow.debt_usd),
+                    'payment_due_date': srow.payment_due_date.strftime('%Y-%m-%d') if srow.payment_due_date else None,
+                    'sale_date': srow.created_at.strftime('%d.%m.%Y') if srow.created_at else None
+                })
+
+            # Har bir debtga sale_due_dates qo'shish
+            for debt in debts:
+                debt['sale_due_dates'] = sales_by_customer.get(debt['customer_id'], [])
+
         return jsonify({
             'success': True,
             'debts': debts,
@@ -6459,33 +6509,47 @@ def api_debt_details(customer_id):
 @app.route('/api/debts/update-due-date', methods=['POST'])
 @role_required('admin', 'kassir')
 def api_update_due_date():
-    """Mijozning barcha qarz sotuvlari uchun payment_due_date yangilash"""
+    """Mijozning qarzli savdolari uchun payment_due_date yangilash (har bir savdo alohida)"""
     try:
         data = request.get_json()
         customer_id = data.get('customer_id')
-        due_date_str = data.get('payment_due_date')
+        sales_updates = data.get('sales', [])
 
         if not customer_id:
             return jsonify({'success': False, 'error': 'customer_id talab qilinadi'}), 400
 
-        # Parse date
-        due_date = None
-        if due_date_str:
-            from datetime import datetime as dt_parse
-            due_date = dt_parse.strptime(due_date_str, '%Y-%m-%d').date()
+        if not sales_updates:
+            return jsonify({'success': False, 'error': 'sales massivi talab qilinadi'}), 400
 
-        # Mijozning barcha qarzli sotuvlarini yangilash
-        updated = Sale.query.filter(
-            Sale.customer_id == customer_id,
-            Sale.debt_usd > 0
-        ).update({'payment_due_date': due_date}, synchronize_session=False)
+        from datetime import datetime as dt_parse
+
+        updated_count = 0
+        for sale_update in sales_updates:
+            sale_id = sale_update.get('sale_id')
+            due_date_str = sale_update.get('payment_due_date')
+
+            if not sale_id:
+                continue
+
+            # Parse date
+            due_date = None
+            if due_date_str:
+                due_date = dt_parse.strptime(due_date_str, '%Y-%m-%d').date()
+
+            # Faqat shu mijozning savdosini yangilash (xavfsizlik uchun)
+            updated = Sale.query.filter(
+                Sale.id == sale_id,
+                Sale.customer_id == customer_id,
+                Sale.debt_usd > 0
+            ).update({'payment_due_date': due_date}, synchronize_session=False)
+
+            updated_count += updated
 
         db.session.commit()
 
         return jsonify({
             'success': True,
-            'updated_sales': updated,
-            'payment_due_date': due_date_str
+            'updated_sales': updated_count
         })
 
     except Exception as e:
