@@ -41,3 +41,23 @@ tmp_upload_dir = None
 # SSL
 keyfile = None
 certfile = None
+
+
+# Scheduler - faqat bitta worker'da ishga tushirish
+def on_starting(server):
+    """Gunicorn ishga tushganda scheduler ni boshlash"""
+    pass
+
+
+def post_fork(server, worker):
+    """Worker fork bo'lgandan keyin - faqat birinchi worker'da scheduler ishlatish"""
+    import os
+    # Faqat birinchi worker'da scheduler ishga tushirish (duplicate bo'lmasligi uchun)
+    if worker.age == 1:
+        try:
+            from app import app, db
+            from debt_scheduler import init_debt_scheduler
+            init_debt_scheduler(app, db)
+            server.log.info("Debt Scheduler ishga tushdi (worker #1)")
+        except Exception as e:
+            server.log.error(f"Debt Scheduler ishga tushmadi: {e}")
