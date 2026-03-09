@@ -4881,6 +4881,10 @@
                 if (paymentDebtUZS) {
                     paymentDebtUZS.value = Math.round(usd * exchangeRate);
                 }
+                // Qarz muddat seksiyasini ko'rsatish/yashirish
+                if (typeof showHideDueDateSection === 'function') {
+                    showHideDueDateSection();
+                }
             });
         }
         
