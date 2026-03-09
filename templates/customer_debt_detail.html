@@ -364,24 +364,25 @@
         </div>
     </div>
 
-    <!-- Qarzlar tarixi -->
+    <!-- Qarz savdolari -->
     <div class="history-table-container">
-        <h2>📜 Qarzlar tarixi</h2>
+        <h2>🛒 Qarz savdolari</h2>
         <table class="history-table">
             <thead>
                 <tr>
                     <th>📅 Sana</th>
                     <th>🛒 Savdo №</th>
-                    <th>💵 Savdo summasi</th>
+                    <th>📦 Mahsulotlar</th>
+                    <th>💵 Jami</th>
                     <th>✅ To'langan</th>
                     <th>📊 Qarz</th>
-                    <th>🏷️ Status</th>
+                    <th>📅 Muddat</th>
                     <th>⚙️ Amallar</th>
                 </tr>
             </thead>
             <tbody id="historyBody">
                 <tr>
-                    <td colspan="7" class="no-data">Ma'lumotlar yuklanmoqda...</td>
+                    <td colspan="8" class="no-data">Ma'lumotlar yuklanmoqda...</td>
                 </tr>
             </tbody>
         </table>
@@ -435,7 +436,7 @@
         } catch (error) {
             console.error('Xatolik:', error);
             document.getElementById('historyBody').innerHTML = 
-                '<tr><td colspan="7" class="no-data">❌ Ma\'lumotlarni yuklashda xatolik</td></tr>';
+                '<tr><td colspan="8" class="no-data">❌ Ma\'lumotlarni yuklashda xatolik</td></tr>';
         }
     }
 
@@ -444,23 +445,57 @@
         const tbody = document.getElementById('historyBody');
         
         if (!debtData.history || debtData.history.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="no-data">📭 Qarzlar tarixi yo\'q</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">📭 Qarz savdolari yo\'q</td></tr>';
             return;
         }
 
         const html = debtData.history.map(h => {
-            const remaining = h.debt_amount - h.paid_amount;
-            const status = remaining > 0 ? 'debt' : 'paid';
-            const statusText = remaining > 0 ? '💳 Qarzli' : '✅ To\'langan';
+            // Muddat formati
+            let dueDateHtml = '<span style="color: #999;">—</span>';
+            if (h.payment_due_date) {
+                const dueDate = new Date(h.payment_due_date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                dueDate.setHours(0, 0, 0, 0);
+                const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                let color = '#28a745'; // Yashil - hali vaqt bor
+                let icon = '🟢';
+                if (diffDays < 0) { color = '#dc3545'; icon = '🔴'; } // Muddati o'tgan
+                else if (diffDays === 0) { color = '#ffc107'; icon = '🟡'; } // Bugun
+                else if (diffDays <= 3) { color = '#fd7e14'; icon = '🟠'; } // 3 kun ichida
+                
+                dueDateHtml = `<span style="color: ${color}; font-weight: 600;">${icon} ${h.payment_due_date}</span>`;
+                if (diffDays < 0) {
+                    dueDateHtml += `<br><small style="color: #dc3545;">${Math.abs(diffDays)} kun o'tgan</small>`;
+                } else if (diffDays === 0) {
+                    dueDateHtml += `<br><small style="color: #ffc107;">Bugun!</small>`;
+                } else {
+                    dueDateHtml += `<br><small style="color: ${color};">${diffDays} kun qoldi</small>`;
+                }
+            }
+
+            // Mahsulotlar ro'yxati
+            let itemsHtml = '';
+            if (h.items && h.items.length > 0) {
+                itemsHtml = h.items.map(item => 
+                    `<div style="font-size: 13px; line-height: 1.4;">📦 ${item.product_name} <span style="color: #666;">(${item.quantity.toFixed(0)} × $${item.unit_price.toFixed(2)})</span></div>`
+                ).join('');
+            } else if (h.items_text) {
+                itemsHtml = `<span style="font-size: 13px;">${h.items_text}</span>`;
+            } else {
+                itemsHtml = '<span style="color: #999;">—</span>';
+            }
             
             return `
                 <tr>
                     <td>${h.sale_date}</td>
-                    <td>#${h.sale_id}</td>
-                    <td><strong>$${h.debt_amount.toFixed(2)}</strong></td>
-                    <td>$${h.paid_amount.toFixed(2)}</td>
-                    <td><strong style="color: ${remaining > 0 ? '#dc3545' : '#28a745'}">$${remaining.toFixed(2)}</strong></td>
-                    <td><span class="status-badge ${status}">${statusText}</span></td>
+                    <td><strong>#${h.sale_id}</strong></td>
+                    <td style="max-width: 250px;">${itemsHtml}</td>
+                    <td><strong>$${(h.total_usd || h.debt_amount || 0).toFixed(2)}</strong></td>
+                    <td style="color: #28a745;">$${(h.paid_usd || h.paid_amount || 0).toFixed(2)}</td>
+                    <td><strong style="color: #dc3545;">$${(h.debt_usd || h.remaining || 0).toFixed(2)}</strong></td>
+                    <td>${dueDateHtml}</td>
                     <td>
                         <button onclick="viewSaleDetails(${h.sale_id})" style="background: #007bff; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;">👁️ Ko'rish</button>
                     </td>

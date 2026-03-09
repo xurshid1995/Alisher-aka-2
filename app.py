@@ -6439,48 +6439,57 @@ def api_debt_payment_history():
 @app.route('/api/debts/<int:customer_id>')
 @role_required('admin', 'kassir', 'sotuvchi')
 def api_debt_details(customer_id):
-    """Mijozning batafsil qarz ma'lumotlari"""
+    """Mijozning batafsil qarz ma'lumotlari - qarz savdolari bilan"""
     try:
         # Mijoz ma'lumotlari
         customer = Customer.query.get_or_404(customer_id)
 
-        # Qarzlar tarixi (ham qarzli, ham to'langan)
-        query = text("""
-            SELECT
-                s.id as sale_id,
-                s.created_at as sale_date,
-                COALESCE(s.debt_usd, 0) + COALESCE(s.cash_usd, 0) + COALESCE(s.click_usd, 0) + COALESCE(s.terminal_usd, 0) as original_debt,
-                COALESCE(s.cash_usd, 0) as cash_usd,
-                COALESCE(s.click_usd, 0) as click_usd,
-                COALESCE(s.terminal_usd, 0) as terminal_usd,
-                COALESCE(s.debt_usd, 0) as debt_usd
-            FROM sales s
-            WHERE s.customer_id = :customer_id
-                AND (s.debt_usd > 0 OR s.payment_status = 'paid')
-            ORDER BY s.created_at DESC
-        """)
+        # Faqat qarz mavjud savdolarni olish (pending emas)
+        debt_sales = Sale.query.filter(
+            Sale.customer_id == customer_id,
+            Sale.debt_usd > 0,
+            Sale.payment_status != 'pending'
+        ).order_by(Sale.created_at.desc()).all()
 
-        result = db.session.execute(query, {'customer_id': customer_id})
         history = []
         total_debt = Decimal('0')
 
-        for row in result:
-            paid_amount = float(row.cash_usd) + float(row.click_usd) + float(row.terminal_usd)
-            debt_amount = float(row.original_debt)
+        for sale in debt_sales:
+            # Savdo mahsulotlari
+            items_info = []
+            for item in sale.items:
+                prod_name = 'Mahsulot'
+                if item.product:
+                    prod_name = item.product.name
+                elif hasattr(item, 'product_name_snapshot') and item.product_name_snapshot:
+                    prod_name = item.product_name_snapshot
+                items_info.append({
+                    'product_name': prod_name,
+                    'quantity': float(item.quantity),
+                    'unit_price': float(item.unit_price),
+                    'total_price': float(item.total_price)
+                })
+
+            total_sale = float(sale.cash_usd or 0) + float(sale.click_usd or 0) + float(sale.terminal_usd or 0) + float(sale.debt_usd or 0)
+            paid = float(sale.cash_usd or 0) + float(sale.click_usd or 0) + float(sale.terminal_usd or 0)
 
             history.append({
-                'sale_id': row.sale_id,
-                'sale_date': row.sale_date.strftime('%Y-%m-%d %H:%M'),
-                'debt_amount': debt_amount,
-                'paid_amount': paid_amount,
-                'remaining': float(row.debt_usd),
-                'cash_usd': float(row.cash_usd),
-                'click_usd': float(row.click_usd),
-                'terminal_usd': float(row.terminal_usd)
+                'sale_id': sale.id,
+                'sale_date': sale.created_at.strftime('%Y-%m-%d %H:%M') if sale.created_at else '',
+                'total_usd': total_sale,
+                'paid_usd': paid,
+                'debt_usd': float(sale.debt_usd or 0),
+                'payment_due_date': sale.payment_due_date.strftime('%Y-%m-%d') if sale.payment_due_date else None,
+                'payment_status': sale.payment_status,
+                'items': items_info,
+                'items_text': ', '.join([f"{i['product_name']} ({i['quantity']:.0f})" for i in items_info]),
+                # Eski format uchun backward compatibility
+                'debt_amount': total_sale,
+                'paid_amount': paid,
+                'remaining': float(sale.debt_usd or 0)
             })
 
-            if row.debt_usd and Decimal(str(row.debt_usd)) > 0:
-                total_debt += Decimal(str(row.debt_usd))
+            total_debt += Decimal(str(sale.debt_usd or 0))
 
         remaining_debt = total_debt
 
@@ -6492,14 +6501,16 @@ def api_debt_details(customer_id):
                 'phone': customer.phone,
                 'address': customer.address
             },
-            'total_debt': str(total_debt),
+            'total_debt': float(total_debt),
             'total_paid': 0,
-            'remaining_debt': str(remaining_debt),
+            'remaining_debt': float(remaining_debt),
             'history': history
         })
 
     except Exception as e:
         app.logger.error(f"Qarz tafsilotlari API xatosi: {str(e)}")
+        import traceback
+        app.logger.error(traceback.format_exc())
         return jsonify({
             'success': False,
             'error': str(e)
