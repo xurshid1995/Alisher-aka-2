@@ -342,12 +342,103 @@ class DebtScheduler:
             )
             logger.info("✅ Haftalik hisobot: har dushanba 09:00 da")
             
+            # Individual eslatmalarni tekshirish (har 5 daqiqada)
+            self.scheduler.add_job(
+                self.check_scheduled_reminders,
+                CronTrigger(minute='*/5'),
+                id='scheduled_reminders',
+                name='Belgilangan eslatmalarni tekshirish',
+                replace_existing=True
+            )
+            logger.info("✅ Belgilangan eslatmalar: har 5 daqiqada tekshiriladi")
+            
             # Schedulerni boshlash
             self.scheduler.start()
             logger.info("✅ Scheduler ishga tushdi")
             
         except Exception as e:
             logger.error(f"❌ Scheduler ishga tushirishda xatolik: {e}")
+    
+    async def check_scheduled_reminders(self):
+        """Foydalanuvchi belgilagan eslatmalarni tekshirish va yuborish"""
+        if not self.app or not self.db:
+            return
+        
+        with self.app.app_context():
+            try:
+                from app import DebtReminder, Customer, Sale, CurrencyRate, get_tashkent_time
+                
+                now = get_tashkent_time()
+                today = now.date()
+                current_time = now.time()
+                
+                # Vaqti kelgan eslatmalarni olish
+                reminders = DebtReminder.query.filter(
+                    DebtReminder.is_active == True,
+                    DebtReminder.is_sent == False,
+                    DebtReminder.reminder_date <= today
+                ).all()
+                
+                sent_count = 0
+                
+                for reminder in reminders:
+                    # Bugungi eslatmalar uchun vaqtni tekshirish
+                    if reminder.reminder_date == today and reminder.reminder_time > current_time:
+                        continue  # Hali vaqti kelmagan
+                    
+                    customer = Customer.query.get(reminder.customer_id)
+                    if not customer or not customer.telegram_chat_id:
+                        reminder.is_active = False
+                        continue
+                    
+                    # Mijozning hali qarzi bormi
+                    remaining_debt = self.db.session.query(
+                        self.db.func.sum(Sale.debt_usd)
+                    ).filter(
+                        Sale.customer_id == reminder.customer_id,
+                        Sale.debt_usd > 0
+                    ).scalar() or 0
+                    
+                    if float(remaining_debt) <= 0:
+                        reminder.is_sent = True
+                        reminder.is_active = False
+                        continue
+                    
+                    # Kurs
+                    rate = CurrencyRate.query.order_by(CurrencyRate.id.desc()).first()
+                    exchange_rate = float(rate.rate) if rate else 13000
+                    debt_uzs = float(remaining_debt) * exchange_rate
+                    
+                    # Telegram yuborish
+                    try:
+                        success = self.bot.send_debt_reminder_sync(
+                            chat_id=customer.telegram_chat_id,
+                            customer_name=customer.name,
+                            debt_usd=float(remaining_debt),
+                            debt_uzs=debt_uzs,
+                            location_name="Do'kon",
+                            customer_id=customer.id
+                        )
+                        
+                        if success:
+                            reminder.is_sent = True
+                            reminder.sent_at = get_tashkent_time()
+                            sent_count += 1
+                            logger.info(f"✅ Belgilangan eslatma yuborildi: {customer.name}")
+                        
+                        await asyncio.sleep(1)
+                        
+                    except Exception as e:
+                        logger.error(f"❌ Eslatma yuborishda xatolik ({customer.name}): {e}")
+                
+                self.db.session.commit()
+                
+                if sent_count > 0:
+                    logger.info(f"📊 Belgilangan eslatmalar: {sent_count} ta yuborildi")
+                
+            except Exception as e:
+                self.db.session.rollback()
+                logger.error(f"❌ Belgilangan eslatmalarni tekshirishda xatolik: {e}")
     
     def stop(self):
         """Schedulerni to'xtatish"""

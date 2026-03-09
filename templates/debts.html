@@ -887,6 +887,168 @@
             font-size: 10px;
         }
     }
+
+    /* Eslatma modal va tugmalar */
+    .btn-reminder {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .btn-reminder:hover { background: #138496; }
+    .btn-reminder.has-reminder {
+        background: #28a745;
+        animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+        50% { box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+    }
+
+    .reminder-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+    }
+    .reminder-modal-overlay.active { display: flex; }
+
+    .reminder-modal {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+
+    .reminder-modal-header {
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .reminder-modal-header h3 { margin: 0; font-size: 18px; }
+    .reminder-modal-close {
+        background: none; border: none;
+        color: white; font-size: 24px;
+        cursor: pointer;
+    }
+
+    .reminder-modal-body { padding: 20px; }
+
+    .reminder-form-group {
+        margin-bottom: 16px;
+    }
+    .reminder-form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #495057;
+        font-size: 14px;
+    }
+    .reminder-form-group input,
+    .reminder-form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+    }
+    .reminder-form-group input:focus,
+    .reminder-form-group textarea:focus {
+        outline: none;
+        border-color: #17a2b8;
+    }
+    .reminder-form-group textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+
+    .reminder-quick-btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+    .reminder-quick-btn {
+        padding: 6px 14px;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        background: #f8f9fa;
+        color: #495057;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+    .reminder-quick-btn:hover {
+        background: #17a2b8;
+        color: white;
+        border-color: #17a2b8;
+    }
+
+    .reminder-modal-footer {
+        padding: 15px 20px;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .btn-reminder-cancel {
+        padding: 10px 20px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .btn-reminder-save {
+        padding: 10px 20px;
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .btn-reminder-save:hover { background: #138496; }
+
+    .reminder-list {
+        margin-top: 12px;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    .reminder-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: #e8f4f8;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        font-size: 13px;
+    }
+    .reminder-item-delete {
+        background: none;
+        border: none;
+        color: #dc3545;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+    }
 </style>
 {% endblock %}
 
@@ -1079,6 +1241,61 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Eslatma belgilash modal -->
+<div class="reminder-modal-overlay" id="reminderModal">
+    <div class="reminder-modal">
+        <div class="reminder-modal-header">
+            <h3>⏰ Eslatma belgilash</h3>
+            <button class="reminder-modal-close" onclick="closeReminderModal()">&times;</button>
+        </div>
+        <div class="reminder-modal-body">
+            <div style="background: #f0f7ff; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                <strong id="reminderCustomerName">-</strong>
+                <span style="color: #666; margin-left: 8px;" id="reminderDebtAmount"></span>
+            </div>
+
+            <div class="reminder-form-group">
+                <label>📅 Eslatma sanasi</label>
+                <input type="date" id="reminderDate">
+                <div class="reminder-quick-btns">
+                    <button class="reminder-quick-btn" onclick="setQuickDate(1)">Ertaga</button>
+                    <button class="reminder-quick-btn" onclick="setQuickDate(3)">3 kun</button>
+                    <button class="reminder-quick-btn" onclick="setQuickDate(7)">1 hafta</button>
+                    <button class="reminder-quick-btn" onclick="setQuickDate(14)">2 hafta</button>
+                    <button class="reminder-quick-btn" onclick="setQuickDate(30)">1 oy</button>
+                </div>
+            </div>
+
+            <div class="reminder-form-group">
+                <label>🕐 Eslatma vaqti</label>
+                <input type="time" id="reminderTime" value="10:00">
+                <div class="reminder-quick-btns">
+                    <button class="reminder-quick-btn" onclick="setQuickTime('09:00')">09:00</button>
+                    <button class="reminder-quick-btn" onclick="setQuickTime('10:00')">10:00</button>
+                    <button class="reminder-quick-btn" onclick="setQuickTime('12:00')">12:00</button>
+                    <button class="reminder-quick-btn" onclick="setQuickTime('14:00')">14:00</button>
+                    <button class="reminder-quick-btn" onclick="setQuickTime('18:00')">18:00</button>
+                </div>
+            </div>
+
+            <div class="reminder-form-group">
+                <label>💬 Qo'shimcha xabar (ixtiyoriy)</label>
+                <textarea id="reminderMessage" placeholder="Masalan: Iltimos, to'lovni amalga oshiring..."></textarea>
+            </div>
+
+            <!-- Mavjud eslatmalar -->
+            <div id="existingReminders" style="display: none;">
+                <label style="font-weight: 600; color: #495057; font-size: 14px; margin-bottom: 8px; display: block;">📋 Belgilangan eslatmalar</label>
+                <div class="reminder-list" id="reminderList"></div>
+            </div>
+        </div>
+        <div class="reminder-modal-footer">
+            <button class="btn-reminder-cancel" onclick="closeReminderModal()">Bekor qilish</button>
+            <button class="btn-reminder-save" onclick="saveReminder()">✅ Eslatma saqlash</button>
         </div>
     </div>
 </div>
@@ -1368,6 +1585,7 @@
                             <a href="/debts/customer/${debt.customer_id}" class="btn-view" style="text-decoration: none;">👁️ Ko'rish</a>
                             ${remainingDebt > 0 ? `<button class="btn-pay" onclick="openPaymentModal(${debt.customer_id})">💳 To'lov</button>` : ''}
                             ${remainingDebt > 0 && debt.customer_phone ? `<button class="btn-sms" onclick="sendDebtSMS(${debt.customer_id}, '${debt.customer_name}', ${remainingDebt})"><img src='https://img.icons8.com/fluency/150/telegram-app.png' alt='Telegram' style='width:16px; height:16px; vertical-align:middle;'> SMS</button>` : ''}
+                            ${remainingDebt > 0 ? `<button class="btn-reminder" onclick="openReminderModal(${debt.customer_id}, '${debt.customer_name.replace(/'/g, "\\'") }', ${remainingDebt})">⏰ Eslatma</button>` : ''}
                         </div>
                     </td>
                 </tr>
@@ -1432,6 +1650,7 @@
                             <a href="/debts/customer/${debt.customer_id}" class="btn-view" style="text-decoration: none;">👁️ Ko'rish</a>
                             ${remainingDebt > 0 ? `<button class="btn-pay" onclick="openPaymentModal(${debt.customer_id})">💳 To'lov</button>` : ''}
                             ${remainingDebt > 0 && debt.customer_phone ? `<button class="btn-sms" onclick="sendDebtSMS(${debt.customer_id}, '${debt.customer_name}', ${remainingDebt})"><img src='https://img.icons8.com/fluency/150/telegram-app.png' alt='Telegram' style='width:16px; height:16px; vertical-align:middle;'> SMS</button>` : ''}
+                            ${remainingDebt > 0 ? `<button class="btn-reminder" onclick="openReminderModal(${debt.customer_id}, '${debt.customer_name.replace(/'/g, "\\'")}', ${remainingDebt})">⏰ Eslatma</button>` : ''}
                         </div>
                     </td>
                 </tr>
@@ -1740,5 +1959,148 @@
         loadLocations(); // Locationlarni yuklash
         loadDebts();
     });
+
+    // =============================================
+    // ESLATMA MODAL FUNKSIYALARI
+    // =============================================
+    let reminderCustomerId = null;
+    let reminderCustomerName = '';
+    let reminderDebtAmount = 0;
+
+    function openReminderModal(customerId, customerName, debtAmount) {
+        reminderCustomerId = customerId;
+        reminderCustomerName = customerName;
+        reminderDebtAmount = debtAmount;
+
+        document.getElementById('reminderCustomerName').textContent = '👤 ' + customerName;
+        document.getElementById('reminderDebtAmount').textContent = `Qarz: $${debtAmount.toFixed(2)}`;
+
+        // Default sana - ertaga
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('reminderDate').value = tomorrow.toISOString().split('T')[0];
+        document.getElementById('reminderTime').value = '10:00';
+        document.getElementById('reminderMessage').value = '';
+
+        // Mavjud eslatmalarni yuklash
+        loadExistingReminders(customerId);
+
+        document.getElementById('reminderModal').classList.add('active');
+    }
+
+    function closeReminderModal() {
+        document.getElementById('reminderModal').classList.remove('active');
+        reminderCustomerId = null;
+    }
+
+    function setQuickDate(days) {
+        const date = new Date();
+        date.setDate(date.getDate() + days);
+        document.getElementById('reminderDate').value = date.toISOString().split('T')[0];
+    }
+
+    function setQuickTime(time) {
+        document.getElementById('reminderTime').value = time;
+    }
+
+    async function loadExistingReminders(customerId) {
+        try {
+            const response = await fetch(`/api/debt-reminders?customer_id=${customerId}&status=active`);
+            const data = await response.json();
+
+            const container = document.getElementById('existingReminders');
+            const list = document.getElementById('reminderList');
+
+            if (data.success && data.reminders.length > 0) {
+                container.style.display = 'block';
+                list.innerHTML = data.reminders.map(r => {
+                    const dateFormatted = new Date(r.reminder_date).toLocaleDateString('uz-UZ', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                    return `
+                        <div class="reminder-item">
+                            <span>📅 ${dateFormatted} 🕐 ${r.reminder_time} ${r.message ? '- ' + r.message : ''}</span>
+                            <button class="reminder-item-delete" onclick="deleteReminder(${r.id})" title="O'chirish">✕</button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.style.display = 'none';
+                list.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Eslatmalarni yuklashda xatolik:', error);
+        }
+    }
+
+    async function saveReminder() {
+        const date = document.getElementById('reminderDate').value;
+        const time = document.getElementById('reminderTime').value;
+        const message = document.getElementById('reminderMessage').value;
+
+        if (!date) {
+            alert('❌ Sana tanlang');
+            return;
+        }
+        if (!time) {
+            alert('❌ Vaqt tanlang');
+            return;
+        }
+
+        // O'tgan sanani tekshirish
+        const selectedDate = new Date(date + 'T' + time);
+        const now = new Date();
+        if (selectedDate < now) {
+            alert('❌ O\'tgan sana va vaqtni tanlash mumkin emas');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/debt-reminders', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    customer_id: reminderCustomerId,
+                    reminder_date: date,
+                    reminder_time: time,
+                    message: message
+                })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(`✅ ${result.message}`);
+                loadExistingReminders(reminderCustomerId);
+                // Resetlash
+                document.getElementById('reminderMessage').value = '';
+                // Sanani keyingi kunga o'zgartirish (agar yana qo'shmoqchi bo'lsa)
+                const nextDate = new Date(date);
+                nextDate.setDate(nextDate.getDate() + 1);
+                document.getElementById('reminderDate').value = nextDate.toISOString().split('T')[0];
+            } else {
+                alert(`❌ ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Eslatma saqlashda xatolik:', error);
+            alert('❌ Eslatma saqlashda xatolik yuz berdi');
+        }
+    }
+
+    async function deleteReminder(reminderId) {
+        if (!confirm('Eslatma o\'chirilsinmi?')) return;
+
+        try {
+            const response = await fetch(`/api/debt-reminders/${reminderId}`, {
+                method: 'DELETE'
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                loadExistingReminders(reminderCustomerId);
+            } else {
+                alert(`❌ ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Eslatma o\'chirishda xatolik:', error);
+        }
+    }
 </script>
 {% endblock %}

@@ -1021,6 +1021,43 @@ class DebtPayment(db.Model):
         }
 
 
+# Qarz eslatmalari modeli
+class DebtReminder(db.Model):
+    __tablename__ = 'debt_reminders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id', ondelete='CASCADE'), nullable=False)
+    reminder_date = db.Column(db.Date, nullable=False)
+    reminder_time = db.Column(db.Time, nullable=False, default=datetime.strptime('10:00', '%H:%M').time())
+    message = db.Column(db.Text, nullable=True)
+    is_sent = db.Column(db.Boolean, nullable=False, default=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    created_by = db.Column(db.String(100), nullable=True)
+    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
+    sent_at = db.Column(db.DateTime, nullable=True)
+
+    # Relationship
+    customer = db.relationship('Customer', backref='debt_reminders')
+
+    def __repr__(self):
+        return f'<DebtReminder {self.id}: customer={self.customer_id} date={self.reminder_date} time={self.reminder_time}>'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'customer_id': self.customer_id,
+            'customer_name': self.customer.name if self.customer else 'Noma\'lum',
+            'reminder_date': self.reminder_date.strftime('%Y-%m-%d') if self.reminder_date else None,
+            'reminder_time': self.reminder_time.strftime('%H:%M') if self.reminder_time else '10:00',
+            'message': self.message,
+            'is_sent': self.is_sent,
+            'is_active': self.is_active,
+            'created_by': self.created_by,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M') if self.created_at else None,
+            'sent_at': self.sent_at.strftime('%Y-%m-%d %H:%M') if self.sent_at else None
+        }
+
+
 # Foydalanuvchilar modeli
 class User(db.Model):
     __tablename__ = 'users'
@@ -13649,6 +13686,222 @@ def api_send_bulk_telegram():
 
     except Exception as e:
         logger.error(f"Bulk Telegram xatolik: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# =====================================================================
+# QARZ ESLATMA SCHEDULING API ENDPOINTS
+# =====================================================================
+
+@app.route('/api/debt-reminders', methods=['GET'])
+@role_required('admin', 'kassir')
+def api_get_debt_reminders():
+    """Barcha qarz eslatmalarini olish"""
+    try:
+        customer_id = request.args.get('customer_id', type=int)
+        status = request.args.get('status', 'active')  # active, sent, all
+
+        query = DebtReminder.query
+
+        if customer_id:
+            query = query.filter_by(customer_id=customer_id)
+
+        if status == 'active':
+            query = query.filter_by(is_active=True, is_sent=False)
+        elif status == 'sent':
+            query = query.filter_by(is_sent=True)
+
+        reminders = query.order_by(
+            DebtReminder.reminder_date.asc(),
+            DebtReminder.reminder_time.asc()
+        ).all()
+
+        return jsonify({
+            'success': True,
+            'reminders': [r.to_dict() for r in reminders]
+        })
+    except Exception as e:
+        logger.error(f"Eslatmalarni olishda xatolik: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/debt-reminders', methods=['POST'])
+@role_required('admin', 'kassir')
+def api_create_debt_reminder():
+    """Yangi qarz eslatmasi yaratish"""
+    try:
+        data = request.get_json()
+        customer_id = data.get('customer_id')
+        reminder_date = data.get('reminder_date')  # YYYY-MM-DD
+        reminder_time = data.get('reminder_time', '10:00')  # HH:MM
+        message = data.get('message', '')
+
+        if not customer_id or not reminder_date:
+            return jsonify({'success': False, 'error': 'Mijoz va sana kiritilishi shart'}), 400
+
+        # Mijozni tekshirish
+        customer = Customer.query.get(customer_id)
+        if not customer:
+            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
+
+        if not customer.telegram_chat_id:
+            return jsonify({'success': False, 'error': 'Mijozda Telegram ID yo\'q. Mijoz botga /start yuborishi kerak'}), 400
+
+        # Sana va vaqtni parse qilish
+        try:
+            date_obj = datetime.strptime(reminder_date, '%Y-%m-%d').date()
+            time_obj = datetime.strptime(reminder_time, '%H:%M').time()
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Noto\'g\'ri sana yoki vaqt formati'}), 400
+
+        # Duplicate tekshirish
+        existing = DebtReminder.query.filter_by(
+            customer_id=customer_id,
+            reminder_date=date_obj,
+            reminder_time=time_obj,
+            is_active=True
+        ).first()
+
+        if existing:
+            return jsonify({'success': False, 'error': 'Bu sana va vaqtda eslatma allaqachon mavjud'}), 409
+
+        # User nomi
+        user = None
+        user_id = session.get('user_id')
+        if user_id:
+            user = User.query.get(user_id)
+
+        # Eslatma yaratish
+        reminder = DebtReminder(
+            customer_id=customer_id,
+            reminder_date=date_obj,
+            reminder_time=time_obj,
+            message=message,
+            created_by=f"{user.first_name} {user.last_name}" if user else 'System'
+        )
+
+        db.session.add(reminder)
+        db.session.commit()
+
+        logger.info(f"✅ Qarz eslatmasi yaratildi: {customer.name} - {date_obj} {time_obj}")
+
+        return jsonify({
+            'success': True,
+            'message': f'{customer.name} uchun eslatma belgilandi: {date_obj.strftime("%d.%m.%Y")} {time_obj.strftime("%H:%M")}',
+            'reminder': reminder.to_dict()
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Eslatma yaratishda xatolik: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/debt-reminders/<int:reminder_id>', methods=['DELETE'])
+@role_required('admin', 'kassir')
+def api_delete_debt_reminder(reminder_id):
+    """Qarz eslatmasini o'chirish"""
+    try:
+        reminder = DebtReminder.query.get(reminder_id)
+        if not reminder:
+            return jsonify({'success': False, 'error': 'Eslatma topilmadi'}), 404
+
+        reminder.is_active = False
+        db.session.commit()
+
+        return jsonify({'success': True, 'message': 'Eslatma o\'chirildi'})
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Eslatma o'chirishda xatolik: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/debt-reminders/check-and-send', methods=['POST'])
+@role_required('admin')
+def api_check_and_send_reminders():
+    """Vaqti kelgan eslatmalarni tekshirib yuborish (manual trigger)"""
+    try:
+        now = get_tashkent_time()
+        today = now.date()
+        current_time = now.time()
+
+        # Bugungi va o'tgan, lekin yuborilmagan eslatmalarni olish
+        reminders = DebtReminder.query.filter(
+            DebtReminder.is_active == True,
+            DebtReminder.is_sent == False,
+            DebtReminder.reminder_date <= today
+        ).all()
+
+        sent_count = 0
+        failed_count = 0
+
+        for reminder in reminders:
+            # Bugungi eslatmalar uchun vaqtni tekshirish
+            if reminder.reminder_date == today and reminder.reminder_time > current_time:
+                continue  # Hali vaqti kelmagan
+
+            customer = Customer.query.get(reminder.customer_id)
+            if not customer or not customer.telegram_chat_id:
+                reminder.is_active = False
+                continue
+
+            # Mijozning hali qarzi bormi tekshirish
+            remaining_debt = db.session.query(
+                db.func.sum(Sale.debt_usd)
+            ).filter(
+                Sale.customer_id == reminder.customer_id,
+                Sale.debt_usd > 0
+            ).scalar() or 0
+
+            if float(remaining_debt) <= 0:
+                reminder.is_sent = True
+                reminder.is_active = False
+                continue
+
+            # Telegram yuborish
+            try:
+                from debt_scheduler import get_scheduler_instance
+                scheduler = get_scheduler_instance(app, db)
+
+                rate = CurrencyRate.query.order_by(CurrencyRate.id.desc()).first()
+                exchange_rate = float(rate.rate) if rate else 13000
+                debt_uzs = float(remaining_debt) * exchange_rate
+
+                success = scheduler.send_telegram_debt_reminder_sync(
+                    chat_id=customer.telegram_chat_id,
+                    customer_name=customer.name,
+                    debt_usd=float(remaining_debt),
+                    debt_uzs=debt_uzs,
+                    location_name="Do'kon",
+                    customer_id=customer.id
+                )
+
+                if success:
+                    reminder.is_sent = True
+                    reminder.sent_at = get_tashkent_time()
+                    sent_count += 1
+                else:
+                    failed_count += 1
+
+                import time
+                time.sleep(1)
+
+            except Exception as e:
+                logger.error(f"Eslatma yuborishda xatolik ({customer.name}): {e}")
+                failed_count += 1
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'sent': sent_count,
+            'failed': failed_count,
+            'message': f'{sent_count} ta eslatma yuborildi'
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Eslatmalarni tekshirishda xatolik: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
