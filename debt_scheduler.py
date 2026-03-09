@@ -6,10 +6,11 @@ Kunlik, haftalik va real-time qarz eslatmalarini yuborish
 import os
 import logging
 import asyncio
+import time as time_module
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 from typing import List, Dict, Optional
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 
@@ -35,7 +36,7 @@ class DebtScheduler:
         self.app = app
         self.db = db
         self.bot = get_bot_instance(db=db)  # db ni o'tkazamiz
-        self.scheduler = AsyncIOScheduler()
+        self.scheduler = BackgroundScheduler()
         
         # Sozlamalar
         self.daily_reminder_time = os.getenv('DEBT_REMINDER_TIME', '10:00')
@@ -113,8 +114,8 @@ class DebtScheduler:
                 logger.error(f"❌ Qarzli mijozlarni olishda xatolik: {e}")
                 return []
     
-    async def send_daily_reminders(self):
-        """Kunlik qarz eslatmalarini yuborish"""
+    def send_daily_reminders(self):
+        """Kunlik qarz eslatmalarini yuborish (sinxron)"""
         logger.info("📅 Kunlik qarz eslatmalari yuborilmoqda...")
         
         debts = self._get_customers_with_debt()
@@ -128,15 +129,22 @@ class DebtScheduler:
         
         for debt in debts:
             try:
-                success = await self.bot.send_debt_reminder(
-                    chat_id=debt['telegram_chat_id'],
-                    customer_name=debt['customer_name'],
-                    debt_usd=debt['debt_usd'],
-                    debt_uzs=debt['debt_uzs'],
-                    location_name=debt['location_name'],
-                    sale_date=debt.get('sale_date'),
-                    customer_id=debt.get('customer_id')  # Customer ID qo'shamiz
-                )
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    success = loop.run_until_complete(
+                        self.bot.send_debt_reminder(
+                            chat_id=debt['telegram_chat_id'],
+                            customer_name=debt['customer_name'],
+                            debt_usd=debt['debt_usd'],
+                            debt_uzs=debt['debt_uzs'],
+                            location_name=debt['location_name'],
+                            sale_date=debt.get('sale_date'),
+                            customer_id=debt.get('customer_id')
+                        )
+                    )
+                finally:
+                    loop.close()
                 
                 if success:
                     success_count += 1
@@ -144,7 +152,7 @@ class DebtScheduler:
                     failed_count += 1
                 
                 # Rate limiting (sekundiga 1 ta xabar)
-                await asyncio.sleep(1)
+                time_module.sleep(1)
                 
             except Exception as e:
                 logger.error(f"❌ {debt['customer_name']} ga xabar yuborishda xatolik: {e}")
@@ -156,20 +164,38 @@ class DebtScheduler:
         )
         
         # Adminlarga hisobot
-        await self.bot.send_daily_summary(
-            total_debts=len(debts),
-            total_amount_usd=sum(d['debt_usd'] for d in debts),
-            total_amount_uzs=sum(d['debt_uzs'] for d in debts),
-            new_debts=0,  # TODO: Bugungi yangi qarzlarni hisoblash
-            paid_today=0   # TODO: Bugun to'langanlarni hisoblash
-        )
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(
+                    self.bot.send_daily_summary(
+                        total_debts=len(debts),
+                        total_amount_usd=sum(d['debt_usd'] for d in debts),
+                        total_amount_uzs=sum(d['debt_uzs'] for d in debts),
+                        new_debts=0,
+                        paid_today=0
+                    )
+                )
+            finally:
+                loop.close()
+        except Exception as e:
+            logger.error(f"❌ Adminlarga hisobot yuborishda xatolik: {e}")
     
-    async def send_weekly_report(self):
-        """Haftalik hisobot yuborish"""
+    def send_weekly_report(self):
+        """Haftalik hisobot yuborish (sinxron)"""
         logger.info("📊 Haftalik hisobot yuborilmoqda...")
         
         debts = self._get_customers_with_debt()
-        await self.bot.send_debt_list_to_admin(debts)
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(self.bot.send_debt_list_to_admin(debts))
+            finally:
+                loop.close()
+        except Exception as e:
+            logger.error(f"❌ Haftalik hisobot yuborishda xatolik: {e}")
         
         logger.info("✅ Haftalik hisobot yuborildi")
     
@@ -359,9 +385,10 @@ class DebtScheduler:
         except Exception as e:
             logger.error(f"❌ Scheduler ishga tushirishda xatolik: {e}")
     
-    async def check_scheduled_reminders(self):
-        """Foydalanuvchi belgilagan eslatmalarni tekshirish va yuborish"""
+    def check_scheduled_reminders(self):
+        """Foydalanuvchi belgilagan eslatmalarni tekshirish va yuborish (sinxron)"""
         if not self.app or not self.db:
+            logger.warning("⚠️ check_scheduled_reminders: app yoki db mavjud emas")
             return
         
         with self.app.app_context():
@@ -372,6 +399,8 @@ class DebtScheduler:
                 today = now.date()
                 current_time = now.time()
                 
+                logger.info(f"🔍 Eslatmalar tekshirilmoqda: {today} {current_time}")
+                
                 # Vaqti kelgan eslatmalarni olish
                 reminders = DebtReminder.query.filter(
                     DebtReminder.is_active == True,
@@ -379,15 +408,19 @@ class DebtScheduler:
                     DebtReminder.reminder_date <= today
                 ).all()
                 
+                logger.info(f"📋 Topilgan eslatmalar soni: {len(reminders)}")
+                
                 sent_count = 0
                 
                 for reminder in reminders:
                     # Bugungi eslatmalar uchun vaqtni tekshirish
                     if reminder.reminder_date == today and reminder.reminder_time > current_time:
+                        logger.info(f"⏳ Hali vaqti kelmagan: {reminder.reminder_date} {reminder.reminder_time}")
                         continue  # Hali vaqti kelmagan
                     
                     customer = Customer.query.get(reminder.customer_id)
                     if not customer or not customer.telegram_chat_id:
+                        logger.warning(f"⚠️ Mijoz topilmadi yoki telegram_chat_id yo'q: customer_id={reminder.customer_id}")
                         reminder.is_active = False
                         continue
                     
@@ -400,6 +433,7 @@ class DebtScheduler:
                     ).scalar() or 0
                     
                     if float(remaining_debt) <= 0:
+                        logger.info(f"✅ Qarz yo'q, eslatma o'chirildi: {customer.name}")
                         reminder.is_sent = True
                         reminder.is_active = False
                         continue
@@ -408,6 +442,8 @@ class DebtScheduler:
                     rate = CurrencyRate.query.order_by(CurrencyRate.id.desc()).first()
                     exchange_rate = float(rate.rate) if rate else 13000
                     debt_uzs = float(remaining_debt) * exchange_rate
+                    
+                    logger.info(f"📨 Eslatma yuborilmoqda: {customer.name}, qarz: ${remaining_debt}")
                     
                     # Telegram yuborish
                     try:
@@ -425,8 +461,10 @@ class DebtScheduler:
                             reminder.sent_at = get_tashkent_time()
                             sent_count += 1
                             logger.info(f"✅ Belgilangan eslatma yuborildi: {customer.name}")
+                        else:
+                            logger.error(f"❌ Eslatma yuborilmadi (False): {customer.name}")
                         
-                        await asyncio.sleep(1)
+                        time_module.sleep(1)
                         
                     except Exception as e:
                         logger.error(f"❌ Eslatma yuborishda xatolik ({customer.name}): {e}")
@@ -435,6 +473,8 @@ class DebtScheduler:
                 
                 if sent_count > 0:
                     logger.info(f"📊 Belgilangan eslatmalar: {sent_count} ta yuborildi")
+                else:
+                    logger.info(f"📊 Yuborish kerak bo'lgan eslatma yo'q")
                 
             except Exception as e:
                 self.db.session.rollback()
