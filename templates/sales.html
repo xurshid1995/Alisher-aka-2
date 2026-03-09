@@ -5829,10 +5829,18 @@
                 payment_status: debtUSD > 0 ? 'partial' : 'paid',
                 // Qarz to'lash muddati
                 payment_due_date: (() => {
+                    if (debtUSD <= 0) return null;
                     const dueDateEl = document.getElementById('paymentDueDate');
-                    const val = dueDateEl ? dueDateEl.value : null;
-                    console.log('📅 DEBUG payment_due_date:', val, 'debtUSD:', debtUSD, 'element:', dueDateEl);
-                    return (debtUSD > 0 && val) ? val : null;
+                    let val = dueDateEl ? dueDateEl.value : '';
+                    // Agar qarz bor lekin muddat belgilanmagan bo'lsa - 7 kun default
+                    if (!val) {
+                        const d = new Date();
+                        d.setDate(d.getDate() + 7);
+                        val = d.toISOString().split('T')[0];
+                        console.log('📅 Muddat avtomatik belgilandi (7 kun):', val);
+                    }
+                    console.log('📅 DEBUG payment_due_date:', val, 'debtUSD:', debtUSD);
+                    return val;
                 })(),
                 // Agar tahrirlash rejimida bo'lsa
                 original_sale_id: editingSaleId,
