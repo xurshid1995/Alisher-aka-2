@@ -577,40 +577,53 @@ class DebtScheduler:
                     # Xabar yuborish
                     try:
                         debt_usd_str = f"${debt_usd:,.2f}"
+                        debt_uzs_str = f"{debt_uzs:,.0f}"
                         due_date_str = due_date.strftime('%d.%m.%Y')
                         today_str = today.strftime('%d.%m.%Y')
                         
                         if message_type == 'pre_reminder':
                             message = (
-                                f"💰 <b>QARZ ESLATMASI</b>\n\n"
-                                f"Hurmatli: {customer.name}!\n\n"
-                                f"📍 {location_name}dan\n\n"
-                                f"💸 Qarzingiz: {debt_usd_str}\n\n"
-                                f"⚠️ Qarzingizni to'lash muddati <b>ertaga ({due_date_str})</b>\n"
-                                f"Iltimos, ertaga qarzingizni to'lashni unutmang!\n"
-                                "Rahmat! 🙏"
+                                f"⚠️ <b>QARZ ESLATMASI</b>\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n\n"
+                                f"Hurmatli <b>{customer.name}</b>!\n\n"
+                                f"📍 Manzil: {location_name}\n"
+                                f"💵 Qarz summasi: <b>{debt_usd_str}</b>\n"
+                                f"💴 So'mda: <b>{debt_uzs_str} so'm</b>\n\n"
+                                f"📅 Qarzingizni to'lash muddati <b>ertaga ({due_date_str})</b>\n\n"
+                                f"Iltimos, ertaga qarzingizni to'lashni unutmang!\n\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n"
+                                f"Qarz bu sizga omonat 🤝\n"
+                                f"Rahmat! 🙏"
                             )
                         elif message_type == 'due_today':
                             message = (
-                                f"💰 <b>QARZ ESLATMASI</b>\n\n"
-                                f"Hurmatli: {customer.name}!\n\n"
-                                f"📍 {location_name}dan\n\n"
-                                f"💸 Qarzingiz: {debt_usd_str}\n\n"
-                                f"Qarzingizni to'lash muddati bugun ({today_str}) iltimos qarzingizni bugunoq to'lang\n"
-                                "Qarz bu sizga omonat\n"
-                                "Rahmat! 🙏"
+                                f"💰 <b>QARZ TO'LASH MUDDATI BUGUN!</b>\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n\n"
+                                f"Hurmatli <b>{customer.name}</b>!\n\n"
+                                f"📍 Manzil: {location_name}\n"
+                                f"💵 Qarz summasi: <b>{debt_usd_str}</b>\n"
+                                f"💴 So'mda: <b>{debt_uzs_str} so'm</b>\n\n"
+                                f"📅 Qarzingizni to'lash muddati <b>bugun ({today_str})</b>\n"
+                                f"🔔 Iltimos, qarzingizni bugunoq to'lang!\n\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n"
+                                f"Qarz bu sizga omonat 🤝\n"
+                                f"Rahmat! 🙏"
                             )
                         elif message_type == 'overdue':
                             days_overdue = (today - due_date).days
                             message = (
-                                f"🔴 <b>QARZ MUDDATI O'TGAN!</b>\n\n"
-                                f"Hurmatli: {customer.name}!\n\n"
-                                f"📍 {location_name}dan\n\n"
-                                f"💸 Qarzingiz: {debt_usd_str}\n\n"
-                                f"❗ Qarzingiz to'lash muddati ({due_date_str}) <b>{days_overdue} kun oldin</b> o'tgan!\n"
-                                f"Iltimos, qarzingizni imkon qadar tezroq to'lang!\n"
-                                "Qarz bu sizga omonat\n"
-                                "Rahmat! 🙏"
+                                f"🔴 <b>DIQQAT! QARZ MUDDATI O'TGAN!</b>\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n\n"
+                                f"Hurmatli <b>{customer.name}</b>!\n\n"
+                                f"📍 Manzil: {location_name}\n"
+                                f"💵 Qarz summasi: <b>{debt_usd_str}</b>\n"
+                                f"💴 So'mda: <b>{debt_uzs_str} so'm</b>\n\n"
+                                f"📅 To'lash muddati: <b>{due_date_str}</b>\n"
+                                f"❗ Muddatdan <b>{days_overdue} kun</b> o'tgan!\n\n"
+                                f"🚨 Iltimos, qarzingizni imkon qadar tezroq to'lang!\n\n"
+                                f"━━━━━━━━━━━━━━━━━━━━\n"
+                                f"Qarz bu sizga omonat 🤝\n"
+                                f"Rahmat! 🙏"
                             )
                         
                         # Telegram yuborish
