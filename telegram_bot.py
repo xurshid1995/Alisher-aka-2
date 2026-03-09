@@ -191,13 +191,17 @@ class DebtTelegramBot:
             if sale_date:
                 date_str = f"\n📅 Savdo sanasi: {sale_date.strftime('%d.%m.%Y')}"
 
-            # Xabar matni (qarz eslatmasida to'lov turlari ko'rsatilmaydi)
+            # Bugungi sana
+            from datetime import datetime as dt
+            today_str = dt.now().strftime('%d.%m.%Y')
+            
+            # Xabar matni
             message = (
                 f"💰 <b>QARZ ESLATMASI</b>\n\n"
                 f"Hurmatli: {customer_name}!\n\n"
                 f"📍 {location_name}dan\n\n"
-                f"💸 Qarz: {debt_usd_str}\n\n"
-                "Iltimos, qarzingizni to'lashni unutmang. Qarz bu sizga omonat.\n"
+                f"💸 Qarzingiz: {debt_usd_str}\n\n"
+                f"Qarzingizni to'lash muddati bugun ({today_str}) iltimos qarzingizni bugunoq to'lang "
                 "Rahmat! 🙏"
             )
 
@@ -256,13 +260,17 @@ class DebtTelegramBot:
             if sale_date:
                 date_str = f"\n📅 Savdo sanasi: {sale_date.strftime('%d.%m.%Y')}"
 
-            # Xabar matni (qarz eslatmasida to'lov turlari ko'rsatilmaydi)
+            # Bugungi sana
+            from datetime import datetime as dt
+            today_str = dt.now().strftime('%d.%m.%Y')
+            
+            # Xabar matni
             message = (
                 f"💰 <b>QARZ ESLATMASI</b>\n\n"
                 f"Hurmatli: {customer_name}!\n\n"
                 f"📍 {location_name}dan\n\n"
-                f"💸 Qarz: {debt_usd_str}\n\n"
-                "Iltimos, qarzingizni to'lashni unutmang. Qarz bu sizga omonat.\n"
+                f"💸 Qarzingiz: {debt_usd_str}\n\n"
+                f"Qarzingizni to'lash muddati bugun ({today_str}) iltimos qarzingizni bugunoq to'lang "
                 "Rahmat! 🙏"
             )
 
