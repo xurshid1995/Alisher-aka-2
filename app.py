@@ -13580,7 +13580,7 @@ def shutdown_session(exception=None):
 # =====================================================================
 
 @app.route('/api/sms/send-debt-reminder', methods=['POST'])
-@role_required('admin', 'kassir')
+@role_required('admin', 'kassir', 'sotuvchi')
 def api_send_debt_sms():
     """Qarzli mijozga Telegram eslatmasi yuborish"""
     try:
