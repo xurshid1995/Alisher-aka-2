@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20260304-2200">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     {% block extra_css %}{% endblock %}
+    <style>
+        .lang-option:hover { background: #f0f4ff; }
+        .lang-active { background: #e8edff; font-weight: 600; }
+    </style>
 </head>
 <body>
     <!-- Mobile Navigation Toggle -->
@@ -186,12 +190,28 @@
                 </button>
             </div>
             <!-- Til tanlash -->
-            <div class="language-selector" style="display: flex; align-items: center;">
-                <select id="langSelect" onchange="changeLanguage(this.value)" style="padding: 5px 8px; border: 1px solid #ddd; border-radius: 6px; background: rgba(255,255,255,0.9); font-size: 13px; cursor: pointer; outline: none;">
-                    <option value="uz_latin" {{ 'selected' if current_language == 'uz_latin' }}>🇺🇿 O'zbekcha</option>
-                    <option value="uz_cyrillic" {{ 'selected' if current_language == 'uz_cyrillic' }}>🇺🇿 Ўзбекча</option>
-                    <option value="ru" {{ 'selected' if current_language == 'ru' }}>🇷🇺 Русский</option>
-                </select>
+            <div class="language-selector" style="position: relative; display: flex; align-items: center;">
+                <button type="button" id="langDropdownBtn" onclick="toggleLangDropdown()" style="display: flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 6px; background: rgba(255,255,255,0.9); font-size: 13px; cursor: pointer; outline: none;">
+                    {% if current_language == 'uz_cyrillic' %}
+                    <img src="https://flagcdn.com/w20/uz.png" width="20" height="14" alt="UZ" style="border-radius:2px;"> <span>Ўзбекча</span>
+                    {% elif current_language == 'ru' %}
+                    <img src="https://flagcdn.com/w20/ru.png" width="20" height="14" alt="RU" style="border-radius:2px;"> <span>Русский</span>
+                    {% else %}
+                    <img src="https://flagcdn.com/w20/uz.png" width="20" height="14" alt="UZ" style="border-radius:2px;"> <span>O'zbekcha</span>
+                    {% endif %}
+                    <span style="font-size:10px;">▼</span>
+                </button>
+                <div id="langDropdownMenu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:white; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; min-width:160px; overflow:hidden;">
+                    <div class="lang-option{% if current_language == 'uz_latin' %} lang-active{% endif %}" onclick="changeLanguage('uz_latin')" style="display:flex; align-items:center; gap:8px; padding:10px 14px; cursor:pointer; font-size:13px; transition:background 0.2s;">
+                        <img src="https://flagcdn.com/w20/uz.png" width="20" height="14" alt="UZ" style="border-radius:2px;"> <span>uz</span> O'zbekcha
+                    </div>
+                    <div class="lang-option{% if current_language == 'uz_cyrillic' %} lang-active{% endif %}" onclick="changeLanguage('uz_cyrillic')" style="display:flex; align-items:center; gap:8px; padding:10px 14px; cursor:pointer; font-size:13px; transition:background 0.2s;">
+                        <img src="https://flagcdn.com/w20/uz.png" width="20" height="14" alt="UZ" style="border-radius:2px;"> <span>uz</span> Ўзбекча
+                    </div>
+                    <div class="lang-option{% if current_language == 'ru' %} lang-active{% endif %}" onclick="changeLanguage('ru')" style="display:flex; align-items:center; gap:8px; padding:10px 14px; cursor:pointer; font-size:13px; transition:background 0.2s;">
+                        <img src="https://flagcdn.com/w20/ru.png" width="20" height="14" alt="RU" style="border-radius:2px;"> <span>ru</span> Русский
+                    </div>
+                </div>
             </div>
             <div class="user-info">
                 <span class="user-icon"><img src="https://img.icons8.com/fluency/96/administrator-male.png" alt="User" style="width: 24px; height: 24px; vertical-align: middle;"></span>
@@ -239,6 +259,19 @@
                 if (data.success) location.reload();
             });
         }
+
+        // Til dropdown
+        function toggleLangDropdown() {
+            const menu = document.getElementById('langDropdownMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('langDropdownMenu');
+            const btn = document.getElementById('langDropdownBtn');
+            if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
 
         // Global o'zgaruvchi - barcha sahifalarda ishlaydi
         window.currentExchangeRate = null; // Null boshlanadi, API dan olinadi
