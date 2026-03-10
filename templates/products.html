@@ -1,6 +1,6 @@
 {% extends "base_with_sidebar.html" %}
 
-{% block title %}Mahsulotlar - Omborxona Boshqaruv Tizimi{% endblock %}
+{% block title %}{{ t('pr_page_title') }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -722,7 +722,7 @@
      data-user-store-id="{% if session.store_id %}{{ session.store_id }}{% else %}null{% endif %}"
      data-user-role="{{ session.role }}">
     <div class="page-header">
-        <h1>📦 Mahsulotlar</h1>
+        <h1>📦 {{ t('pr_page_title') }}</h1>
     </div>
     
     <!-- Controls Section -->
@@ -750,7 +750,7 @@
         
         <!-- Table Info (jadval tepasida) -->
         <div class="table-info" id="tableInfo" style="display: none;">
-            <span id="resultsInfo">0 ta mahsulot ko'rsatilmoqda</span>
+            <span id="resultsInfo"></span>
         </div>
         
         <div id="loadingState" class="loading-state">
@@ -793,6 +793,31 @@
 
 {% block extra_js %}
 <script>
+    const PLANG = {
+        resultsInfo: {{ t('pr_results_info')|tojson }},
+        prevPage: {{ t('pr_prev_page')|tojson }},
+        nextPage: {{ t('pr_next_page')|tojson }},
+        totalQuantity: {{ t('pr_total_quantity')|tojson }},
+        quantity: {{ t('pr_quantity')|tojson }},
+        stockOut: {{ t('pr_stock_out')|tojson }},
+        stockLow: {{ t('pr_stock_low')|tojson }},
+        stockOk: {{ t('pr_stock_ok')|tojson }},
+        notAvailable: {{ t('pr_not_available')|tojson }},
+        unitDona: {{ t('pr_unit_dona')|tojson }},
+        unitLitr: {{ t('pr_unit_litr')|tojson }},
+        deleteConfirm: {{ t('pr_delete_confirm')|tojson }},
+        deleteSuccess: {{ t('pr_delete_success')|tojson }},
+        deleteError: {{ t('pr_delete_error')|tojson }},
+        errorTitle: {{ t('pr_error_title')|tojson }},
+        retry: {{ t('pr_retry')|tojson }},
+        loading: {{ t('pr_loading')|tojson }},
+        errorPrefix: {{ t('pr_error_prefix')|tojson }},
+        noOperations: {{ t('pr_no_operations')|tojson }},
+        loadError: {{ t('pr_load_error')|tojson }},
+        productsLoadError: {{ t('pr_products_load_error')|tojson }},
+        opsHistoryTitle: {{ t('pr_ops_history_title')|tojson }},
+    };
+
     let allProducts = [];
     let filteredProducts = [];
     let currentPage = 1;
@@ -958,8 +983,8 @@
             displayProducts();
             
         } catch (error) {
-            console.error('Mahsulotlar yuklashda xatolik:', error);
-            showError('Mahsulotlar yuklashda xatolik yuz berdi');
+            console.error('Products load error:', error);
+            showError(PLANG.productsLoadError);
         } finally {
             isLoading = false;
             showLoading(false);
@@ -1046,7 +1071,7 @@
             }
             
         } catch (error) {
-            console.error('Joylashuv tugmalarini yuklashda xatolik:', error);
+            console.error('Location buttons load error:', error);
         }
     }
 
@@ -1134,7 +1159,7 @@
                 const quantityValue = unitType === 'litr' 
                     ? totalStock.toFixed(2)
                     : (totalStock % 1 === 0 ? Math.floor(totalStock) : parseFloat(totalStock).toFixed(1));
-                const unitText = unitType === 'litr' ? 'litr' : 'dona';
+                const unitText = unitType === 'litr' ? PLANG.unitLitr : PLANG.unitDona;
                 const quantityDisplay = `<span class="quantity-value">${quantityValue}</span> <span class="quantity-unit">${unitText}</span>`;
                 
                 // Qidiruv matnini highlight qilish
@@ -1148,7 +1173,7 @@
                 tableHtml += `
                     <tr>
                         <td style="text-align: center;">${barcodeCell}</td>
-                        <td class="product-name"><button class="hist-btn" data-pid="${product.id}" onclick="showProductOps(event,this)" title="Amaliyotlar tarixini ko'rish">🕐</button>${highlightedName}</td>
+                        <td class="product-name"><button class="hist-btn" data-pid="${product.id}" onclick="showProductOps(event,this)" title="${PLANG.opsHistoryTitle}">🕐</button>${highlightedName}</td>
                         <td class="price-cell">
                             <span style="background-color: #5cb85c; color: white; font-weight: 600; padding: 2px 8px; border-radius: 0;">$${formatPrice(product.sell_price)}</span>
                             <span style="background-color: #5dade2; color: white; font-size: 0.9rem; margin-left: 0.5rem; padding: 2px 8px; border-radius: 0;">${formatPrice(product.sell_price * currencyRate)} so'm</span>
@@ -1167,7 +1192,7 @@
             const endItem = Math.min(currentPage * itemsPerPage, totalProducts);
             const displayedItems = Math.min(filteredProducts.length, itemsPerPage);
             
-            let infoText = `${startItem}-${startItem + displayedItems - 1} (Jami: ${totalProducts} ta mahsulot)`;
+            let infoText = PLANG.resultsInfo.replace('{start}', startItem).replace('{end}', startItem + displayedItems - 1).replace('{total}', totalProducts);
             
             // Location filter ko'rsatish
             if (currentLocation !== 'all') {
@@ -1198,7 +1223,7 @@
         
         // Oldingi sahifa tugmasi
         if (currentPage > 1) {
-            buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})">← Oldingi</button>`;
+            buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})">${PLANG.prevPage}</button>`;
         }
         
         // Sahifa raqamlari
@@ -1235,7 +1260,7 @@
         
         // Keyingi sahifa tugmasi
         if (currentPage < totalPages) {
-            buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})">Keyingi →</button>`;
+            buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})">${PLANG.nextPage}</button>`;
         }
         
         paginationContainer.innerHTML = buttonsHtml;
@@ -1263,9 +1288,9 @@
 
     // Stock matni aniqlash
     function getStockText(stock) {
-        if (stock === 0) return '🚫 Tugagan';
-        if (stock < 10) return '⚠️ Kam qolgan';
-        return '✓ Yetarli';
+        if (stock === 0) return PLANG.stockOut;
+        if (stock < 10) return PLANG.stockLow;
+        return PLANG.stockOk;
     }
 
     // "Barcha joylar" rejimida aqlli stock klassi
@@ -1290,7 +1315,7 @@
 
     // "Barcha joylar" rejimida aqlli stock matni
     function getSmartStockText(product) {
-        if (!product.stocks || product.stocks.length === 0) return '🚫 Tugagan';
+        if (!product.stocks || product.stocks.length === 0) return PLANG.stockOut;
         
         let hasHigh = false;
         let hasMedium = false;
@@ -1303,9 +1328,9 @@
             else if (qty > 0) hasMedium = true;
         });
         
-        if (hasHigh) return '✓ Yetarli';
-        if (hasMedium) return '⚠️ Kam qolgan';
-        return '🚫 Tugagan';
+        if (hasHigh) return PLANG.stockOk;
+        if (hasMedium) return PLANG.stockLow;
+        return PLANG.stockOut;
     }
 
     // Narxni formatlash
@@ -1364,7 +1389,7 @@
         }
         
         if (locations.length === 0) {
-            return 'Mavjud emas';
+            return PLANG.notAvailable;
         }
         
         return locations.join('<br>');
@@ -1409,9 +1434,9 @@
         const quantityHeader = document.getElementById('quantityHeader');
         
         if (locationFilter === 'all') {
-            quantityHeader.textContent = 'Umumiy miqdor';
+            quantityHeader.textContent = PLANG.totalQuantity;
         } else {
-            quantityHeader.textContent = 'Miqdor';
+            quantityHeader.textContent = PLANG.quantity;
         }
     }
 
@@ -1438,7 +1463,7 @@
         const product = allProducts.find(p => p.id === productId);
         if (!product) return;
 
-        const confirmed = confirm(`"${product.name}" mahsulotini o'chirmoqchimisiz? Bu amal qaytarilmaydi.`);
+        const confirmed = confirm(PLANG.deleteConfirm.replace('{name}', product.name));
         if (!confirmed) return;
 
         try {
@@ -1453,13 +1478,13 @@
                 
                 displayProducts();
                 
-                alert('Mahsulot muvaffaqiyatli o\'chirildi');
+                alert(PLANG.deleteSuccess);
             } else {
                 throw new Error('Server xatoligi');
             }
         } catch (error) {
-            console.error('Mahsulot o\'chirishda xatolik:', error);
-            alert('Mahsulot o\'chirishda xatolik yuz berdi');
+            console.error('Product delete error:', error);
+            alert(PLANG.deleteError);
         }
     }
 
@@ -1475,10 +1500,10 @@
         loadingState.innerHTML = `
             <div style="color: #dc3545; text-align: center; padding: 2rem;">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                <h3>Xatolik yuz berdi</h3>
+                <h3>${PLANG.errorTitle}</h3>
                 <p>${message}</p>
                 <button onclick="loadProducts()" class="add-product-btn" style="margin-top: 1rem;">
-                    🔄 Qayta urinish
+                    🔄 ${PLANG.retry}
                 </button>
             </div>
         `;
@@ -1495,16 +1520,16 @@
         // Popup ochish
         backdrop.style.display = 'block';
         popup.style.display = 'block';
-        popup.innerHTML = `<div class="pop-header"><h4>🕐 Yuklanmoqda...</h4><button class="pop-close" onclick="closeProductOps()">✕</button></div><div style="padding:1.2rem;text-align:center;color:#667eea;">⏳ Yuklanmoqda...</div>`;
+        popup.innerHTML = `<div class="pop-header"><h4>🕐 ${PLANG.loading}</h4><button class="pop-close" onclick="closeProductOps()">✕</button></div><div style="padding:1.2rem;text-align:center;color:#667eea;">⏳ ${PLANG.loading}</div>`;
 
         fetch(`/api/product/${productId}/operations`)
             .then(r => r.json())
             .then(data => {
-                if (!data.success) { popup.innerHTML += `<div style="padding:1rem;color:#dc3545;">Xatolik: ${data.error}</div>`; return; }
+                if (!data.success) { popup.innerHTML += `<div style="padding:1rem;color:#dc3545;">${PLANG.errorPrefix}: ${data.error}</div>`; return; }
                 const ops = data.operations;
                 let html = `<div class="pop-header"><h4>🕐 ${data.product_name}</h4><button class="pop-close" onclick="closeProductOps()">✕</button></div>`;
                 if (ops.length === 0) {
-                    html += `<div style="padding:1.5rem;text-align:center;color:#888;">📢 Amaliyotlar topilmadi</div>`;
+                    html += `<div style="padding:1.5rem;text-align:center;color:#888;">📢 ${PLANG.noOperations}</div>`;
                 } else {
                     ops.forEach(op => {
                         let loc = '';
@@ -1573,7 +1598,7 @@
                 }
                 popup.innerHTML = html;
             })
-            .catch(() => { popup.innerHTML += '<div style="padding:1rem;color:#dc3545;">Yuklashda xatolik</div>'; });
+            .catch(() => { popup.innerHTML += `<div style="padding:1rem;color:#dc3545;">${PLANG.loadError}</div>`; });
     }
 
     function closeProductOps() {
