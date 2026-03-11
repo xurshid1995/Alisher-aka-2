@@ -6830,12 +6830,13 @@ def load_user_language():
             if request.endpoint and request.endpoint == 'static':
                 return
             user_lang = Settings.query.filter_by(key=f'user_language_{user_id}').first()
-            if user_lang and user_lang.value:
+            if user_lang and user_lang.value in ('uz_latin', 'uz_cyrillic', 'ru'):
                 if session.get('language') != user_lang.value:
+                    logger.info(f"🌐 Til tuzatildi: session={session.get('language')} -> DB={user_lang.value} (user_id={user_id})")
                     session['language'] = user_lang.value
                     session.modified = True
     except Exception as e:
-        logger.debug(f"Til yuklashda xato: {e}")
+        logger.error(f"🌐 Til yuklashda xato: {e}")
 
 
 @app.before_request
@@ -13482,8 +13483,22 @@ def inject_settings():
         stock_check_visible = (setting.value.lower() == 'true'
                                if setting else True)
 
-        # Hozirgi tilni olish
+        # Hozirgi tilni olish - ISHONCHLI usul: bazadan o'qish
         current_language = session.get('language', 'uz_latin')
+        
+        # Bazadan foydalanuvchi tilini tekshirish (session yo'qolishi mumkin)
+        user_id = session.get('user_id')
+        if user_id:
+            try:
+                user_lang = Settings.query.filter_by(key=f'user_language_{user_id}').first()
+                if user_lang and user_lang.value in ('uz_latin', 'uz_cyrillic', 'ru'):
+                    current_language = user_lang.value
+                    # Session'ni ham yangilash
+                    if session.get('language') != current_language:
+                        session['language'] = current_language
+                        session.modified = True
+            except Exception as lang_err:
+                logger.debug(f"Til yuklashda xato (context): {lang_err}")
 
         # Tarjima lug'atini translations.py dan olish
         current_translations = TRANSLATIONS.get(current_language, TRANSLATIONS['uz_latin'])

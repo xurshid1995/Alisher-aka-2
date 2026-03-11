@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ 'uz' if current_language != 'ru' else 'ru' }}">
+<html lang="{{ 'uz' if current_language != 'ru' else 'ru' }}" data-current-lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
@@ -251,17 +251,20 @@
 
         // Til o'zgartirish
         function changeLanguage(lang) {
+            console.log('🌐 Til o\'zgartirish:', lang);
             fetch('/api/settings/language', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
                 body: JSON.stringify({language: lang})
             }).then(res => res.json()).then(data => {
+                console.log('🌐 Til javob:', data);
                 if (data.success) {
                     // Keshi buzib, yangi sahifa yuklash (Samsung/mobil brauzerlar uchun)
                     var url = window.location.href.split('?')[0];
                     window.location.href = url + '?_lang=' + Date.now();
                 }
-            });
+            }).catch(err => console.error('🌐 Til xato:', err));
         }
 
         // Til dropdown
