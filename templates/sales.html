@@ -741,20 +741,20 @@
             
             <!-- Universal Qidiruv maydoni (Barcode + Mahsulot) -->
             <div style="margin-bottom: 15px;">
-                <div style="position: relative;">
+                <div style="position: relative; display: flex; align-items: center; gap: 8px;">
                     <input type="text" 
                            id="universalSearch" 
                            placeholder="{{ t('placeholder_scan_or_search') }}" 
                            autocomplete="off"
-                           style="width: 100%; padding: 10px 45px 10px 10px; border: 2px solid #28a745; border-radius: 6px; font-size: 14px; background: white;">
+                           style="flex: 1; padding: 10px; border: 2px solid #28a745; border-radius: 6px; font-size: 14px; background: white;">
                     <!-- Mobile uchun native camera input (yashirin) -->
                     <input type="file" 
                            id="nativeCameraInput" 
                            accept="image/*" 
                            capture="environment"
                            style="display: none;">
-                    <button id="cameraScanBtn" type="button" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 18px; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'" title="Kamerada barcode skaner qilish">
-                        <img src="https://img.icons8.com/fluency/48/camera.png" alt="camera" style="width: 24px; height: 24px; vertical-align: middle;">
+                    <button id="cameraScanBtn" type="button" style="background: transparent; border: none; border-radius: 4px; padding: 4px; cursor: pointer; font-size: 18px; transition: opacity 0.3s; flex-shrink: 0;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'" title="Kamerada barcode skaner qilish">
+                        <img src="https://img.icons8.com/fluency/48/camera.png" alt="camera" style="width: 28px; height: 28px; vertical-align: middle;">
                     </button>
                     <div id="searchStatus" style="display: none; position: absolute; top: 100%; left: 0; right: 0; margin-top: 5px; padding: 8px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; font-size: 12px; color: #155724; z-index: 100;">
                         ✓ {{ t('no_products_found') }}!
