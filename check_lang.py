@@ -5,12 +5,24 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from app import db, app, Settings
 
+try:
+    from app import User
+except:
+    User = None
+
 with app.app_context():
+    # Users
+    if User:
+        print("=== Foydalanuvchilar ===")
+        users = User.query.all()
+        for u in users:
+            print("  ID=%d username=%s role=%s" % (u.id, u.username, u.role))
+
     # User language settings
     langs = Settings.query.filter(Settings.key.like('user_language_%')).all()
-    print("=== Foydalanuvchi til sozlamalari ===")
+    print("\n=== Foydalanuvchi til sozlamalari ===")
     for l in langs:
-        print(f"  {l.key} = {l.value}")
+        print("  %s = %s" % (l.key, l.value))
     if not langs:
         print("  (hech narsa topilmadi)")
 
