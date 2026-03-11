@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="{{ 'ru' if current_language == 'ru' else 'uz' }}" data-current-lang="{{ current_language }}" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
     <title>{{ t('login_title') }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
@@ -261,15 +262,53 @@
             font-size: 1.5rem;
         }
     }
+
+    /* Language Switcher */
+    .lang-switcher {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+    }
+
+    .lang-switcher select {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        outline: none;
+        transition: background 0.3s;
+    }
+
+    .lang-switcher select:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .lang-switcher select option {
+        background: #1a1a2e;
+        color: #fff;
+    }
     </style>
 </head>
 <body>
+    <div class="lang-switcher">
+        <select id="langSelect" onchange="changeLanguage(this.value)">
+            <option value="uz_latin" {% if current_language == 'uz_latin' %}selected{% endif %}>O'zbekcha</option>
+            <option value="uz_cyrillic" {% if current_language == 'uz_cyrillic' %}selected{% endif %}>Ўзбекча</option>
+            <option value="ru" {% if current_language == 'ru' %}selected{% endif %}>Русский</option>
+        </select>
+    </div>
+
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
                 <div class="icon">🔐</div>
                 <h1>{{ t('login_title') }}</h1>
-                <p>{{ t('username') }} & {{ t('password') }}</p>
             </div>
 
             <!-- Session tugash xabari -->
@@ -320,9 +359,9 @@
                 <div class="remember-forgot">
                     <label class="remember-me">
                         <input type="checkbox" id="rememberMe" name="remember">
-                        <span>Meni eslab qol</span>
+                        <span>{{ t('remember_me') }}</span>
                     </label>
-                    <a href="#" class="forgot-password">Parolni unutdingizmi?</a>
+                    <a href="#" class="forgot-password">{{ t('forgot_password') }}</a>
                 </div>
 
                 <button type="submit" class="btn-login" id="loginBtn">
@@ -487,6 +526,21 @@
             form.classList.remove('loading');
             loginBtn.innerHTML = '🚀 {{ t("login_button") }}';
             loginBtn.disabled = false;
+        }
+    }
+
+    async function changeLanguage(lang) {
+        try {
+            const response = await fetch('/api/settings/language', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language: lang })
+            });
+            if (response.ok) {
+                window.location.reload();
+            }
+        } catch (e) {
+            console.error('Language change error:', e);
         }
     }
     </script>
