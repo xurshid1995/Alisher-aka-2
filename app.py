@@ -13494,6 +13494,17 @@ def inject_settings():
         }
 
 
+# HTML sahifalarni keshlamaslik (mobil brauzerlar uchun til muammosini hal qilish)
+@app.after_request
+def add_no_cache_headers(response):
+    """HTML javoblarni keshlamaslik - til tarjimasi to'g'ri ishlashi uchun"""
+    if response.content_type and 'text/html' in response.content_type:
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+
+
 # Session Cleanup - memory leak va connection exhaustion muammosini hal qilish
 @app.teardown_appcontext
 def shutdown_session(exception=None):

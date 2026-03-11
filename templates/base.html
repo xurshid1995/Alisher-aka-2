@@ -256,7 +256,11 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({language: lang})
             }).then(res => res.json()).then(data => {
-                if (data.success) location.reload();
+                if (data.success) {
+                    // Keshi buzib, yangi sahifa yuklash (Samsung/mobil brauzerlar uchun)
+                    var url = window.location.href.split('?')[0];
+                    window.location.href = url + '?_lang=' + Date.now();
+                }
             });
         }
 
