@@ -6821,6 +6821,24 @@ def create_tables():
 
 
 @app.before_request
+def load_user_language():
+    """Har requestda foydalanuvchi tilini bazadan yuklash - Samsung/mobil brauzerlar uchun"""
+    try:
+        user_id = session.get('user_id')
+        if user_id:
+            # Static fayllar uchun tekshirmash
+            if request.endpoint and request.endpoint == 'static':
+                return
+            user_lang = Settings.query.filter_by(key=f'user_language_{user_id}').first()
+            if user_lang and user_lang.value:
+                if session.get('language') != user_lang.value:
+                    session['language'] = user_lang.value
+                    session.modified = True
+    except Exception as e:
+        logger.debug(f"Til yuklashda xato: {e}")
+
+
+@app.before_request
 def check_user_status():
     """Har request da foydalanuvchining faol ekanligini va session statusini tekshirish"""
     try:
