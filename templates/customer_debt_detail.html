@@ -400,7 +400,31 @@
         load_error: {{ t('cdd_load_error')|tojson }},
         payment_error: {{ t('cdd_payment_error')|tojson }},
         payment_success: {{ t('cdd_payment_success')|tojson }},
-        payment_amount_error: {{ t('cdd_payment_amount_error')|tojson }}
+        payment_amount_error: {{ t('cdd_payment_amount_error')|tojson }},
+        debt_not_found: {{ t('cdd_debt_not_found')|tojson }},
+        debt_fully_paid: {{ t('cdd_debt_fully_paid')|tojson }},
+        enter_amount: {{ t('cdd_enter_amount')|tojson }},
+        amount_exceeds: {{ t('cdd_amount_exceeds')|tojson }},
+        amount_exceeds2: {{ t('cdd_amount_exceeds2')|tojson }},
+        unknown_error: {{ t('cdd_unknown_error')|tojson }},
+        sale_details: {{ t('cdd_sale_details')|tojson }},
+        customer_label: {{ t('cdd_customer_label')|tojson }},
+        date_label: {{ t('cdd_date_label')|tojson }},
+        products_label: {{ t('cdd_products_label')|tojson }},
+        product: {{ t('cdd_product')|tojson }},
+        location: {{ t('cdd_location')|tojson }},
+        quantity: {{ t('cdd_quantity')|tojson }},
+        price: {{ t('cdd_price')|tojson }},
+        total: {{ t('cdd_total')|tojson }},
+        unknown: {{ t('cdd_unknown')|tojson }},
+        cash_payment: {{ t('cdd_cash_payment')|tojson }},
+        click_payment: {{ t('cdd_click_payment')|tojson }},
+        terminal_payment: {{ t('cdd_terminal_payment')|tojson }},
+        debt_payment: {{ t('cdd_debt_payment')|tojson }},
+        total_payment: {{ t('cdd_total_payment')|tojson }},
+        payments_label: {{ t('cdd_payments_label')|tojson }},
+        close: {{ t('cdd_close')|tojson }},
+        sum: {{ t('cdd_sum')|tojson }}
     };
 
     const customerId = {{ customer_id }};
@@ -522,7 +546,7 @@
     // Qolgan qarzni maydoniga qo'shish
     function addRemainingToField(fieldId) {
         if (!debtData || !debtData.remaining_debt) {
-            alert('❌ Qarz ma\'lumotlari topilmadi');
+            alert('❌ ' + CDDLANG.debt_not_found);
             return;
         }
         
@@ -545,7 +569,7 @@
             // USD yozilganda UZS ham yangilanadi (avtomatik konvertatsiya)
             field.dispatchEvent(new Event('input'));
         } else {
-            alert('✅ Qarz to\'liq to\'landi');
+            alert('✅ ' + CDDLANG.debt_fully_paid);
         }
     }
 
@@ -559,12 +583,12 @@
         const totalPayment = cashUSD + clickUSD + terminalUSD;
         
         if (totalPayment <= 0) {
-            alert('❌ To\'lov summasini kiriting');
+            alert('❌ ' + CDDLANG.enter_amount);
             return;
         }
 
         if (totalPayment > debtData.remaining_debt) {
-            if (!confirm(`Qarz summasi ($${debtData.remaining_debt.toFixed(2)}) dan ortiq. Davom etasizmi?`)) {
+            if (!confirm(`${CDDLANG.amount_exceeds} ($${debtData.remaining_debt.toFixed(2)}) ${CDDLANG.amount_exceeds2}`)) {
                 return;
             }
         }
@@ -597,7 +621,7 @@
                 // Sahifani yangilash
                 location.reload();
             } else {
-                alert('❌ Xatolik: ' + (result.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + CDDLANG.unknown_error + ': ' + (result.error || CDDLANG.unknown_error));
             }
         } catch (error) {
             console.error('Xatolik:', error);
@@ -689,12 +713,12 @@
                 if (data.success && data.sale) {
                     showSaleDetailsModal(data.sale);
                 } else {
-                    alert('❌ Savdo tafsilotlarini olishda xatolik');
+                    alert('❌ ' + CDDLANG.load_error);
                 }
             })
             .catch(error => {
                 console.error('Xatolik:', error);
-                alert('❌ Tarmoq xatoligi');
+                alert('❌ ' + CDDLANG.payment_error);
             });
     }
 
@@ -714,10 +738,10 @@
         const debtUZS = debtUSD * rate;
         
         const payments = [
-            { name: '💵 Naqd pul', usd: cashUSD, uzs: cashUZS, isDebt: false },
-            { name: '📱 Click', usd: clickUSD, uzs: clickUZS, isDebt: false },
-            { name: '💳 Terminal', usd: terminalUSD, uzs: terminalUZS, isDebt: false },
-            { name: '📝 Qarz', usd: debtUSD, uzs: debtUZS, isDebt: true }
+            { name: '💵 ' + CDDLANG.cash_payment, usd: cashUSD, uzs: cashUZS, isDebt: false },
+            { name: '📱 ' + CDDLANG.click_payment, usd: clickUSD, uzs: clickUZS, isDebt: false },
+            { name: '💳 ' + CDDLANG.terminal_payment, usd: terminalUSD, uzs: terminalUZS, isDebt: false },
+            { name: '📝 ' + CDDLANG.debt_payment, usd: debtUSD, uzs: debtUZS, isDebt: true }
         ];
         
         const activePayments = payments.filter(p => p.usd > 0);
@@ -726,7 +750,7 @@
             <div style="display: inline-block; background: #f8f9fa; padding: 8px 14px; margin: 4px ${p.isDebt ? '40px' : '8px'} 4px 0; border-radius: 6px; border-left: 4px solid #007bff;">
                 <div style="font-weight: 600; color: #495057; margin-bottom: 2px;">${p.name}</div>
                 <div style="font-size: 15px; font-weight: 700; color: #28a745;">$${p.usd.toFixed(2)}</div>
-                <div style="font-size: 12px; color: #6c757d;">${p.uzs.toLocaleString('uz-UZ')} so'm</div>
+                <div style="font-size: 12px; color: #6c757d;">${p.uzs.toLocaleString('uz-UZ')} ${CDDLANG.sum}</div>
             </div>
         `).join('');
         
@@ -735,9 +759,9 @@
         
         const totalHTML = `
             <div style="display: inline-block; background: #007bff; padding: 8px 14px; margin: 4px 8px 4px 0; border-radius: 6px; border-left: 4px solid #0056b3;">
-                <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">Jami to'lov</div>
+                <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">${CDDLANG.total_payment}</div>
                 <div style="font-size: 15px; font-weight: 700; color: #ffffff;">$${totalUSD.toFixed(2)}</div>
-                <div style="font-size: 12px; color: #ffffff;">${totalUZS.toLocaleString('uz-UZ')} so'm</div>
+                <div style="font-size: 12px; color: #ffffff;">${totalUZS.toLocaleString('uz-UZ')} ${CDDLANG.sum}</div>
             </div>
         `;
         
@@ -745,26 +769,26 @@
             <div id="saleDetailsModal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
                 <div style="background: white; border-radius: 12px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
                     <div style="padding: 20px; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;">
-                        <h3 style="margin: 0; color: #333;">👁️ Savdo Tafsilotlari</h3>
+                        <h3 style="margin: 0; color: #333;">👁️ ${CDDLANG.sale_details}</h3>
                         <button onclick="closeSaleDetailsModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #666;">&times;</button>
                     </div>
                     <div style="padding: 20px;">
                         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <strong>Mijoz:</strong> ${sale.customer_name || 'Noma\'lum'}
+                            <strong>${CDDLANG.customer_label}:</strong> ${sale.customer_name || CDDLANG.unknown}
                             ${sale.customer_phone ? `<span style="color: #666;"> (${sale.customer_phone})</span>` : ''}
                             <span style="margin: 0 10px; color: #ccc;">•</span>
-                            <strong>Sana:</strong> ${new Date(sale.sale_date).toLocaleString('uz-UZ')}
+                            <strong>${CDDLANG.date_label}:</strong> ${new Date(sale.sale_date).toLocaleString('uz-UZ')}
                         </div>
                         
-                        <h4 style="margin-bottom: 10px;">Mahsulotlar:</h4>
+                        <h4 style="margin-bottom: 10px;">${CDDLANG.products_label}:</h4>
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                             <thead>
                                 <tr style="background: #f8f9fa;">
-                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Mahsulot</th>
-                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Joylashuv</th>
-                                    <th style="padding: 10px; text-align: center; border-bottom: 2px solid #dee2e6;">Miqdori</th>
-                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">Narx</th>
-                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">Jami</th>
+                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">${CDDLANG.product}</th>
+                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">${CDDLANG.location}</th>
+                                    <th style="padding: 10px; text-align: center; border-bottom: 2px solid #dee2e6;">${CDDLANG.quantity}</th>
+                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">${CDDLANG.price}</th>
+                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">${CDDLANG.total}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -782,11 +806,11 @@
                                         <td style="padding: 8px; text-align: center; border-bottom: 1px solid #dee2e6;">${item.quantity}</td>
                                         <td style="padding: 8px; text-align: right; border-bottom: 1px solid #dee2e6;">
                                             <div>$${unitPriceUSD.toFixed(2)}</div>
-                                            <div style="font-size: 11px; color: #666;">${unitPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                            <div style="font-size: 11px; color: #666;">${unitPriceUZS.toLocaleString('uz-UZ')} ${CDDLANG.sum}</div>
                                         </td>
                                         <td style="padding: 8px; text-align: right; border-bottom: 1px solid #dee2e6; font-weight: 600;">
                                             <div>$${totalPriceUSD.toFixed(2)}</div>
-                                            <div style="font-size: 11px; color: #666;">${totalPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                            <div style="font-size: 11px; color: #666;">${totalPriceUZS.toLocaleString('uz-UZ')} ${CDDLANG.sum}</div>
                                         </td>
                                     </tr>
                                 `}).join('')}
@@ -794,12 +818,12 @@
                         </table>
                         
                         <div style="margin-top: 20px;">
-                            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">To'lovlar:</div>
+                            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">${CDDLANG.payments_label}:</div>
                             <div style="display: flex; flex-wrap: wrap; align-items: center;">${paymentsHTML}${totalHTML}</div>
                         </div>
                     </div>
                     <div style="padding: 15px 20px; border-top: 1px solid #dee2e6; text-align: right; background: #f8f9fa;">
-                        <button onclick="closeSaleDetailsModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">Yopish</button>
+                        <button onclick="closeSaleDetailsModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">${CDDLANG.close}</button>
                     </div>
                 </div>
             </div>

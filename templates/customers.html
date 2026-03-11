@@ -828,6 +828,20 @@
 </div>
 
 <script>
+    // ==================== CUSTOMERS LANG DICT ====================
+    const CSLANG = {
+        general: {{ t('cs_general')|tojson }},
+        unknown: {{ t('cs_unknown')|tojson }},
+        count: {{ t('cs_count')|tojson }},
+        amount: {{ t('cs_amount')|tojson }},
+        profit: {{ t('cs_profit')|tojson }},
+        view: {{ t('cs_view')|tojson }},
+        edit: {{ t('cs_edit')|tojson }},
+        delete_btn: {{ t('cs_delete')|tojson }},
+        customers_count: {{ t('cs_customers_count')|tojson }},
+        load_error: {{ t('cs_load_error')|tojson }}
+    };
+
     // Server'dan user role ma'lumoti
     const userRole = '{{ user_role }}';
     console.log('User role:', userRole);
@@ -880,7 +894,7 @@
             console.error('Mijozlarni yuklashda xatolik:', error);
             allCustomers = [];
             filteredCustomers = [];
-            showError('Mijozlarni yuklashda xatolik yuz berdi: ' + error.message);
+            showError(CSLANG.load_error + ': ' + error.message);
         }
     }
 
@@ -920,22 +934,22 @@
                 
                 tableHtml += `
                     <tr>
-                        <td class="store-name">${customer.store_name || 'Umumiy'}</td>
-                        <td class="customer-name">${customer.name || 'Noma\'lum'}</td>
+                        <td class="store-name">${customer.store_name || CSLANG.general}</td>
+                        <td class="customer-name">${customer.name || CSLANG.unknown}</td>
                         <td class="customer-phone">${customer.phone || '-'}</td>
                         <td class="customer-email">
                             <div style="display: flex; flex-direction: column; gap: 3px;">
-                                <span style="font-size: 0.85rem;">🔢 Soni: <strong>${customer.total_sales || 0}</strong></span>
-                                <span style="font-size: 0.85rem;">💰 Summa: <strong>$${customer.total_amount ? parseFloat(customer.total_amount).toFixed(2) : '0.00'}</strong></span>
-                                ${userRole !== 'sotuvchi' ? `<span style="font-size: 0.85rem; color: #28a745;">📊 Foyda: <strong>$${customer.total_profit ? parseFloat(customer.total_profit).toFixed(2) : '0.00'}</strong></span>` : ''}
+                                <span style="font-size: 0.85rem;">🔢 ${CSLANG.count}: <strong>${customer.total_sales || 0}</strong></span>
+                                <span style="font-size: 0.85rem;">💰 ${CSLANG.amount}: <strong>$${customer.total_amount ? parseFloat(customer.total_amount).toFixed(2) : '0.00'}</strong></span>
+                                ${userRole !== 'sotuvchi' ? `<span style="font-size: 0.85rem; color: #28a745;">📊 ${CSLANG.profit}: <strong>$${customer.total_profit ? parseFloat(customer.total_profit).toFixed(2) : '0.00'}</strong></span>` : ''}
                             </div>
                         </td>
                         <td>${customer.address || '-'}</td>
                         <td>${createdDate}</td>
                         <td class="actions">
-                            <button onclick="viewCustomer(${customer.id})" class="btn-view">👁️ Ko'rish</button>
-                            ${userRole === 'admin' ? `<a href="/edit-customer/${customer.id}" class="btn-edit">✏️ Tahrirlash</a>` : ''}
-                            ${userRole === 'admin' ? `<button onclick="deleteCustomer(${customer.id}, '${customer.name.replace(/'/g, "\\'")}')" class="btn-delete">🗑️ O'chirish</button>` : ''}
+                            <button onclick="viewCustomer(${customer.id})" class="btn-view">👁️ ${CSLANG.view}</button>
+                            ${userRole === 'admin' ? `<a href="/edit-customer/${customer.id}" class="btn-edit">✏️ ${CSLANG.edit}</a>` : ''}
+                            ${userRole === 'admin' ? `<button onclick="deleteCustomer(${customer.id}, '${customer.name.replace(/'/g, "\\'")}')" class="btn-delete">🗑️ ${CSLANG.delete_btn}</button>` : ''}
                         </td>
                     </tr>
                 `;
@@ -943,7 +957,7 @@
 
             tableBody.innerHTML = tableHtml;
             document.getElementById('resultsInfo').innerHTML = 
-                `<span class="badge" style="background-color: #4CAF50; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: 500;">${filteredCustomers.length} ta mijoz</span>`;
+                `<span class="badge" style="background-color: #4CAF50; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: 500;">${filteredCustomers.length} ${CSLANG.customers_count}</span>`;
         }
     }
 

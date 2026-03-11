@@ -285,7 +285,8 @@
         delete_confirm: {{ t('ec_delete_confirm')|tojson }},
         delete_success: {{ t('ec_delete_success')|tojson }},
         delete_error: {{ t('ec_delete_error')|tojson }},
-        delete_error2: {{ t('ec_delete_error2')|tojson }}
+        delete_error2: {{ t('ec_delete_error2')|tojson }},
+        error_prefix: {{ t('error_prefix')|tojson }}
     };
     let currentCustomer = null;
     const customerId = new URLSearchParams(window.location.search).get('id') || 
@@ -469,7 +470,7 @@
         })
         .catch(error => {
             console.error('Error updating customer:', error);
-            alert('❌ Xatolik: ' + error.message);
+            alert('❌ ' + ECLANG.error_prefix + error.message);
         })
         .finally(() => {
             updateBtn.innerHTML = originalText;

@@ -417,7 +417,9 @@
         deleting: {{ t("deleting")|tojson }},
         delete_error: {{ t("delete_error")|tojson }},
         connection_error_retry: {{ t("connection_error_retry")|tojson }},
-        error_prefix: {{ t("error_prefix")|tojson }}
+        error_prefix: {{ t("error_prefix")|tojson }},
+        st_modal_not_found: {{ t("st_modal_not_found")|tojson }},
+        st_connection_error: {{ t("st_connection_error")|tojson }}
     };
 
     // Sidebar active link
@@ -445,7 +447,7 @@
         
         if (!modal) {
             console.error('❌ Modal topilmadi!');
-            alert('Xatolik: Modal oyna topilmadi!');
+            alert(STLANG.st_modal_not_found);
             return;
         }
         
@@ -574,7 +576,7 @@
         })
         .catch(error => {
             console.error('Toggle xatosi:', error);
-            alert('Aloqa xatosi!');
+            alert(STLANG.st_connection_error);
         });
     }
 

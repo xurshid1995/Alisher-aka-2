@@ -1346,6 +1346,59 @@
         data_error: '❌ {{ t("data_loading") }}'
     };
 
+    const DBLANG = {
+        payment_success: {{ t('db_payment_success')|tojson }},
+        payment_error: {{ t('db_payment_error')|tojson }},
+        amount_error: {{ t('db_amount_error')|tojson }},
+        amount_exceeds: {{ t('db_amount_exceeds')|tojson }},
+        payment_confirm: {{ t('db_payment_confirm')|tojson }},
+        delete_confirm: {{ t('db_delete_confirm')|tojson }},
+        delete_success: {{ t('db_delete_success')|tojson }},
+        delete_error: {{ t('db_delete_error')|tojson }},
+        network_error: {{ t('db_network_error')|tojson }},
+        loading: {{ t('db_loading')|tojson }},
+        no_debts: {{ t('db_no_debts')|tojson }},
+        error_loading: {{ t('db_error_loading')|tojson }},
+        customer: {{ t('db_customer')|tojson }},
+        phone: {{ t('db_phone')|tojson }},
+        total_debt: {{ t('db_total_debt')|tojson }},
+        remaining: {{ t('db_remaining')|tojson }},
+        pay: {{ t('db_pay')|tojson }},
+        history: {{ t('db_history')|tojson }},
+        payment_date: {{ t('db_payment_date')|tojson }},
+        amount: {{ t('db_amount')|tojson }},
+        make_payment: {{ t('db_make_payment')|tojson }},
+        enter_amount: {{ t('db_enter_amount')|tojson }},
+        close: {{ t('db_close')|tojson }},
+        all_locations: {{ t('ds_all_locations')|tojson }},
+        cash: {{ t('ds_cash')|tojson }},
+        click_payment: {{ t('ds_click_payment')|tojson }},
+        terminal: {{ t('ds_terminal_payment')|tojson }},
+        debt: {{ t('ds_debt_payment')|tojson }},
+        unknown_error: {{ t('db_unknown_error')|tojson }},
+        all: {{ t('db_all')|tojson }},
+        no_paid_debts: {{ t('db_no_paid_debts')|tojson }},
+        days_ago: {{ t('db_days_ago')|tojson }},
+        today: {{ t('db_today')|tojson }},
+        days_left: {{ t('db_days_left')|tojson }},
+        tomorrow: {{ t('db_tomorrow')|tojson }},
+        no_term: {{ t('db_no_term')|tojson }},
+        no_debt_sales: {{ t('db_no_debt_sales')|tojson }},
+        debt_not_found: {{ t('db_debt_not_found')|tojson }},
+        debt_fully_paid: {{ t('db_debt_fully_paid')|tojson }},
+        customer_not_selected: {{ t('db_customer_not_selected')|tojson }},
+        enter_payment_amount: {{ t('db_enter_payment_amount')|tojson }},
+        sales_not_found: {{ t('db_sales_not_found')|tojson }},
+        payment_failed: {{ t('db_payment_failed')|tojson }},
+        overdue: {{ t('db_overdue')|tojson }},
+        select_date: {{ t('db_select_date')|tojson }},
+        select_time: {{ t('db_select_time')|tojson }},
+        delete_reminder: {{ t('db_delete_reminder')|tojson }},
+        sending: {{ t('db_sending')|tojson }},
+        deadline: {{ t('db_deadline')|tojson }},
+        min_debt_prompt: {{ t('db_min_debt_prompt')|tojson }}
+    };
+
     let debts = [];
     let allDebts = [];
     let allPaidDebts = [];
@@ -1370,7 +1423,7 @@
                 allButton.className = 'btn btn-sm me-2 mb-2 location-btn';
                 allButton.setAttribute('data-location', '');
                 allButton.onclick = () => selectLocation(allButton, '');
-                allButton.textContent = '🏢 Barchasi';
+                allButton.textContent = '🏢 ' + DBLANG.all;
                 container.appendChild(allButton);
             }
             
@@ -1530,7 +1583,7 @@
         } catch (error) {
             console.error('Xatolik:', error);
             document.getElementById('debtsTableBody').innerHTML = 
-                '<tr><td colspan="9" class="no-data">❌ Ma\'lumotlarni yuklashda xatolik</td></tr>';
+                '<tr><td colspan="9" class="no-data">❌ ' + DBLANG.error_loading + '</td></tr>';
         }
     }
     
@@ -1547,7 +1600,7 @@
         } catch (error) {
             console.error('Xatolik:', error);
             document.getElementById('paidDebtsTableBody').innerHTML = 
-                '<tr><td colspan="6" class="no-data">❌ Ma\'lumotlarni yuklashda xatolik</td></tr>';
+                '<tr><td colspan="6" class="no-data">❌ ' + DBLANG.error_loading + '</td></tr>';
         }
     }
     
@@ -1556,16 +1609,16 @@
         const tbody = document.getElementById('paidDebtsTableBody');
         
         if (paidDebts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="no-data">📭 To\'langan qarzlar yo\'q</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="no-data">📭 ' + DBLANG.no_paid_debts + '</td></tr>';
             return;
         }
 
         const html = paidDebts.map((debt, index) => {
             // To'lov turlarini aniqlash
             const payments = [];
-            if (debt.cash_usd > 0) payments.push(`💵 Naqd: $${debt.cash_usd.toFixed(2)}`);
-            if (debt.click_usd > 0) payments.push(`📱 Click: $${debt.click_usd.toFixed(2)}`);
-            if (debt.terminal_usd > 0) payments.push(`🏧 Terminal: $${debt.terminal_usd.toFixed(2)}`);
+            if (debt.cash_usd > 0) payments.push(`💵 ${DBLANG.cash}: $${debt.cash_usd.toFixed(2)}`);
+            if (debt.click_usd > 0) payments.push(`📱 ${DBLANG.click_payment}: $${debt.click_usd.toFixed(2)}`);
+            if (debt.terminal_usd > 0) payments.push(`🏧 ${DBLANG.terminal}: $${debt.terminal_usd.toFixed(2)}`);
             
             const paymentText = payments.length > 0 ? payments.join(', ') : '-';
             
@@ -1630,13 +1683,13 @@
                 color = '#2e7d32'; icon = '🟢';
             }
             
-            const label = diffDays < 0 ? `${Math.abs(diffDays)}kun o'tgan` : diffDays === 0 ? 'bugun' : `${diffDays}kun`;
+            const label = diffDays < 0 ? `${Math.abs(diffDays)} ${DBLANG.days_ago}` : diffDays === 0 ? DBLANG.today : `${diffDays} ${DBLANG.days_left}`;
             html += `<div style="color:${color}; white-space:nowrap;">${icon} $${sale.debt_usd.toFixed(0)} — ${formatted} <small>(${label})</small></div>`;
         });
         
         if (withoutDueDates.length > 0) {
             const noDateTotal = withoutDueDates.reduce((s, x) => s + x.debt_usd, 0);
-            html += `<div style="color:#999;">⚪ $${noDateTotal.toFixed(0)} — muddatsiz</div>`;
+            html += `<div style="color:#999;">⚪ $${noDateTotal.toFixed(0)} — ${DBLANG.no_term}</div>`;
         }
         
         html += '</div>';
@@ -1648,7 +1701,7 @@
         const tbody = document.getElementById('debtsTableBody');
         
         if (debts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="no-data">📭 Qarzlar yo\'q</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="no-data">📭 ' + DBLANG.no_debts + '</td></tr>';
             return;
         }
 
@@ -1795,7 +1848,7 @@
                 }).join('');
                 historyBody.innerHTML = historyHtml;
             } else {
-                historyBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 Qarzlar tarixi yo\'q</td></tr>';
+                historyBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 ' + DBLANG.no_debts + '</td></tr>';
             }
             
             // To'lov maydonlarini tozalash
@@ -1819,7 +1872,7 @@
             }, 100);
         } catch (error) {
             console.error('Xatolik:', error);
-            alert('❌ Ma\'lumotlarni yuklashda xatolik yuz berdi');
+            alert('❌ ' + DBLANG.error_loading);
         }
     }
 
@@ -1832,7 +1885,7 @@
     function addModalRemainingToField(fieldId) {
         const debtElement = document.getElementById('paymentAmount');
         if (!debtElement) {
-            alert('❌ Qarz ma\'lumotlari topilmadi');
+            alert('❌ ' + DBLANG.debt_not_found);
             return;
         }
         
@@ -1862,7 +1915,7 @@
             // USD yozilganda UZS ham yangilanadi (avtomatik konvertatsiya)
             field.dispatchEvent(new Event('input'));
         } else {
-            alert('✅ Qarz to\'liq to\'landi');
+            alert('✅ ' + DBLANG.debt_fully_paid);
         }
     }
 
@@ -1919,7 +1972,7 @@
     // To'lovni tasdiqlash
     async function confirmPayment() {
         if (!currentCustomerId) {
-            alert('❌ Mijoz tanlanmagan');
+            alert('❌ ' + DBLANG.customer_not_selected);
             return;
         }
 
@@ -1930,7 +1983,7 @@
         const totalPayment = cashUSD + clickUSD + terminalUSD;
         
         if (totalPayment <= 0) {
-            alert('❌ To\'lov summasini kiriting');
+            alert('❌ ' + DBLANG.enter_payment_amount);
             return;
         }
 
@@ -1953,15 +2006,15 @@
             const result = await response.json();
 
             if (response.ok && result.success) {
-                alert('✅ To\'lov muvaffaqiyatli amalga oshirildi!');
+                alert('✅ ' + DBLANG.payment_success);
                 closeModal();
                 loadDebts(); // Ma'lumotlarni yangilash
             } else {
-                alert('❌ Xatolik: ' + (result.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + DBLANG.payment_error + ': ' + (result.error || DBLANG.unknown_error));
             }
         } catch (error) {
             console.error('Xatolik:', error);
-            alert('❌ To\'lovni amalga oshirishda xatolik yuz berdi');
+            alert('❌ ' + DBLANG.payment_failed);
         }
     }
 
@@ -1977,7 +2030,7 @@
         // Mijozning qarzli savdolarini topish
         const debt = debts.find(d => d.customer_id === customerId);
         if (!debt || !debt.sale_due_dates) {
-            alert("Savdolar topilmadi");
+            alert(DBLANG.sales_not_found);
             return;
         }
         
@@ -1987,7 +2040,7 @@
         const container = document.getElementById('dueDateSalesList');
         
         if (editDueDateSales.length === 0) {
-            container.innerHTML = '<p style="color:#999; text-align:center;">Qarzli savdolar yo\'q</p>';
+            container.innerHTML = '<p style="color:#999; text-align:center;">' + DBLANG.no_debt_sales + '</p>';
             return;
         }
         
@@ -2005,11 +2058,11 @@
                 dueDate.setHours(0, 0, 0, 0);
                 const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
                 if (diffDays < 0) {
-                    statusHtml = `<span style="color:#dc3545; font-size:11px;">🔴 ${Math.abs(diffDays)} kun o'tgan</span>`;
+                    statusHtml = `<span style="color:#dc3545; font-size:11px;">🔴 ${Math.abs(diffDays)} ${DBLANG.days_ago}</span>`;
                 } else if (diffDays === 0) {
-                    statusHtml = `<span style="color:#e65100; font-size:11px;">🟡 Bugun!</span>`;
+                    statusHtml = `<span style="color:#e65100; font-size:11px;">🟡 ${DBLANG.today}!</span>`;
                 } else {
-                    statusHtml = `<span style="color:#2e7d32; font-size:11px;">🟢 ${diffDays} kun qoldi</span>`;
+                    statusHtml = `<span style="color:#2e7d32; font-size:11px;">🟢 ${diffDays} ${DBLANG.days_left}</span>`;
                 }
             }
             
@@ -2020,7 +2073,7 @@
                         <span style="color:#888; font-size:11px;">📅 Savdo: ${saleDate}</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <label style="font-size:12px; color:#666; white-space:nowrap;">Muddat:</label>
+                        <label style="font-size:12px; color:#666; white-space:nowrap;">${DBLANG.deadline}:</label>
                         <input type="date" id="saleDueDate_${sale.sale_id}" value="${sale.payment_due_date || ''}" 
                                style="flex:1; padding:6px 8px; border:1px solid #dee2e6; border-radius:6px; font-size:13px;">
                         ${statusHtml}
@@ -2129,7 +2182,7 @@
         const button = event.target;
         const originalText = button.innerHTML;
         button.disabled = true;
-        button.innerHTML = '⏳ Yuborilmoqda...';
+        button.innerHTML = '⏳ ' + DBLANG.sending;
 
         try {
             const response = await fetch('/api/sms/send-debt-reminder', {
@@ -2156,7 +2209,7 @@
 
     // Barcha qarzlilarga Telegram yuborish
     async function sendBulkDebtTelegram() {
-        const minDebt = prompt('Minimal qarz miqdorini kiriting (USD):', '10');
+        const minDebt = prompt(DBLANG.min_debt_prompt, '10');
         if (!minDebt || isNaN(minDebt)) return;
 
         if (!confirm(`$${minDebt} dan ortiq qarzli barcha mijozlarga Telegram xabari yuborilsinmi?`)) {
@@ -2243,19 +2296,19 @@
             if (diffDays < 0) {
                 bgColor = '#fff0f0'; textColor = '#dc3545';
                 icon = '🔴';
-                statusMsg = `Muddat: ${formattedDate} (${Math.abs(diffDays)} kun o'tgan!)`;
+                statusMsg = `${DBLANG.deadline}: ${formattedDate} (${Math.abs(diffDays)} ${DBLANG.overdue})`;
             } else if (diffDays === 0) {
                 bgColor = '#fff8e1'; textColor = '#e65100';
                 icon = '🟡';
-                statusMsg = `Muddat: ${formattedDate} (Bugun!)`;
+                statusMsg = `${DBLANG.deadline}: ${formattedDate} (${DBLANG.today}!)`;
             } else if (diffDays <= 3) {
                 bgColor = '#fff8e1'; textColor = '#f57c00';
                 icon = '🟠';
-                statusMsg = `Muddat: ${formattedDate} (${diffDays} kun qoldi)`;
+                statusMsg = `${DBLANG.deadline}: ${formattedDate} (${diffDays} ${DBLANG.days_left})`;
             } else {
                 bgColor = '#e8f5e9'; textColor = '#2e7d32';
                 icon = '🟢';
-                statusMsg = `Muddat: ${formattedDate} (${diffDays} kun qoldi)`;
+                statusMsg = `${DBLANG.deadline}: ${formattedDate} (${diffDays} ${DBLANG.days_left})`;
             }
 
             dueDateInfo.style.display = 'block';
@@ -2330,11 +2383,11 @@
         const message = document.getElementById('reminderMessage').value;
 
         if (!date) {
-            alert('❌ Sana tanlang');
+            alert('❌ ' + DBLANG.select_date);
             return;
         }
         if (!time) {
-            alert('❌ Vaqt tanlang');
+            alert('❌ ' + DBLANG.select_time);
             return;
         }
 
@@ -2370,7 +2423,7 @@
     }
 
     async function deleteReminder(reminderId) {
-        if (!confirm('Eslatma o\'chirilsinmi?')) return;
+        if (!confirm(DBLANG.delete_reminder)) return;
 
         try {
             const response = await fetch(`/api/debt-reminders/${reminderId}`, {

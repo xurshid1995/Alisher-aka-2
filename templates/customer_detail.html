@@ -828,7 +828,10 @@
 const CDLANG = {
     loading: {{ t('cd_loading')|tojson }},
     no_data: {{ t('cd_no_data')|tojson }},
-    view: {{ t('cd_view')|tojson }}
+    view: {{ t('cd_view')|tojson }},
+    unknown_location: {{ t('cd_unknown_location')|tojson }},
+    invalid_id: {{ t('cd_invalid_id')|tojson }},
+    load_error: {{ t('cd_load_error')|tojson }}
 };
 
 // Global o'zgaruvchilar
@@ -838,7 +841,7 @@ let allCustomerOrders = [];
 
 // SaleItem dan joylashuv nomini olish funksiyasi
 function getLocationName(item) {
-    return item.location_name || 'Noma\'lum joylashuv';
+    return item.location_name || CDLANG.unknown_location;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -852,7 +855,7 @@ function loadCustomerOrders(customerId) {
     
     if (!customerId || isNaN(customerId)) {
         console.error('Invalid customer ID:', customerId);
-        document.getElementById('loadingSales').innerHTML = 'Noto\'g\'ri mijoz ID';
+        document.getElementById('loadingSales').innerHTML = CDLANG.invalid_id;
         displayEmptyTable();
         return;
     }
@@ -881,7 +884,7 @@ function loadCustomerOrders(customerId) {
         })
         .catch(error => {
             console.error('Error loading orders:', error);
-            document.getElementById('loadingSales').innerHTML = 'Savdo tarixini yuklashda xatolik: ' + error.message;
+            document.getElementById('loadingSales').innerHTML = CDLANG.load_error + ': ' + error.message;
             displayEmptyTable();
             updateStats([]);
             document.getElementById('noSalesMessage').style.display = 'block';

@@ -502,7 +502,7 @@ function renderCompletedPagination(pagination) {
     // Oldingi sahifa tugmasi
     const prevBtn = document.createElement('button');
     prevBtn.className = 'pagination-btn';
-    prevBtn.innerHTML = '« Oldingi';
+    prevBtn.innerHTML = '« ' + CSLANG.prev;
     prevBtn.disabled = !pagination.has_prev;
     prevBtn.onclick = () => loadCompletedSessions(pagination.page - 1);
     container.appendChild(prevBtn);
@@ -558,7 +558,7 @@ function renderCompletedPagination(pagination) {
     // Keyingi sahifa tugmasi
     const nextBtn = document.createElement('button');
     nextBtn.className = 'pagination-btn';
-    nextBtn.innerHTML = 'Keyingi »';
+    nextBtn.innerHTML = CSLANG.next + ' »';
     nextBtn.disabled = !pagination.has_next;
     nextBtn.onclick = () => loadCompletedSessions(pagination.page + 1);
     container.appendChild(nextBtn);

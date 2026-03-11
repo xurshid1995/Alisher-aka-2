@@ -1556,6 +1556,75 @@ tbody tr.sale-group-start:first-child {
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <script>
+// Translation dictionary
+const DSLANG = {
+    sale_updated: {{ t('ds_sale_updated')|tojson }},
+    sale_update_error: {{ t('ds_sale_update_error')|tojson }},
+    network_error: {{ t('ds_network_error')|tojson }},
+    sale_deleted: {{ t('ds_sale_deleted')|tojson }},
+    sale_delete_error: {{ t('ds_sale_delete_error')|tojson }},
+    sale_group_delete_error: {{ t('ds_sale_group_delete_error')|tojson }},
+    unknown_error: {{ t('ds_unknown_error')|tojson }},
+    error_prefix: {{ t('ds_error_prefix')|tojson }},
+    sale_details_error: {{ t('ds_sale_details_error')|tojson }},
+    sale_details_show_error: {{ t('ds_sale_details_show_error')|tojson }},
+    sale_data_not_found: {{ t('ds_sale_data_not_found')|tojson }},
+    delete_group_confirm: {{ t('ds_delete_group_confirm')|tojson }},
+    delete_sale_confirm: {{ t('ds_delete_sale_confirm')|tojson }},
+    loading: {{ t('ds_loading')|tojson }},
+    no_data: {{ t('ds_no_data')|tojson }},
+    error_occurred: {{ t('ds_error_occurred')|tojson }},
+    all_locations: {{ t('ds_all_locations')|tojson }},
+    store: {{ t('ds_store')|tojson }},
+    warehouse: {{ t('ds_warehouse')|tojson }},
+    all_customers: {{ t('ds_all_customers')|tojson }},
+    results_found: {{ t('ds_results_found')|tojson }},
+    edit_sale: {{ t('ds_edit_sale')|tojson }},
+    product: {{ t('ds_product')|tojson }},
+    customer: {{ t('ds_customer')|tojson }},
+    quantity: {{ t('ds_quantity')|tojson }},
+    unit_price: {{ t('ds_unit_price')|tojson }},
+    payment_method: {{ t('ds_payment_method')|tojson }},
+    cash: {{ t('ds_cash')|tojson }},
+    card: {{ t('ds_card')|tojson }},
+    credit: {{ t('ds_credit')|tojson }},
+    payment_status: {{ t('ds_payment_status')|tojson }},
+    paid: {{ t('ds_paid')|tojson }},
+    pending: {{ t('ds_pending')|tojson }},
+    partial: {{ t('ds_partial')|tojson }},
+    note: {{ t('ds_note')|tojson }},
+    total_amount: {{ t('ds_total_amount')|tojson }},
+    cancel: {{ t('ds_cancel')|tojson }},
+    save: {{ t('ds_save')|tojson }},
+    sale_details: {{ t('ds_sale_details')|tojson }},
+    print_uzs: {{ t('ds_print_uzs')|tojson }},
+    print_usd: {{ t('ds_print_usd')|tojson }},
+    unknown_customer: {{ t('ds_unknown_customer')|tojson }},
+    sale_date: {{ t('ds_sale_date')|tojson }},
+    products: {{ t('ds_products')|tojson }},
+    location: {{ t('ds_location')|tojson }},
+    price: {{ t('ds_price')|tojson }},
+    subtotal: {{ t('ds_subtotal')|tojson }},
+    returned: {{ t('ds_returned')|tojson }},
+    returned_products: {{ t('ds_returned_products')|tojson }},
+    sum: {{ t('ds_sum')|tojson }},
+    close: {{ t('ds_close')|tojson }},
+    cash_payment: {{ t('ds_cash_payment')|tojson }},
+    click_payment: {{ t('ds_click_payment')|tojson }},
+    terminal_payment: {{ t('ds_terminal_payment')|tojson }},
+    debt_payment: {{ t('ds_debt_payment')|tojson }},
+    payment_type: {{ t('ds_payment_type')|tojson }},
+    total_payment: {{ t('ds_total_payment')|tojson }},
+    refunded_payments: {{ t('ds_refunded_payments')|tojson }},
+    payments: {{ t('ds_payments')|tojson }},
+    paid_status: {{ t('ds_paid_status')|tojson }},
+    cancelled: {{ t('ds_cancelled')|tojson }},
+    compact_no_data: {{ t('ds_compact_no_data')|tojson }},
+    plastic_card: {{ t('ds_plastic_card')|tojson }},
+    transfer: {{ t('ds_transfer')|tojson }},
+    real_data_not_found: {{ t('ds_real_data_not_found')|tojson }}
+};
+
 // Dinamik valyuta kursi
 let USD_TO_UZS_RATE = 0; // API dan yuklanadi
 const userRole = '{{ session.role }}'; // Foydalanuvchi roli
@@ -1855,7 +1924,7 @@ async function loadSalesHistory(page = 1) {
             console.log('❌ API format noto\'g\'ri:', data);
             // Agar format noto'g'ri bo'lsa, bo'sh jadval ko'rsatish
             document.getElementById('salesTableBody').innerHTML = 
-                '<tr><td colspan="9" class="loading">Real savdo ma\'lumotlari topilmadi</td></tr>';
+                '<tr><td colspan="9" class="loading">' + DSLANG.real_data_not_found + '</td></tr>';
         }
         
     } catch (error) {
@@ -1915,7 +1984,7 @@ function displaySalesData(data) {
     
     if (!salesData || salesData.length === 0) {
         const colspan = userRole === 'sotuvchi' ? '10' : '11';
-        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">Savdo ma'lumotlari topilmadi</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">${DSLANG.no_data}</td></tr>`;
         return;
     }
     
@@ -2106,7 +2175,7 @@ function showEditModal(saleData) {
         <div id="editModal" class="modal-overlay" onclick="closeEditModal(event)">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <div class="modal-header">
-                    <h3><i class="fas fa-edit"></i> Savdoni Tahrirlash</h3>
+                    <h3><i class="fas fa-edit"></i> ${DSLANG.edit_sale}</h3>
                     <button class="close-btn" onclick="closeEditModal()">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -2114,60 +2183,60 @@ function showEditModal(saleData) {
                         <input type="hidden" id="editSaleId" value="${saleData.id}">
                         
                         <div class="form-group">
-                            <label>Mahsulot:</label>
+                            <label>${DSLANG.product}:</label>
                             <input type="text" value="${saleData.product_name}" readonly class="readonly-field">
                         </div>
                         
                         <div class="form-group">
-                            <label>Mijoz:</label>
+                            <label>${DSLANG.customer}:</label>
                             <input type="text" value="${saleData.customer_name}" readonly class="readonly-field">
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="editQuantity">Miqdori:</label>
+                                <label for="editQuantity">${DSLANG.quantity}:</label>
                                 <input type="number" id="editQuantity" value="${saleData.quantity}" min="1" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editUnitPrice">Birlik narxi ($):</label>
+                                <label for="editUnitPrice">${DSLANG.unit_price}:</label>
                                 <input type="number" id="editUnitPrice" value="${saleData.unit_price}" min="0" step="0.01" required>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="editPaymentMethod">To'lov usuli:</label>
+                                <label for="editPaymentMethod">${DSLANG.payment_method}:</label>
                                 <select id="editPaymentMethod" required>
-                                    <option value="cash" ${saleData.payment_method === 'cash' ? 'selected' : ''}>Naqd</option>
-                                    <option value="card" ${saleData.payment_method === 'card' ? 'selected' : ''}>Karta</option>
-                                    <option value="credit" ${saleData.payment_method === 'credit' ? 'selected' : ''}>Kredit</option>
+                                    <option value="cash" ${saleData.payment_method === 'cash' ? 'selected' : ''}>${DSLANG.cash}</option>
+                                    <option value="card" ${saleData.payment_method === 'card' ? 'selected' : ''}>${DSLANG.card}</option>
+                                    <option value="credit" ${saleData.payment_method === 'credit' ? 'selected' : ''}>${DSLANG.credit}</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editPaymentStatus">To'lov holati:</label>
+                                <label for="editPaymentStatus">${DSLANG.payment_status}:</label>
                                 <select id="editPaymentStatus" required>
-                                    <option value="paid" ${saleData.payment_status === 'paid' ? 'selected' : ''}>To'langan</option>
-                                    <option value="pending" ${saleData.payment_status === 'pending' ? 'selected' : ''}>Kutilmoqda</option>
-                                    <option value="partial" ${saleData.payment_status === 'partial' ? 'selected' : ''}>Qisman</option>
+                                    <option value="paid" ${saleData.payment_status === 'paid' ? 'selected' : ''}>${DSLANG.paid}</option>
+                                    <option value="pending" ${saleData.payment_status === 'pending' ? 'selected' : ''}>${DSLANG.pending}</option>
+                                    <option value="partial" ${saleData.payment_status === 'partial' ? 'selected' : ''}>${DSLANG.partial}</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="editNotes">Izoh:</label>
+                            <label for="editNotes">${DSLANG.note}:</label>
                             <textarea id="editNotes" rows="3">${saleData.notes || ''}</textarea>
                         </div>
                         
                         <div class="total-display">
-                            <strong>Jami summa: $<span id="editTotalAmount">${(saleData.quantity * saleData.unit_price).toFixed(2)}</span></strong>
+                            <strong>${DSLANG.total_amount}: $<span id="editTotalAmount">${(saleData.quantity * saleData.unit_price).toFixed(2)}</span></strong>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Bekor qilish</button>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedSale()">Saqlash</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">${DSLANG.cancel}</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedSale()">${DSLANG.save}</button>
                 </div>
             </div>
         </div>
@@ -2226,22 +2295,22 @@ function saveEditedSale() {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            alert('✅ Savdo muvaffaqiyatli yangilandi!');
+            alert('✅ ' + DSLANG.sale_updated);
             closeEditModal();
             forceRefresh(); // Jadvalni yangilash
         } else {
-            alert('❌ Savdoni yangilashda xatolik: ' + result.error);
+            alert('❌ ' + DSLANG.sale_update_error + ': ' + result.error);
         }
     })
     .catch(error => {
         console.error('Update error:', error);
-        alert('❌ Tarmoq xatoligi: ' + error.message);
+        alert('❌ ' + DSLANG.network_error + ': ' + error.message);
     });
 }
 
 function deleteGroup(saleId) {
     // Savdo guruhini o'chirish funksiyasi
-    if (confirm(`Bu savdoni to'liq o'chirishni xohlaysizmi?`)) {
+    if (confirm(DSLANG.delete_group_confirm)) {
         console.log(`🗑️ Savdo o'chirilmoqda: ${saleId}`);
         
         fetch('/api/sales/' + saleId, {
@@ -2255,23 +2324,23 @@ function deleteGroup(saleId) {
             console.log('Delete result:', result);
             
             if (result.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi');
+                alert('✅ ' + DSLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Savdoni o\'chirishda xatolik: ' + result.error);
+                alert('❌ ' + DSLANG.sale_delete_error + ': ' + result.error);
                 forceRefresh(); // Baribir yangilash
             }
         })
         .catch(error => {
             console.error('Delete group error:', error);
-            alert('❌ Savdo guruhini o\'chirishda xatolik: ' + error.message);
+            alert('❌ ' + DSLANG.sale_group_delete_error + ': ' + error.message);
         });
     }
 }
 
 function deleteSale(saleId) {
     // Savdoni o'chirish funksiyasi (eski funksiya, hozir ishlatilmaydi)
-    if (confirm('Bu savdoni o\'chirishni xohlaysizmi?')) {
+    if (confirm(DSLANG.delete_sale_confirm)) {
         console.log(`🗑️ Savdo ${saleId} o'chirilmoqda...`);
         
         fetch('/api/sales/' + saleId, {
@@ -2288,15 +2357,15 @@ function deleteSale(saleId) {
             console.log('Delete response:', data);
             
             if (data.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi');
+                alert('✅ ' + DSLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + DSLANG.error_prefix + ': ' + (data.error || DSLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Delete xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + DSLANG.network_error + ': ' + error.message);
         });
     }
 }
@@ -2388,12 +2457,12 @@ function viewSaleDetails(saleId) {
                 console.log('💰 payment_refunds:', data.sale.payment_refunds);
                 showSaleDetailsModal(data.sale);
             } else {
-                alert('❌ Savdo tafsilotlarini olishda xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + DSLANG.sale_details_error + ': ' + (data.error || DSLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Savdo tafsilotlari xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + DSLANG.network_error + ': ' + error.message);
         });
 }
 
@@ -2427,13 +2496,13 @@ function showSaleDetailsModal(sale) {
         <div id="saleDetailsModal" class="modal sale-details-modal">
             <div class="modal-content sale-details-content">
                 <div class="modal-header">
-                    <h3><i class="fas fa-eye"></i> Savdo Tafsilotlari</h3>
+                    <h3><i class="fas fa-eye"></i> ${DSLANG.sale_details}</h3>
                     <div class="modal-header-actions">
-                        <button class="btn-print" onclick="printSaleReceipt('uzs')" title="UZS chop etish" style="background: #28a745;">
-                            <i class="fas fa-print"></i> UZS chop etish
+                        <button class="btn-print" onclick="printSaleReceipt('uzs')" title="${DSLANG.print_uzs}" style="background: #28a745;">
+                            <i class="fas fa-print"></i> ${DSLANG.print_uzs}
                         </button>
-                        <button class="btn-print" onclick="printSaleReceipt('usd')" title="USD chop etish" style="background: #17a2b8;">
-                            <i class="fas fa-print"></i> USD chop etish
+                        <button class="btn-print" onclick="printSaleReceipt('usd')" title="${DSLANG.print_usd}" style="background: #17a2b8;">
+                            <i class="fas fa-print"></i> ${DSLANG.print_usd}
                         </button>
                         <button class="btn-excel" onclick="exportSaleToExcel()" title="Excel ga export">
                             <i class="fas fa-file-excel"></i> Excel
@@ -2448,7 +2517,7 @@ function showSaleDetailsModal(sale) {
                         <span class="customer-name">${sale.customer_name || '� Noma\'lum'}</span>
                         ${sale.customer_phone ? `<span class="customer-phone">(${sale.customer_phone})</span>` : ''}
                         <span class="date-separator">•</span>
-                        <span class="date-label">Savdo sanasi:</span>
+                        <span class="date-label">${DSLANG.sale_date}:</span>
                         <span class="date-value">${new Date(sale.sale_date).toLocaleString('uz-UZ', { 
                             timeZone: 'Asia/Tashkent',
                             year: 'numeric', 
@@ -2459,16 +2528,16 @@ function showSaleDetailsModal(sale) {
                         })}</span>
                     </div>
                     
-                    <h4>Mahsulotlar:</h4>
+                    <h4>${DSLANG.products}:</h4>
                     <div class="products-table">
                         <table class="modal-table">
                             <thead>
                                 <tr>
-                                    <th>Mahsulot</th>
-                                    <th>Joylashuv</th>
-                                    <th>Miqdori</th>
-                                    <th>Narx</th>
-                                    <th>Yig'indi</th>
+                                    <th>${DSLANG.product}</th>
+                                    <th>${DSLANG.location}</th>
+                                    <th>${DSLANG.quantity}</th>
+                                    <th>${DSLANG.price}</th>
+                                    <th>${DSLANG.subtotal}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2485,7 +2554,7 @@ function showSaleDetailsModal(sale) {
                                     
                                     return `
                                     <tr style="${rowStyle}">
-                                        <td style="font-weight: ${isReturned ? '600' : 'normal'};">${quantityBadge}${item.product_name}${isReturned ? ' (Qaytarilgan)' : ''}</td>
+                                        <td style="font-weight: ${isReturned ? '600' : 'normal'};">${quantityBadge}${item.product_name}${isReturned ? ' (' + DSLANG.returned + ')' : ''}</td>
                                         <td>${item.location_name}</td>
                                         <td style="font-weight: ${isReturned ? '600' : 'normal'};">${item.quantity}</td>
                                         <td>
@@ -2501,7 +2570,7 @@ function showSaleDetailsModal(sale) {
                                 ${sale.returned_products && sale.returned_products.length > 0 ? `
                                     <tr style="background: #fff3cd; border-top: 2px solid #ffc107;">
                                         <td colspan="5" style="text-align: center; font-weight: 600; padding: 10px; color: #856404;">
-                                            ⚠️ Qaytarilgan mahsulotlar
+                                            ⚠️ ${DSLANG.returned_products}
                                         </td>
                                     </tr>
                                     ${sale.returned_products.map(item => {
@@ -2513,7 +2582,7 @@ function showSaleDetailsModal(sale) {
                                         
                                         return `
                                         <tr style="background: #ffebee; color: #c62828;">
-                                            <td style="font-weight: 600;">❌ ${item.product_name} (Qaytarilgan)</td>
+                                            <td style="font-weight: 600;">❌ ${item.product_name} (${DSLANG.returned})</td>
                                             <td>${item.location_name}</td>
                                             <td style="font-weight: 600;">-${item.returned_quantity}</td>
                                             <td>
@@ -2539,7 +2608,7 @@ function showSaleDetailsModal(sale) {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeSaleDetailsModal()">Yopish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSaleDetailsModal()">${DSLANG.close}</button>
                 </div>
             </div>
         </div>
@@ -2548,7 +2617,7 @@ function showSaleDetailsModal(sale) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     } catch (error) {
         console.error('❌ Modal yaratishda xatolik:', error);
-        alert('❌ Savdo tafsilotlarini ko\'rsatishda xatolik: ' + error.message);
+        alert('❌ ' + DSLANG.sale_details_show_error + ': ' + error.message);
     }
 }
 
@@ -2563,11 +2632,11 @@ function closeSaleDetailsModal() {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return '💵 Naqd pul';
-        case 'click': return '📱 Click';
-        case 'terminal': return '💳 Terminal';
-        case 'debt': return '📝 Qarz';
-        default: return method || 'Naqd pul';
+        case 'cash': return '💵 ' + DSLANG.cash_payment;
+        case 'click': return '📱 ' + DSLANG.click_payment;
+        case 'terminal': return '💳 ' + DSLANG.terminal_payment;
+        case 'debt': return '📝 ' + DSLANG.debt_payment;
+        default: return method || DSLANG.cash_payment;
     }
 }
 
@@ -2594,10 +2663,10 @@ function generatePaymentDetailsHTML(sale) {
     console.log('💵 UZS qiymatlar:', { cashUZS, clickUZS, terminalUZS, debtUZS });
     
     const payments = [
-        { name: '💵 Naqd pul', usd: cashUSD, uzs: cashUZS, isDebt: false },
-        { name: '📱 Click', usd: clickUSD, uzs: clickUZS, isDebt: false },
-        { name: '💳 Terminal', usd: terminalUSD, uzs: terminalUZS, isDebt: false },
-        { name: '📝 Qarz', usd: debtUSD, uzs: debtUZS, isDebt: true }
+        { name: '💵 ' + DSLANG.cash_payment, usd: cashUSD, uzs: cashUZS, isDebt: false },
+        { name: '📱 ' + DSLANG.click_payment, usd: clickUSD, uzs: clickUZS, isDebt: false },
+        { name: '💳 ' + DSLANG.terminal_payment, usd: terminalUSD, uzs: terminalUZS, isDebt: false },
+        { name: '📝 ' + DSLANG.debt_payment, usd: debtUSD, uzs: debtUZS, isDebt: true }
     ];
     
     // Faqat 0 dan katta to'lovlarni ko'rsatish
@@ -2607,7 +2676,7 @@ function generatePaymentDetailsHTML(sale) {
     if (activePayments.length === 0) {
         return `
             <div class="total-row">
-                <span class="total-label">To'lov turi:</span>
+                <span class="total-label">${DSLANG.payment_type}:</span>
                 <span class="total-value">${getPaymentMethodText(sale.payment_method)}</span>
             </div>
         `;
@@ -2631,7 +2700,7 @@ function generatePaymentDetailsHTML(sale) {
     // Jami to'lov kartasi
     const totalHTML = `
         <div style="display: inline-block; background: #007bff; padding: 8px 14px; margin: 4px 8px 4px 0; border-radius: 6px; border-left: 4px solid #0056b3;">
-            <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">Jami to'lov</div>
+            <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">${DSLANG.total_payment}</div>
             <div style="font-size: 15px; font-weight: 700; color: #ffffff;">$${totalUSD.toFixed(2)}</div>
             <div style="font-size: 12px; color: #ffffff;">${totalUZS.toLocaleString('uz-UZ')} so'm</div>
         </div>
@@ -2642,7 +2711,7 @@ function generatePaymentDetailsHTML(sale) {
     if (sale.payment_refunds && sale.payment_refunds.length > 0) {
         refundsHTML = `
             <div style="margin-top: 15px; padding: 15px; background: #ffebee; border-radius: 6px; border-left: 4px solid #dc3545;">
-                <div style="font-weight: 600; margin-bottom: 10px; color: #c62828;">❌ Qaytarilgan to'lovlar:</div>
+                <div style="font-weight: 600; margin-bottom: 10px; color: #c62828;">❌ ${DSLANG.refunded_payments}:</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">`;
         
         const paymentTypeIcons = {
@@ -2654,11 +2723,11 @@ function generatePaymentDetailsHTML(sale) {
         
         // To'lov turlari nomlari (inglizcha -> o'zbekcha)
         const paymentTypeNames = {
-            'cash': 'Naqd',
-            'click': 'Click',
-            'terminal': 'Terminal',
+            'cash': DSLANG.cash,
+            'click': DSLANG.click_payment,
+            'terminal': DSLANG.terminal_payment,
             'payme': 'Payme',
-            'debt': 'Qarz'
+            'debt': DSLANG.debt_payment
         };
         
         sale.payment_refunds.forEach(refund => {
@@ -2683,7 +2752,7 @@ function generatePaymentDetailsHTML(sale) {
     
     return `
         <div class="total-row">
-            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">To'lovlar:</div>
+            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">${DSLANG.payments}:</div>
             <div style="display: flex; flex-wrap: wrap; align-items: center;">${paymentsHTML}${totalHTML}</div>
             ${refundsHTML}
         </div>
@@ -2693,22 +2762,22 @@ function generatePaymentDetailsHTML(sale) {
 // To'lov holati matnini olish
 function getPaymentStatusText(status) {
     switch (status) {
-        case 'paid': return 'To\'landi';
-        case 'pending': return 'Kutilmoqda';
-        case 'cancelled': return 'Bekor qilindi';
-        default: return status || 'Noma\'lum';
+        case 'paid': return DSLANG.paid_status;
+        case 'pending': return DSLANG.pending;
+        case 'cancelled': return DSLANG.cancelled;
+        default: return status || DSLANG.unknown_customer;
     }
 }
 
 // Excel export funksiyasi (HTML-XLS format - avtomatik qator balandligi)
 function exportSaleToExcel() {
     if (!currentSaleData) {
-        alert('❌ Savdo ma\'lumotlari topilmadi!');
+        alert('❌ ' + DSLANG.sale_data_not_found);
         return;
     }
     const sale = currentSaleData;
     const dateStr = new Date(sale.sale_date).toLocaleString('uz-UZ', {timeZone:'Asia/Tashkent'});
-    const storeName = sale.store_name || "Do'kon";
+    const storeName = sale.store_name || DSLANG.store;
     const custPhone = (sale.customer_phone && sale.customer_phone !== '+998 XX XXX XX XX') ? sale.customer_phone : '';
 
     // Mahsulotlar qatorlari
@@ -2785,7 +2854,7 @@ function exportSaleToExcel() {
 // Chop etish funksiyasi - Mini X90 printer uchun
 function printSaleReceipt(currency = 'uzs') {
     if (!currentSaleData) {
-        alert('❌ Savdo ma\'lumotlari topilmadi!');
+        alert('❌ ' + DSLANG.sale_data_not_found);
         return;
     }
     
@@ -2811,22 +2880,22 @@ function formatPaymentDetails(paymentDetails, currency = 'uzs', exchangeRate = 1
         
         if (currency === 'uzs') {
             // Faqat UZS qiymat ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (clickUSD > 0) formatted.push('Click: ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (terminalUSD > 0) formatted.push('Terminal: ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (debtUSD > 0) formatted.push('Qarz: ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
+            if (cashUSD > 0) formatted.push(DSLANG.cash + ': ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (clickUSD > 0) formatted.push(DSLANG.click_payment + ': ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (terminalUSD > 0) formatted.push(DSLANG.terminal_payment + ': ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (debtUSD > 0) formatted.push(DSLANG.debt_payment + ': ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
         } else if (currency === 'both') {
             // Ikkala valyutani ham ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: $' + cashUSD.toFixed(2) + ' / ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (clickUSD > 0) formatted.push('Click: $' + clickUSD.toFixed(2) + ' / ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (terminalUSD > 0) formatted.push('Terminal: $' + terminalUSD.toFixed(2) + ' / ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (debtUSD > 0) formatted.push('Qarz: $' + debtUSD.toFixed(2) + ' / ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
+            if (cashUSD > 0) formatted.push(DSLANG.cash + ': $' + cashUSD.toFixed(2) + ' / ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (clickUSD > 0) formatted.push(DSLANG.click_payment + ': $' + clickUSD.toFixed(2) + ' / ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (terminalUSD > 0) formatted.push(DSLANG.terminal_payment + ': $' + terminalUSD.toFixed(2) + ' / ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
+            if (debtUSD > 0) formatted.push(DSLANG.debt_payment + ': $' + debtUSD.toFixed(2) + ' / ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + DSLANG.sum);
         } else {
             // Faqat USD qiymat ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: $' + cashUSD.toFixed(2));
-            if (clickUSD > 0) formatted.push('Click: $' + clickUSD.toFixed(2));
-            if (terminalUSD > 0) formatted.push('Terminal: $' + terminalUSD.toFixed(2));
-            if (debtUSD > 0) formatted.push('Qarz: $' + debtUSD.toFixed(2));
+            if (cashUSD > 0) formatted.push(DSLANG.cash + ': $' + cashUSD.toFixed(2));
+            if (clickUSD > 0) formatted.push(DSLANG.click_payment + ': $' + clickUSD.toFixed(2));
+            if (terminalUSD > 0) formatted.push(DSLANG.terminal_payment + ': $' + terminalUSD.toFixed(2));
+            if (debtUSD > 0) formatted.push(DSLANG.debt_payment + ': $' + debtUSD.toFixed(2));
         }
         
         return formatted.join('<br>');
@@ -3059,7 +3128,7 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
         </head>
         <body>
             <div class="header">
-                <div class="shop-name">${sale.store_name || "Do'kon"}</div>
+                <div class="shop-name">${sale.store_name || DSLANG.store}</div>
                 <div style="border-top: 1px solid #000; padding-top: 2mm; margin-top: 2mm;">
                     <div class="receipt-info">Savdo ID: ${sale.id} | ${new Date(sale.sale_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' })}</div>
                 </div>
@@ -3147,10 +3216,10 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return 'Naqd';
-        case 'card': return 'Plastik karta';
-        case 'transfer': return 'O\'tkazma';
-        default: return method || 'Noma\'lum';
+        case 'cash': return DSLANG.cash;
+        case 'card': return DSLANG.plastic_card;
+        case 'transfer': return DSLANG.transfer;
+        default: return method || DSLANG.unknown_customer;
     }
 }
 
@@ -3315,8 +3384,7 @@ async function loadLocationsForFilter() {
         console.log('🔍 Hozirgi select tarkibi:', locationSelect.innerHTML);
         
         // Avvalgi optionlarni tozalash
-        locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
-        console.log('🧹 Select tozalandi, yangi tarkib:', locationSelect.innerHTML);
+        locationSelect.innerHTML = '<option value="">' + DSLANG.all_locations + '</option>';
         
         // Do'konlarni qo'shish
         console.log('🏪 Do\'konlarni qo\'shish jarayoni...');
@@ -3335,7 +3403,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `store_${store.id}`;
-                option.textContent = `${store.name} (Do'kon)`;
+                option.textContent = `${store.name} (${DSLANG.store})`;
                 storeGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3369,7 +3437,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `warehouse_${warehouse.id}`;
-                option.textContent = `${warehouse.name} (Ombor)`;
+                option.textContent = `${warehouse.name} (${DSLANG.warehouse})`;
                 warehouseGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3403,7 +3471,7 @@ async function loadLocationsForFilter() {
             
             const locationSelect = document.getElementById('locationFilter');
             if (locationSelect) {
-                locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
+                locationSelect.innerHTML = '<option value="">' + DSLANG.all_locations + '</option>';
                 uniqueLocations.forEach(location => {
                     const option = document.createElement('option');
                     option.value = location;
@@ -3462,9 +3530,9 @@ function updateCustomerDropdown() {
     const allOption = document.createElement('div');
     allOption.className = 'customer-option';
     allOption.dataset.value = '';
-    allOption.textContent = 'Barcha mijozlar';
+    allOption.textContent = DSLANG.all_customers;
     allOption.addEventListener('click', function() {
-        selectCustomer('', 'Barcha mijozlar', '');
+        selectCustomer('', DSLANG.all_customers, '');
     });
     customerDropdown.appendChild(allOption);
     
@@ -3538,7 +3606,7 @@ function updateResultsInfo() {
     const filteredResults = filteredSalesData.length;
     
     if (filteredResults < totalResults) {
-        resultsText.textContent = `${filteredResults} ta natija topildi`;
+        resultsText.textContent = `${filteredResults} ${DSLANG.results_found}`;
         resultsInfo.style.display = 'block';
     } else {
         resultsInfo.style.display = 'none';
@@ -3815,7 +3883,7 @@ function updateTableForCompactView() {
     } else {
         // Agar ma'lumotlar yo'q bo'lsa
         const tbody = document.getElementById('salesTableBody');
-        tbody.innerHTML = '<tr><td colspan="7" class="loading">Compact view uchun ma\'lumotlar topilmadi</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">' + DSLANG.compact_no_data + '</td></tr>';
     }
 }
 

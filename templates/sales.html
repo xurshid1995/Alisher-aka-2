@@ -1072,7 +1072,59 @@
         pcs_step_hint: {{ t('sl_pcs_step_hint')|tojson }},
         store_required: {{ t('sl_store_required')|tojson }},
         savat_bosh: {{ t('sl_savat_bosh')|tojson }},
-        last_tab_warn: {{ t('sl_last_tab_warn')|tojson }}
+        last_tab_warn: {{ t('sl_last_tab_warn')|tojson }},
+        customer_name_required: {{ t('sl_customer_name_required')|tojson }},
+        phone_format_error: {{ t('sl_phone_format_error')|tojson }},
+        customer_add_error: {{ t('sl_customer_add_error')|tojson }},
+        customer_added_success: {{ t('sl_customer_added_success')|tojson }},
+        server_connection_error: {{ t('sl_server_connection_error')|tojson }},
+        camera_failed: {{ t('sl_camera_failed')|tojson }},
+        camera_not_supported: {{ t('sl_camera_not_supported')|tojson }},
+        camera_https_required: {{ t('sl_camera_https_required')|tojson }},
+        camera_opening: {{ t('sl_camera_opening')|tojson }},
+        barcode_frame_hint: {{ t('sl_barcode_frame_hint')|tojson }},
+        camera_init_failed: {{ t('sl_camera_init_failed')|tojson }},
+        customer_not_found: {{ t('sl_customer_not_found')|tojson }},
+        product_out_of_stock_msg: {{ t('sl_product_out_of_stock_msg')|tojson }},
+        price_too_low_warning: {{ t('sl_price_too_low_warning')|tojson }},
+        price_must_be_positive: {{ t('sl_price_must_be_positive')|tojson }},
+        invalid_quantity: {{ t('sl_invalid_quantity')|tojson }},
+        price_required: {{ t('sl_price_required')|tojson }},
+        product_info_not_found: {{ t('sl_product_info_not_found')|tojson }},
+        stock_update_error: {{ t('sl_stock_update_error')|tojson }},
+        stock_return_error_msg: {{ t('sl_stock_return_error_msg')|tojson }},
+        search_no_results: {{ t('sl_search_no_results')|tojson }},
+        get_product_error: {{ t('sl_get_product_error')|tojson }},
+        location_select_missing: {{ t('sl_location_select_missing')|tojson }},
+        sale_data_format_error: {{ t('sl_sale_data_format_error')|tojson }},
+        load_sale_error: {{ t('sl_load_sale_error')|tojson }},
+        cart_already_empty: {{ t('sl_cart_already_empty')|tojson }},
+        clear_cart_confirm: {{ t('sl_clear_cart_confirm')|tojson }},
+        sale_moved_pending: {{ t('sl_sale_moved_pending')|tojson }},
+        sale_saved_pending: {{ t('sl_sale_saved_pending')|tojson }},
+        unknown_error: {{ t('sl_unknown_error')|tojson }},
+        network_error: {{ t('sl_network_error')|tojson }},
+        debt_customer_required: {{ t('sl_debt_customer_required')|tojson }},
+        cart_empty_add_product: {{ t('sl_cart_empty_add_product')|tojson }},
+        payment_mismatch: {{ t('sl_payment_mismatch')|tojson }},
+        session_expired_warning: {{ t('sl_session_expired_warning')|tojson }},
+        access_denied: {{ t('sl_access_denied')|tojson }},
+        create_sale_error: {{ t('sl_create_sale_error')|tojson }},
+        sale_edited_success: {{ t('sl_sale_edited_success')|tojson }},
+        popup_blocked_warning: {{ t('sl_popup_blocked_warning')|tojson }},
+        sale_completed_success: {{ t('sl_sale_completed_success')|tojson }},
+        sales_cart_header: {{ t('sl_sales_cart_header')|tojson }},
+        save_sale_error: {{ t('sl_save_sale_error')|tojson }},
+        searching: {{ t('sl_searching')|tojson }},
+        product_not_found: {{ t('sl_product_not_found')|tojson }},
+        price_low_continue: {{ t('sl_price_low_continue')|tojson }},
+        cart_total: {{ t('sl_cart_total')|tojson }},
+        payment_total: {{ t('sl_payment_total')|tojson }},
+        difference: {{ t('sl_difference')|tojson }},
+        fix_payment: {{ t('sl_fix_payment')|tojson }},
+        error_prefix: {{ t('sl_error_prefix')|tojson }},
+        product_error_hint: {{ t('sl_product_error_hint')|tojson }},
+        internet_check: {{ t('sl_internet_check')|tojson }}
     };
 
     // ============================================
@@ -1773,7 +1825,7 @@
         
         // Validatsiya
         if (!name) {
-            errorDiv.textContent = '⚠️ Mijoz nomini to\'ldirish shart!';
+            errorDiv.textContent = '⚠️ ' + SLANG.customer_name_required;
             errorDiv.style.display = 'block';
             return;
         }
@@ -1786,7 +1838,7 @@
         
         // Telefon validatsiyasi
         if (phone && phone.length !== 18) {
-            errorDiv.textContent = '❌ Telefon raqamini to\'liq formatda kiriting: +998(99) 406-47-49';
+            errorDiv.textContent = '❌ ' + SLANG.phone_format_error;
             errorDiv.style.display = 'block';
             return;
         }
@@ -1807,7 +1859,7 @@
             const result = await response.json();
             
             if (!response.ok) {
-                errorDiv.textContent = '❌ ' + (result.error || 'Mijoz qo\'shishda xatolik!');
+                errorDiv.textContent = '❌ ' + (result.error || SLANG.customer_add_error);
                 errorDiv.style.display = 'block';
                 return;
             }
@@ -1815,7 +1867,7 @@
             console.log('✅ Yangi mijoz qo\'shildi:', result);
             
             // Muvaffaqiyat xabari
-            successDiv.textContent = '✅ Mijoz muvaffaqiyatli qo\'shildi!';
+            successDiv.textContent = '✅ ' + SLANG.customer_added_success;
             successDiv.style.display = 'block';
             
             // Mijozlar ro'yxatini yangilash
@@ -1862,7 +1914,7 @@
             
         } catch (error) {
             console.error('Mijoz qo\'shish xatosi:', error);
-            errorDiv.textContent = '❌ Server bilan bog\'lanishda xatolik!';
+            errorDiv.textContent = '❌ ' + SLANG.server_connection_error;
             errorDiv.style.display = 'block';
         }
     }
@@ -2025,7 +2077,7 @@
         const nativeCameraInput = getActiveTabElement('nativeCameraInput');
         if (!nativeCameraInput) {
             console.error('❌ nativeCameraInput topilmadi!');
-            alert('❌ Kamera ochilmadi!');
+            alert(SLANG.camera_failed);
             return;
         }
         
@@ -2083,7 +2135,7 @@
                     }
                 } else {
                     console.warn('⚠️ Barcode topilmadi');
-                    alert("❌ Barcode topilmadi!\n\n💡 Maslahat:\n• Rasmni yaxshiroq yorug'likda oling\n• Barcode'ni aniq ko'rsating\n• Qayta urinib ko'ring");
+                    alert(SLANG.camera_not_supported);
                 }
             });
         };
@@ -2108,20 +2160,20 @@
         // getUserMedia tekshiruvi
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             console.error('❌ Brauzer kamerani qo\'llab-quvvatlamaydi');
-            alert('⚠️ Kamera ishlamayapti!\n\nSabab: Brauzer kamerani qo\'llab-quvvatlamaydi\n\n✅ Yechim:\n• Chrome yoki Firefox brauzerni ishlating\n• Barcode ni qo\'lda kiriting');
+            alert(SLANG.camera_not_supported);
             return;
         }
         
         if (!isHTTPS && !isLocalhost && !isServerIP) {
             console.warn('⚠️ HTTPS yo\'q - kamera ishlamaydi');
-            alert('⚠️ Kamera HTTP orqali ishlamaydi!\n\n✅ Yechim:\n1. Barcode ni qo\'lda kiriting\n2. Yoki administrator HTTPS o\'rnatsin\n\n💡 Hozir: Barcode raqamini input maydoniga kiriting');
+            alert(SLANG.camera_https_required);
             return;
         }
         
         console.log('✅ Kamera ochilmoqda...');
         modal.style.display = 'block';
         scannerActive = true;
-        statusDiv.innerHTML = '🔄 Kamera ochilmoqda...';
+        statusDiv.innerHTML = SLANG.camera_opening;
         
         Quagga.init({
             inputStream: {
@@ -2185,7 +2237,7 @@
                 return;
             }
             console.log('✅ Scanner ishga tushdi');
-            statusDiv.innerHTML = "✅ Barcode ni yashil ramka ichiga joylashtiring";
+            statusDiv.innerHTML = SLANG.barcode_frame_hint;
             Quagga.start();
         });
 
@@ -2249,11 +2301,11 @@
             }
         }, function(err) {
             if (err) {
-                document.getElementById('scannerStatus').innerHTML = '❌ Kamera ishga tushmadi';
+                document.getElementById('scannerStatus').innerHTML = SLANG.camera_init_failed;
                 stopBarcodeScanner();
                 return;
             }
-            document.getElementById('scannerStatus').innerHTML = "✅ Barcode ni yashil ramka ichiga joylashtiring";
+            document.getElementById('scannerStatus').innerHTML = SLANG.barcode_frame_hint;
             Quagga.start();
         });
         
@@ -2497,7 +2549,7 @@
         console.log('📋 Filterlangan mijozlar soni:', filteredCustomers.length);
         
         if (filteredCustomers.length === 0) {
-            dropdown.innerHTML = '<div style="padding: 10px; color: #999; text-align: center;">Mijoz topilmadi</div>';
+            dropdown.innerHTML = '<div style="padding: 10px; color: #999; text-align: center;">' + SLANG.customer_not_found + '</div>';
             dropdown.style.display = 'block';
             return;
         }
@@ -2760,7 +2812,7 @@
             console.log(`💾 Tab ${tabId} location saqlandi:`, type, parseInt(id));
         }
         
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">⏳ Yuklanmoqda...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.searching + '</td></tr>';
         
         try {
             // Cache'dan tekshirish
@@ -2792,7 +2844,7 @@
             }
             
             if (products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">Mahsulotlar topilmadi</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.product_not_found + '</td></tr>';
                 document.getElementById(`productsPagination_tab${tabId}`).innerHTML = '';
                 return;
             }
@@ -2936,7 +2988,7 @@
             console.log(`✅ ${products.length} ta mahsulot ko'rsatildi (${currentPage}-bet / ${totalPages} bet)`);
         } catch (error) {
             console.error('Mahsulotlarni yuklashda xatolik:', error);
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #dc3545;">⚠️ Xatolik yuz berdi</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #dc3545;">' + SLANG.error_prefix + '</td></tr>';
         }
     }
     
@@ -3053,7 +3105,7 @@
         
         // Miqdori 0 bo'lsa xabar chiqarish
         if (quantity <= 0) {
-            alert('Bu mahsulot miqdori 0, shuning uchun uni sotib bo\'lmaydi');
+            alert(SLANG.product_out_of_stock_msg);
             return;
         }
         
@@ -3323,7 +3375,7 @@
         // Narx tan narxdan past yoki teng bo'lsa
         if (priceUSD <= costPrice && priceUSD > 0) {
             warningDiv.style.display = 'block';
-            warningText.textContent = 'Bu narxda sotib bo\'lmaydi, narx juda past!';
+            warningText.textContent = SLANG.price_too_low_warning;
             
             // Input border va background'ini qizil qilish
             modalPriceUSD.style.borderColor = '#dc3545';
@@ -3333,7 +3385,7 @@
         } else if (priceUSD <= 0) {
             // Narx 0 yoki manfiy bo'lsa
             warningDiv.style.display = 'block';
-            warningText.textContent = 'Narx 0 dan katta bo\'lishi kerak!';
+            warningText.textContent = SLANG.price_must_be_positive;
             
             // Input border va background'ini qizil qilish
             modalPriceUSD.style.borderColor = '#dc3545';
@@ -3437,9 +3489,8 @@
             const costPrice = parseFloat(currentProduct.costPrice) || 0;
             if (priceUSD <= costPrice && priceUSD > 0) {
                 const confirmation = confirm(
-                    `⚠️ OGOHLANTIRISH!\n\n` +
-                    `Bu narxda sotib bo'lmaydi, narx juda past!\n\n` +
-                    `Rostdan ham davom etmoqchimisiz?`
+                    `⚠️ ${SLANG.price_too_low_warning}\n\n` +
+                    `${SLANG.price_low_continue}`
                 );
                 
                 if (!confirmation) {
@@ -3453,18 +3504,18 @@
         // Agar tahrirlash rejimi bo'lsa - faqat farqni hisoblash
         if (typeof window.editingCartIndex !== 'undefined') {
             if (quantity <= 0) {
-                alert('Noto\'g\'ri miqdor!');
+                alert(SLANG.invalid_quantity);
                 return;
             }
             
             if (priceUSD <= 0) {
-                alert('Narx kiritilishi shart!');
+                alert(SLANG.price_required);
                 return;
             }
             
             // currentProduct tekshiruvi
             if (!currentProduct) {
-                alert('Mahsulot ma\'lumotlari topilmadi!');
+                alert(SLANG.product_info_not_found);
                 return;
             }
             
@@ -3497,13 +3548,13 @@
                     
                     const result = await response.json();
                     if (!result.success) {
-                        alert(result.error || 'Stokdan ayirib bo\'lmadi!');
+                        alert(result.error || SLANG.stock_update_error);
                         return;
                     }
                     console.log('➕ Qo\'shimcha stokdan olindi:', quantityDifference, 'dona');
                 } catch (error) {
                     console.error('Stok ayirish xatosi:', error);
-                    alert('Stokni yangilashda xatolik!');
+                    alert(SLANG.stock_update_error);
                     return;
                 }
             }
@@ -3567,7 +3618,7 @@
         
         // Yangi mahsulot qo'shish - currentProduct tekshiruvi
         if (!currentProduct) {
-            alert('Mahsulot ma\'lumotlari topilmadi!');
+            alert(SLANG.product_info_not_found);
             console.error('❌ currentProduct null holatda');
             return;
         }
@@ -3581,12 +3632,12 @@
         }
         
         if (quantity <= 0 || quantity > currentProduct.available) {
-            alert('Noto\'g\'ri miqdor!');
+            alert(SLANG.invalid_quantity);
             return;
         }
         
         if (priceUSD <= 0) {
-            alert('Narx kiritilishi shart!');
+            alert(SLANG.price_required);
             return;
         }
         
@@ -3605,14 +3656,14 @@
             
             const result = await response.json();
             if (!result.success) {
-                alert(result.error || 'Stokdan ayirib bo\'lmadi!');
+                alert(result.error || SLANG.stock_update_error);
                 return;
             }
             
             console.log('✅ Stokdan ayirildi:', quantity, 'dona');
         } catch (error) {
             console.error('Stok ayirish xatosi:', error);
-            alert('Stokni yangilashda xatolik!');
+            alert(SLANG.stock_update_error);
             return;
         }
         
@@ -3874,7 +3925,7 @@
                 }
             } catch (error) {
                 console.error('❌ Stok qaytarish xatosi:', error);
-                alert('Stok qaytarish xatosi: ' + error.message);
+                alert(SLANG.stock_return_error_msg + ': ' + error.message);
                 console.log(`${'='.repeat(80)}\n`);
                 return; // Xatolik bo'lsa savatdan o'chirmaymiz
             }
@@ -3923,7 +3974,7 @@
                 input.style.borderColor = '#dc3545';
                 input.style.backgroundColor = '#ffe6e6';
             }
-            alert('Noto\'g\'ri miqdor!');
+            alert(SLANG.invalid_quantity);
             updateCart();
             return;
         }
@@ -3961,7 +4012,7 @@
                         input.style.borderColor = '#dc3545';
                         input.style.backgroundColor = '#ffe6e6';
                     }
-                    alert(result.error || 'Stokdan ayirib bo\'lmadi!');
+                    alert(result.error || SLANG.stock_update_error);
                     updateCart(); // Eski qiymatni qaytarish
                     return;
                 }
@@ -3972,7 +4023,7 @@
                     input.style.borderColor = '#dc3545';
                     input.style.backgroundColor = '#ffe6e6';
                 }
-                alert('Stokni yangilashda xatolik!');
+                alert(SLANG.stock_update_error);
                 updateCart();
                 return;
             }
@@ -3997,7 +4048,7 @@
                         input.style.borderColor = '#dc3545';
                         input.style.backgroundColor = '#ffe6e6';
                     }
-                    alert(result.error || 'Stokka qaytarib bo\'lmadi!');
+                    alert(result.error || SLANG.stock_return_error_msg);
                     updateCart();
                     return;
                 }
@@ -4008,7 +4059,7 @@
                     input.style.borderColor = '#dc3545';
                     input.style.backgroundColor = '#ffe6e6';
                 }
-                alert('Stokni yangilashda xatolik!');
+                alert(SLANG.stock_update_error);
                 updateCart();
                 return;
             }
@@ -4266,7 +4317,7 @@
                 console.error('📋 API javobidagi mahsulotlar:', products.length, 'ta');
                 console.error('📋 Mavjud ID\'lar:', products.map(p => p.id).join(', '));
                 console.error('═══════════════════════════════════════');
-                alert(`⚠️ JIDDIY XATOLIK: Mahsulot ma'lumotlari topilmadi!\n\nMahsulot ID: ${itemId}\nNomi: ${item.name}\n\nSabab: Mahsulot database'dan o'chirilgan yoki ma'lumotlar buzilgan.\n\nIltimos, sahifani yangilab qaytadan urinib ko'ring yoki admin bilan bog'laning.`);
+                alert(SLANG.product_error_hint);
                 quantityModal.style.display = 'none';
                 return;
             }
@@ -4278,7 +4329,7 @@
             console.error('Xabar:', error.message);
             console.error('Stack:', error.stack);
             console.error('═══════════════════════════════════════');
-            alert(`⚠️ XATOLIK: Server bilan bog'lanishda muammo!\n\nXatolik: ${error.message}\n\nIltimos, internetni tekshirib qaytadan urinib ko'ring.`);
+            alert(SLANG.internet_check);
             // API xatoligi bo'lsa, tahrirlashni davom ettirishga ruxsat bermaymiz
             quantityModal.style.display = 'none';
             return;
@@ -4377,7 +4428,7 @@
             return;
         }
         
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">⏳ Qidirilmoqda...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.searching + '</td></tr>';
         
         try {
             // Serverdan qidiruv so'rovi yuborish
@@ -4389,7 +4440,7 @@
             const products = Array.isArray(data) ? data : (data.products || []);
             
             if (products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">❌ Hech narsa topilmadi</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.search_no_results + '</td></tr>';
                 console.log(`❌ "${searchText}" bo'yicha mahsulot topilmadi`);
                 return;
             }
@@ -4482,7 +4533,7 @@
             updateVisibleProductRows();
         } catch (error) {
             console.error('Qidirishda xatolik:', error);
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #dc3545;">⚠️ Xatolik yuz berdi</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #dc3545;">' + SLANG.error_prefix + '</td></tr>';
         }
     }
     
@@ -4576,10 +4627,10 @@
             clearProductSelection();
         } else if (productId && quantity <= 0) {
             console.log('⛔ Mahsulot miqdori 0:', { productId, productName });
-            alert('Bu mahsulot miqdori 0, shuning uchun uni sotib bo\'lmaydi');
+            alert(SLANG.product_out_of_stock_msg);
         } else {
             console.error('❌ Mahsulot ma\'lumotlari noto\'g\'ri:', { productId, quantity, price });
-            alert('Mahsulot ma\'lumotlarini olishda xatolik!');
+            alert(SLANG.get_product_error);
         }
     }
     
@@ -4655,7 +4706,7 @@
                 
                 if (!locationSelect) {
                     console.error('❌ locationSelect elementi topilmadi');
-                    alert('Joylashuv tanlash elementi topilmadi');
+                    alert(SLANG.location_select_missing);
                     return;
                 }
                 
@@ -4675,7 +4726,7 @@
                 
                 if (!locationFound) {
                     console.error(`❌ Joylashuv topilmadi: ${locationValue}`);
-                    alert(`Joylashuv topilmadi: ${locationValue}`);
+                    alert(SLANG.location_select_missing);
                     return;
                 }
                 
@@ -4767,12 +4818,12 @@
                 }
             } else {
                 console.error('❌ API javobida xatolik:', data);
-                alert('Savdo ma\'lumotlari noto\'g\'ri formatda');
+                alert(SLANG.sale_data_format_error);
             }
         } catch (error) {
             console.error('❌ Savdo guruhini yuklashda xatolik:', error);
             console.error('❌ Error stack:', error.stack);
-            alert('Savdo ma\'lumotlarini yuklashda xatolik: ' + error.message);
+            alert(SLANG.load_sale_error + ': ' + error.message);
         }
     }
     
@@ -4877,11 +4928,11 @@
                 }
             } else {
                 console.error('❌ API javobida xatolik:', data);
-                alert('Savdo ma\'lumotlari noto\'g\'ri formatda');
+                alert(SLANG.sale_data_format_error);
             }
         } catch (error) {
             console.error('❌ Savdoni yuklashda xatolik:', error);
-            alert('Savdo ma\'lumotlarini yuklashda xatolik: ' + error.message);
+            alert(SLANG.load_sale_error + ': ' + error.message);
         }
     }
     
@@ -5044,11 +5095,11 @@
     // Savatni tozalash
     async function clearCart() {
         if (cart.length === 0) {
-            alert('Savat allaqachon bo\'sh!');
+            alert(SLANG.cart_already_empty);
             return;
         }
         
-        if (!confirm('Savatni tozalashni xohlaysizmi? Barcha mahsulotlar stokga qaytariladi.')) {
+        if (!confirm(SLANG.clear_cart_confirm)) {
             return;
         }
         
@@ -5331,9 +5382,9 @@
             
             if (result.success) {
                 if (editingSaleId || currentPendingSaleId) {
-                    alert('✅ Savdo pending holatga o\'tkazildi! Endi Tasdiqlanmagan savdolar ro\'yxatida ko\'rinadi.');
+                    alert(SLANG.sale_moved_pending);
                 } else {
-                    alert('✅ Savdo keyinroq tasdiqlash uchun saqlandi!');
+                    alert(SLANG.sale_saved_pending);
                 }
                 console.log('⏸️ Savdo pending holatga o\'tkazildi, ID:', result.sale_id || editingSaleId || currentPendingSaleId);
                 
@@ -5351,14 +5402,14 @@
                 const customerPhoneDisplay = getActiveTabElement('customerPhoneDisplay');
                 
                 if (customerIdInput) customerIdInput.value = '';
-                if (customerNameDisplay) customerNameDisplay.textContent = 'Mijoz tanlanmagan';
+                if (customerNameDisplay) customerNameDisplay.textContent = SLANG.customer_not_found;
                 if (customerPhoneDisplay) customerPhoneDisplay.textContent = '';
             } else {
-                alert('❌ Xatolik: ' + (result.error || 'Noma\'lum xatolik'));
+                alert(SLANG.error_prefix + ': ' + (result.error || SLANG.unknown_error));
             }
         } catch (error) {
             console.error('Pending savdo xatosi:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert(SLANG.network_error + ': ' + error.message);
         }
     }
     
@@ -5770,10 +5821,10 @@
             console.log('💰 Qarz tekshiruvi:', {debtUSD, customerId, hasCustomer: !!customerId});
             
             if (debtUSD > 0 && !customerId) {
-                alert('⚠️ DIQQAT!\n\nQarzga sotish uchun mijoz tanlanishi SHART!\n\n📋 Iltimos:\n1. "Mijoz tanlash" maydonidan mijoz tanlang\n2. Yoki yangi mijoz qo\'shing');
+                alert(SLANG.debt_customer_required);
                 
                 if (paymentWarning) {
-                    paymentWarning.textContent = '⚠️ Qarzga sotish uchun mijoz tanlanishi shart!';
+                    paymentWarning.textContent = SLANG.debt_customer_required;
                     paymentWarning.style.display = 'block';
                 }
                 
@@ -5806,9 +5857,9 @@
             
             // Cart bo'shligini tekshirish
             if (cart.length === 0) {
-                alert('❌ XATOLIK!\n\nSavat bo\'sh!\n\nIltimos, kamida bitta mahsulot qo\'shing.');
+                alert(SLANG.cart_empty_add_product);
                 if (paymentWarning) {
-                    paymentWarning.textContent = '❌ Savat bo\'sh! Mahsulot qo\'shing.';
+                    paymentWarning.textContent = SLANG.cart_empty_add_product;
                     paymentWarning.style.display = 'block';
                 }
                 // Tugmani qayta faollashtirish
@@ -5823,12 +5874,12 @@
             
             // To'lov va cart jami tekshiruvi - aniq moslik
             if (Math.abs(totalPayment - totalUSD) > 0.01) {
-                const errorMsg = `⚠️ TO'LOV XATOLIGI!\n\n🛒 Cart jami: $${totalUSD.toFixed(2)}\n💰 To'lov jami: $${totalPayment.toFixed(2)}\n❗ Farq: $${Math.abs(totalPayment - totalUSD).toFixed(2)}\n\nIltimos, to'lovni to'g'rilang!`;
+                const errorMsg = `⚠️ ${SLANG.payment_mismatch}\n\n🛒 ${SLANG.cart_total}: $${totalUSD.toFixed(2)}\n💰 ${SLANG.payment_total}: $${totalPayment.toFixed(2)}\n❗ ${SLANG.difference}: $${Math.abs(totalPayment - totalUSD).toFixed(2)}\n\n${SLANG.fix_payment}`;
                 
                 alert(errorMsg);
                 
                 if (paymentWarning) {
-                    paymentWarning.textContent = `⚠️ Jami to'lov ($${totalPayment.toFixed(2)}) savdo summasiga ($${totalUSD.toFixed(2)}) teng emas!`;
+                    paymentWarning.textContent = `⚠️ ${SLANG.payment_mismatch}`;
                     paymentWarning.style.display = 'block';
                 }
                 
@@ -5969,14 +6020,14 @@
                 // Session expire yoki authentication muammosini tekshirish (finalize uchun)
                 if (response.status === 401) {
                     console.error('❌ Session muddati tugagan (finalize)');
-                    alert('⚠️ DIQQAT!\n\nSession muddati tugagan!\n\nSizni login sahifasiga yo\'naltiramiz.\n\nEslatma: Ma\'lumotlaringiz saqlanmagan bo\'lishi mumkin!');
+                    alert(SLANG.session_expired_warning);
                     window.location.href = '/login';
                     return;
                 }
                 
                 if (response.status === 403) {
                     console.error('❌ Ruxsat yo\'q (finalize)');
-                    alert('⚠️ Bu amalni bajarish uchun ruxsatingiz yo\'q!');
+                    alert(SLANG.access_denied);
                     if (confirmBtn) {
                         confirmBtn.disabled = false;
                         confirmBtn.textContent = originalText;
@@ -6001,14 +6052,14 @@
             // Session expire yoki authentication muammosini tekshirish
             if (response.status === 401) {
                 console.error('❌ Session muddati tugagan yoki login talab qilinadi');
-                alert('⚠️ DIQQAT!\n\nSession muddati tugagan!\n\nSizni login sahifasiga yo\'naltiramiz.\n\nEslatma: Ma\'lumotlaringiz saqlanmagan bo\'lishi mumkin!');
+                alert(SLANG.session_expired_warning);
                 window.location.href = '/login';
                 return;
             }
             
             if (response.status === 403) {
                 console.error('❌ Ruxsat yo\'q (Forbidden)');
-                alert('⚠️ Bu amalni bajarish uchun ruxsatingiz yo\'q!');
+                alert(SLANG.access_denied);
                 if (confirmBtn) {
                     confirmBtn.disabled = false;
                     confirmBtn.textContent = originalText;
@@ -6021,7 +6072,7 @@
             const result = await response.json();
             
             if (!result.success) {
-                alert('Savdo yaratishda xatolik: ' + (result.error || 'Noma\'lum xatolik'));
+                alert(SLANG.create_sale_error + ': ' + (result.error || SLANG.unknown_error));
                 console.error('❌ Savdo xatosi:', result);
                 // Tugmani qayta faollashtirish xatolik bo'lganda
                 if (confirmBtn) {
@@ -6160,7 +6211,7 @@
             
             // Tahrirlash rejimida eski sahifaga qaytish
             if (editingSaleId) {
-                alert('✅ Savdo muvaffaqiyatli tahrirlandi!');
+                alert(SLANG.sale_edited_success);
                 
                 // Chek chiqarish (tahrirlash rejimida ham)
                 if (pendingReceiptData) {
@@ -6168,7 +6219,7 @@
                     const receiptWindow = window.open('', '_blank', 'width=400,height=600');
                     
                     if (!receiptWindow) {
-                        alert('⚠️ Popup blocker chekni blokladi! Brauzer sozlamalarida popup\'larga ruxsat bering.');
+                        alert(SLANG.popup_blocked_warning);
                         console.error('❌ window.open() null qaytardi - popup blocker faol');
                     } else {
                         generatePrintableReceiptToWindow(receiptWindow, pendingReceiptData.sale, pendingReceiptData.currency);
@@ -6187,7 +6238,7 @@
             }
             
             // Alert'dan keyin chek chiqarish
-            alert('✅ Savdo muvaffaqiyatli yakunlandi!');
+            alert(SLANG.sale_completed_success);
             
             // Chek chiqarish (agar belgilangan bo'lsa)
             if (pendingReceiptData) {
@@ -6195,7 +6246,7 @@
                 const receiptWindow = window.open('', '_blank', 'width=400,height=600');
                 
                 if (!receiptWindow) {
-                    alert('⚠️ Popup blocker chekni blokladi! Brauzer sozlamalarida popup\'larga ruxsat bering.');
+                    alert(SLANG.popup_blocked_warning);
                     console.error('❌ window.open() null qaytardi - popup blocker faol');
                 } else {
                     generatePrintableReceiptToWindow(receiptWindow, pendingReceiptData.sale, pendingReceiptData.currency);
@@ -6236,7 +6287,7 @@
                 if (locationSelect) locationSelect.value = '';
                 if (customerSearch) customerSearch.value = '';
                 if (selectedCustomerId) selectedCustomerId.value = '';
-                if (cartCustomerInfo) cartCustomerInfo.innerHTML = '<h3 style="margin: 0; color: #333;">🛒 Savdo Korzinasi</h3>';
+                if (cartCustomerInfo) cartCustomerInfo.innerHTML = '<h3 style="margin: 0; color: #333;">' + SLANG.sales_cart_header + '</h3>';
                 if (productsTable) productsTable.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.select_location_msg + '</td></tr>';
                 
                 // Tab sarlavhasini tozalash
@@ -6275,7 +6326,7 @@
             
         } catch (error) {
             console.error('❌ Savdoni yuborishda xatolik:', error);
-            alert('Savdoni saqlashda xatolik yuz berdi!');
+            alert(SLANG.save_sale_error);
             // Tugmani qayta faollashtirish xatolik bo'lganda
             if (confirmBtn) {
                 confirmBtn.disabled = false;

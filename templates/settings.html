@@ -182,7 +182,8 @@
             alert_lang_error: {{ t("alert_lang_error")|tojson }},
             alert_settings_error: {{ t("alert_settings_error")|tojson }},
             alert_currency_updated: {{ t("alert_currency_updated")|tojson }},
-            prompt_currency_rate: {{ t("prompt_currency_rate")|tojson }}
+            prompt_currency_rate: {{ t("prompt_currency_rate")|tojson }},
+            st_logout_confirm: {{ t("st_logout_confirm")|tojson }}
         };
 
         // Currency va logout funksiyalari
@@ -206,7 +207,7 @@
         }
 
         function logout() {
-            if (confirm('Tizimdan chiqishni xohlaysizmi?')) {
+            if (confirm(SLANG.st_logout_confirm)) {
                 window.location.href = '/logout';
             }
         }

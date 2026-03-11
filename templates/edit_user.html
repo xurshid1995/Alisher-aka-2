@@ -535,7 +535,8 @@
         error_prefix: {{ t("error_prefix")|tojson }},
         select_option: {{ t("select_option")|tojson }},
         eu_store_label: {{ t("eu_store_label")|tojson }},
-        eu_warehouse_label: {{ t("eu_warehouse_label")|tojson }}
+        eu_warehouse_label: {{ t("eu_warehouse_label")|tojson }},
+        eu_data_loss_confirm: {{ t("eu_data_loss_confirm")|tojson }}
     };
 
     let allStores = [];
@@ -1516,7 +1517,7 @@
 
     // Orqaga qaytish
     function goBack() {
-        if (confirm('Kiritilgan ma\'lumotlar yo\'qoladi. Davom etasizmi?')) {
+        if (confirm(EULANG.eu_data_loss_confirm)) {
             window.location.href = '/users';
         }
     }

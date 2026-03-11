@@ -1556,6 +1556,75 @@ tbody tr.sale-group-start:first-child {
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <script>
+// Translation dictionary (reuses ds_ keys from translations.py)
+const PSLANG = {
+    sale_updated: {{ t('ds_sale_updated')|tojson }},
+    sale_update_error: {{ t('ds_sale_update_error')|tojson }},
+    network_error: {{ t('ds_network_error')|tojson }},
+    sale_deleted: {{ t('ds_sale_deleted')|tojson }},
+    sale_delete_error: {{ t('ds_sale_delete_error')|tojson }},
+    sale_group_delete_error: {{ t('ds_sale_group_delete_error')|tojson }},
+    unknown_error: {{ t('ds_unknown_error')|tojson }},
+    error_prefix: {{ t('ds_error_prefix')|tojson }},
+    sale_details_error: {{ t('ds_sale_details_error')|tojson }},
+    sale_details_show_error: {{ t('ds_sale_details_show_error')|tojson }},
+    sale_data_not_found: {{ t('ds_sale_data_not_found')|tojson }},
+    delete_group_confirm: {{ t('ds_delete_group_confirm')|tojson }},
+    delete_sale_confirm: {{ t('ds_delete_sale_confirm')|tojson }},
+    loading: {{ t('ds_loading')|tojson }},
+    no_data: {{ t('ds_no_data')|tojson }},
+    error_occurred: {{ t('ds_error_occurred')|tojson }},
+    all_locations: {{ t('ds_all_locations')|tojson }},
+    store: {{ t('ds_store')|tojson }},
+    warehouse: {{ t('ds_warehouse')|tojson }},
+    all_customers: {{ t('ds_all_customers')|tojson }},
+    results_found: {{ t('ds_results_found')|tojson }},
+    edit_sale: {{ t('ds_edit_sale')|tojson }},
+    product: {{ t('ds_product')|tojson }},
+    customer: {{ t('ds_customer')|tojson }},
+    quantity: {{ t('ds_quantity')|tojson }},
+    unit_price: {{ t('ds_unit_price')|tojson }},
+    payment_method: {{ t('ds_payment_method')|tojson }},
+    cash: {{ t('ds_cash')|tojson }},
+    card: {{ t('ds_card')|tojson }},
+    credit: {{ t('ds_credit')|tojson }},
+    payment_status: {{ t('ds_payment_status')|tojson }},
+    paid: {{ t('ds_paid')|tojson }},
+    pending: {{ t('ds_pending')|tojson }},
+    partial: {{ t('ds_partial')|tojson }},
+    note: {{ t('ds_note')|tojson }},
+    total_amount: {{ t('ds_total_amount')|tojson }},
+    cancel: {{ t('ds_cancel')|tojson }},
+    save: {{ t('ds_save')|tojson }},
+    sale_details: {{ t('ds_sale_details')|tojson }},
+    print_uzs: {{ t('ds_print_uzs')|tojson }},
+    print_usd: {{ t('ds_print_usd')|tojson }},
+    unknown_customer: {{ t('ds_unknown_customer')|tojson }},
+    sale_date: {{ t('ds_sale_date')|tojson }},
+    products: {{ t('ds_products')|tojson }},
+    location: {{ t('ds_location')|tojson }},
+    price: {{ t('ds_price')|tojson }},
+    subtotal: {{ t('ds_subtotal')|tojson }},
+    returned: {{ t('ds_returned')|tojson }},
+    returned_products: {{ t('ds_returned_products')|tojson }},
+    sum: {{ t('ds_sum')|tojson }},
+    close: {{ t('ds_close')|tojson }},
+    cash_payment: {{ t('ds_cash_payment')|tojson }},
+    click_payment: {{ t('ds_click_payment')|tojson }},
+    terminal_payment: {{ t('ds_terminal_payment')|tojson }},
+    debt_payment: {{ t('ds_debt_payment')|tojson }},
+    payment_type: {{ t('ds_payment_type')|tojson }},
+    total_payment: {{ t('ds_total_payment')|tojson }},
+    refunded_payments: {{ t('ds_refunded_payments')|tojson }},
+    payments: {{ t('ds_payments')|tojson }},
+    paid_status: {{ t('ds_paid_status')|tojson }},
+    cancelled: {{ t('ds_cancelled')|tojson }},
+    compact_no_data: {{ t('ds_compact_no_data')|tojson }},
+    plastic_card: {{ t('ds_plastic_card')|tojson }},
+    transfer: {{ t('ds_transfer')|tojson }},
+    real_data_not_found: {{ t('ds_real_data_not_found')|tojson }}
+};
+
 // Dinamik valyuta kursi
 let USD_TO_UZS_RATE = 0; // API dan yuklanadi
 const userRole = '{{ session.role }}'; // Foydalanuvchi roli
@@ -1710,7 +1779,7 @@ function clearTable() {
     // Jadval va statistikalarni tozalash
     const colspan = userRole === 'sotuvchi' ? '10' : '11';
     document.getElementById('salesTableBody').innerHTML = 
-        `<tr><td colspan="${colspan}" class="loading">Ma'lumotlar yuklanmoqda...</td></tr>`;
+        `<tr><td colspan="${colspan}" class="loading">${PSLANG.loading}</td></tr>`;
     document.getElementById('totalSales').textContent = '0';
     document.getElementById('totalRevenue').textContent = '$0';
     
@@ -1855,7 +1924,7 @@ async function loadSalesHistory(page = 1) {
             console.log('❌ API format noto\'g\'ri:', data);
             // Agar format noto'g'ri bo'lsa, bo'sh jadval ko'rsatish
             document.getElementById('salesTableBody').innerHTML = 
-                '<tr><td colspan="9" class="loading">Real savdo ma\'lumotlari topilmadi</td></tr>';
+                '<tr><td colspan="9" class="loading">' + PSLANG.real_data_not_found + '</td></tr>';
         }
         
     } catch (error) {
@@ -1915,7 +1984,7 @@ function displaySalesData(data) {
     
     if (!salesData || salesData.length === 0) {
         const colspan = userRole === 'sotuvchi' ? '10' : '11';
-        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">Savdo ma'lumotlari topilmadi</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">${PSLANG.no_data}</td></tr>`;
         return;
     }
     
@@ -2228,22 +2297,22 @@ function saveEditedSale() {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            alert('✅ Savdo muvaffaqiyatli yangilandi!');
+            alert('✅ ' + PSLANG.sale_updated);
             closeEditModal();
             forceRefresh(); // Jadvalni yangilash
         } else {
-            alert('❌ Savdoni yangilashda xatolik: ' + result.error);
+            alert('❌ ' + PSLANG.sale_update_error + ': ' + result.error);
         }
     })
     .catch(error => {
         console.error('Update error:', error);
-        alert('❌ Tarmoq xatoligi: ' + error.message);
+        alert('❌ ' + PSLANG.network_error + ': ' + error.message);
     });
 }
 
 function deleteGroup(saleId) {
     // Savdo guruhini o'chirish funksiyasi
-    if (confirm(`Bu savdoni to'liq o'chirishni xohlaysizmi? Stock qaytariladi.`)) {
+    if (confirm(PSLANG.delete_group_confirm)) {
         console.log(`🗑️ Savdo o'chirilmoqda: ${saleId}`);
         
         // return_stock=true parametrini qo'shish
@@ -2258,23 +2327,23 @@ function deleteGroup(saleId) {
             console.log('Delete result:', result);
             
             if (result.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi va stock qaytarildi');
+                alert('✅ ' + PSLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Savdoni o\'chirishda xatolik: ' + result.error);
+                alert('❌ ' + PSLANG.sale_delete_error + ': ' + result.error);
                 forceRefresh(); // Baribir yangilash
             }
         })
         .catch(error => {
             console.error('Delete group error:', error);
-            alert('❌ Savdo guruhini o\'chirishda xatolik: ' + error.message);
+            alert('❌ ' + PSLANG.sale_group_delete_error + ': ' + error.message);
         });
     }
 }
 
 function deleteSale(saleId) {
     // Savdoni o'chirish funksiyasi (eski funksiya, hozir ishlatilmaydi)
-    if (confirm('Bu savdoni o\'chirishni xohlaysizmi?')) {
+    if (confirm(PSLANG.delete_sale_confirm)) {
         console.log(`🗑️ Savdo ${saleId} o'chirilmoqda...`);
         
         fetch('/api/sales/' + saleId, {
@@ -2291,15 +2360,15 @@ function deleteSale(saleId) {
             console.log('Delete response:', data);
             
             if (data.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi');
+                alert('✅ ' + PSLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + PSLANG.error_prefix + ': ' + (data.error || PSLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Delete xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + PSLANG.network_error + ': ' + error.message);
         });
     }
 }
@@ -2386,12 +2455,12 @@ function viewSaleDetails(saleId) {
             if (data.success && data.sale) {
                 showSaleDetailsModal(data.sale);
             } else {
-                alert('❌ Savdo tafsilotlarini olishda xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + PSLANG.sale_details_error + ': ' + (data.error || PSLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Savdo tafsilotlari xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + PSLANG.network_error + ': ' + error.message);
         });
 }
 
@@ -2504,11 +2573,11 @@ function closeSaleDetailsModal() {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return '💵 Naqd pul';
-        case 'click': return '📱 Click';
-        case 'terminal': return '💳 Terminal';
-        case 'debt': return '📝 Qarz';
-        default: return method || 'Naqd pul';
+        case 'cash': return '💵 ' + PSLANG.cash_payment;
+        case 'click': return '📱 ' + PSLANG.click_payment;
+        case 'terminal': return '💳 ' + PSLANG.terminal_payment;
+        case 'debt': return '📝 ' + PSLANG.debt_payment;
+        default: return method || PSLANG.cash_payment;
     }
 }
 
@@ -2516,10 +2585,10 @@ function getPaymentMethodText(method) {
 function generatePaymentDetailsHTML(sale) {
     const details = sale.payment_details || {};
     const payments = [
-        { name: '💵 Naqd pul', amount: details.cash || 0 },
-        { name: '📱 Click', amount: details.click || 0 },
-        { name: '💳 Terminal', amount: details.terminal || 0 },
-        { name: '📝 Qarz', amount: details.debt || 0 }
+        { name: '💵 ' + PSLANG.cash_payment, amount: details.cash || 0 },
+        { name: '📱 ' + PSLANG.click_payment, amount: details.click || 0 },
+        { name: '💳 ' + PSLANG.terminal_payment, amount: details.terminal || 0 },
+        { name: '📝 ' + PSLANG.debt_payment, amount: details.debt || 0 }
     ];
     
     // Faqat 0 dan katta to'lovlarni ko'rsatish
@@ -2529,7 +2598,7 @@ function generatePaymentDetailsHTML(sale) {
     if (activePayments.length === 0) {
         return `
             <div class="total-row">
-                <span class="total-label">To'lov turi:</span>
+                <span class="total-label">${PSLANG.payment_type}:</span>
                 <span class="total-value">${getPaymentMethodText(sale.payment_method)}</span>
             </div>
         `;
@@ -2542,7 +2611,7 @@ function generatePaymentDetailsHTML(sale) {
     
     return `
         <div class="total-row">
-            <span class="total-label" style="display: inline-block; margin-right: 15px; vertical-align: middle;">To'lovlar:</span>
+            <span class="total-label" style="display: inline-block; margin-right: 15px; vertical-align: middle;">${PSLANG.payments}:</span>
             <span style="display: inline-block; vertical-align: middle;">${paymentsHTML}</span>
         </div>
     `;
@@ -2551,22 +2620,22 @@ function generatePaymentDetailsHTML(sale) {
 // To'lov holati matnini olish
 function getPaymentStatusText(status) {
     switch (status) {
-        case 'paid': return 'To\'landi';
-        case 'pending': return 'Kutilmoqda';
-        case 'cancelled': return 'Bekor qilindi';
-        default: return status || 'Noma\'lum';
+        case 'paid': return PSLANG.paid_status;
+        case 'pending': return PSLANG.pending;
+        case 'cancelled': return PSLANG.cancelled;
+        default: return status || PSLANG.unknown_customer;
     }
 }
 
 // Excel export funksiyasi (HTML-XLS format - avtomatik qator balandligi)
 function exportSaleToExcel() {
     if (!currentSaleData) {
-        alert('❌ Savdo ma\'lumotlari topilmadi!');
+        alert('❌ ' + PSLANG.sale_data_not_found);
         return;
     }
     const sale = currentSaleData;
     const dateStr = new Date(sale.sale_date).toLocaleString('uz-UZ', {timeZone:'Asia/Tashkent'});
-    const storeName = sale.store_name || "Do'kon";
+    const storeName = sale.store_name || PSLANG.store;
     const custPhone = (sale.customer_phone && sale.customer_phone !== '+998 XX XXX XX XX') ? sale.customer_phone : '';
 
     // Mahsulotlar qatorlari
@@ -3005,10 +3074,10 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return 'Naqd';
-        case 'card': return 'Plastik karta';
-        case 'transfer': return 'O\'tkazma';
-        default: return method || 'Noma\'lum';
+        case 'cash': return PSLANG.cash;
+        case 'card': return PSLANG.plastic_card;
+        case 'transfer': return PSLANG.transfer;
+        default: return method || PSLANG.unknown_customer;
     }
 }
 
@@ -3173,7 +3242,7 @@ async function loadLocationsForFilter() {
         console.log('🔍 Hozirgi select tarkibi:', locationSelect.innerHTML);
         
         // Avvalgi optionlarni tozalash
-        locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
+        locationSelect.innerHTML = '<option value="">' + PSLANG.all_locations + '</option>';
         console.log('🧹 Select tozalandi, yangi tarkib:', locationSelect.innerHTML);
         
         // Do'konlarni qo'shish
@@ -3193,7 +3262,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `store_${store.id}`;
-                option.textContent = `${store.name} (Do'kon)`;
+                option.textContent = `${store.name} (${PSLANG.store})`;
                 storeGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3227,7 +3296,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `warehouse_${warehouse.id}`;
-                option.textContent = `${warehouse.name} (Ombor)`;
+                option.textContent = `${warehouse.name} (${PSLANG.warehouse})`;
                 warehouseGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3261,7 +3330,7 @@ async function loadLocationsForFilter() {
             
             const locationSelect = document.getElementById('locationFilter');
             if (locationSelect) {
-                locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
+                locationSelect.innerHTML = '<option value="">' + PSLANG.all_locations + '</option>';
                 uniqueLocations.forEach(location => {
                     const option = document.createElement('option');
                     option.value = location;
@@ -3320,9 +3389,9 @@ function updateCustomerDropdown() {
     const allOption = document.createElement('div');
     allOption.className = 'customer-option';
     allOption.dataset.value = '';
-    allOption.textContent = 'Barcha mijozlar';
+    allOption.textContent = PSLANG.all_customers;
     allOption.addEventListener('click', function() {
-        selectCustomer('', 'Barcha mijozlar', '');
+        selectCustomer('', PSLANG.all_customers, '');
     });
     customerDropdown.appendChild(allOption);
     
@@ -3396,7 +3465,7 @@ function updateResultsInfo() {
     const filteredResults = filteredSalesData.length;
     
     if (filteredResults < totalResults) {
-        resultsText.textContent = `${filteredResults} ta natija topildi`;
+        resultsText.textContent = `${filteredResults} ${PSLANG.results_found}`;
         resultsInfo.style.display = 'block';
     } else {
         resultsInfo.style.display = 'none';
@@ -3673,7 +3742,7 @@ function updateTableForCompactView() {
     } else {
         // Agar ma'lumotlar yo'q bo'lsa
         const tbody = document.getElementById('salesTableBody');
-        tbody.innerHTML = '<tr><td colspan="7" class="loading">Compact view uchun ma\'lumotlar topilmadi</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">' + PSLANG.compact_no_data + '</td></tr>';
     }
 }
 

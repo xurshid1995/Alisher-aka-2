@@ -1555,6 +1555,94 @@ tbody tr.sale-group-start:first-child {
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <script>
+// ==================== SALES-HISTORY LANG DICT ====================
+const SHLANG = {
+    sale_updated: {{ t('ds_sale_updated')|tojson }},
+    sale_update_error: {{ t('ds_sale_update_error')|tojson }},
+    network_error: {{ t('ds_network_error')|tojson }},
+    sale_deleted: {{ t('ds_sale_deleted')|tojson }},
+    sale_delete_error: {{ t('ds_sale_delete_error')|tojson }},
+    sale_group_delete_error: {{ t('ds_sale_group_delete_error')|tojson }},
+    unknown_error: {{ t('ds_unknown_error')|tojson }},
+    error_prefix: {{ t('ds_error_prefix')|tojson }},
+    sale_details_error: {{ t('ds_sale_details_error')|tojson }},
+    sale_details_show_error: {{ t('ds_sale_details_show_error')|tojson }},
+    sale_data_not_found: {{ t('ds_sale_data_not_found')|tojson }},
+    delete_group_confirm: {{ t('ds_delete_group_confirm')|tojson }},
+    delete_sale_confirm: {{ t('ds_delete_sale_confirm')|tojson }},
+    loading: {{ t('ds_loading')|tojson }},
+    no_data: {{ t('ds_no_data')|tojson }},
+    error_occurred: {{ t('ds_error_occurred')|tojson }},
+    all_locations: {{ t('ds_all_locations')|tojson }},
+    store: {{ t('ds_store')|tojson }},
+    warehouse: {{ t('ds_warehouse')|tojson }},
+    all_customers: {{ t('ds_all_customers')|tojson }},
+    results_found: {{ t('ds_results_found')|tojson }},
+    edit_sale: {{ t('ds_edit_sale')|tojson }},
+    product: {{ t('ds_product')|tojson }},
+    customer: {{ t('ds_customer')|tojson }},
+    quantity: {{ t('ds_quantity')|tojson }},
+    unit_price: {{ t('ds_unit_price')|tojson }},
+    payment_method: {{ t('ds_payment_method')|tojson }},
+    cash: {{ t('ds_cash')|tojson }},
+    card: {{ t('ds_card')|tojson }},
+    credit: {{ t('ds_credit')|tojson }},
+    payment_status: {{ t('ds_payment_status')|tojson }},
+    paid: {{ t('ds_paid')|tojson }},
+    pending: {{ t('ds_pending')|tojson }},
+    partial: {{ t('ds_partial')|tojson }},
+    note: {{ t('ds_note')|tojson }},
+    total_amount: {{ t('ds_total_amount')|tojson }},
+    cancel: {{ t('ds_cancel')|tojson }},
+    save: {{ t('ds_save')|tojson }},
+    sale_details: {{ t('ds_sale_details')|tojson }},
+    print_uzs: {{ t('ds_print_uzs')|tojson }},
+    print_usd: {{ t('ds_print_usd')|tojson }},
+    unknown_customer: {{ t('ds_unknown_customer')|tojson }},
+    sale_date: {{ t('ds_sale_date')|tojson }},
+    products: {{ t('ds_products')|tojson }},
+    location: {{ t('ds_location')|tojson }},
+    price: {{ t('ds_price')|tojson }},
+    subtotal: {{ t('ds_subtotal')|tojson }},
+    returned: {{ t('ds_returned')|tojson }},
+    returned_products: {{ t('ds_returned_products')|tojson }},
+    sum: {{ t('ds_sum')|tojson }},
+    close: {{ t('ds_close')|tojson }},
+    cash_payment: {{ t('ds_cash_payment')|tojson }},
+    click_payment: {{ t('ds_click_payment')|tojson }},
+    terminal_payment: {{ t('ds_terminal_payment')|tojson }},
+    debt_payment: {{ t('ds_debt_payment')|tojson }},
+    payment_type: {{ t('ds_payment_type')|tojson }},
+    total_payment: {{ t('ds_total_payment')|tojson }},
+    refunded_payments: {{ t('ds_refunded_payments')|tojson }},
+    payments: {{ t('ds_payments')|tojson }},
+    paid_status: {{ t('ds_paid_status')|tojson }},
+    cancelled: {{ t('ds_cancelled')|tojson }},
+    compact_no_data: {{ t('ds_compact_no_data')|tojson }},
+    plastic_card: {{ t('ds_plastic_card')|tojson }},
+    transfer: {{ t('ds_transfer')|tojson }},
+    previous: {{ t('ds_previous')|tojson }},
+    next: {{ t('ds_next')|tojson }},
+    stores: {{ t('ds_stores')|tojson }},
+    warehouses: {{ t('ds_warehouses')|tojson }},
+    no_items: {{ t('ds_no_items')|tojson }},
+    cash_customer: {{ t('ds_cash_customer')|tojson }},
+    thank_you: {{ t('ds_thank_you')|tojson }},
+    visit_again: {{ t('ds_visit_again')|tojson }},
+    payment_label: {{ t('ds_payment_label')|tojson }},
+    sale_id: {{ t('ds_sale_id')|tojson }},
+    sale: {{ t('ds_sale')|tojson }},
+    export_excel: {{ t('ds_export_excel')|tojson }},
+    date: {{ t('ds_date')|tojson }},
+    customer_phone: {{ t('ds_customer_phone')|tojson }},
+    seller: {{ t('ds_seller')|tojson }},
+    seller_phone: {{ t('ds_seller_phone')|tojson }},
+    product_name: {{ t('ds_product_name')|tojson }},
+    unit_price_label: {{ t('ds_unit_price_label')|tojson }},
+    total_price: {{ t('ds_total_price')|tojson }},
+    total_label: {{ t('ds_total_label')|tojson }},
+    total_sum: {{ t('ds_total_sum')|tojson }}
+};
 // Dinamik valyuta kursi
 let USD_TO_UZS_RATE = 0; // API dan yuklanadi
 const userRole = '{{ session.role }}'; // Foydalanuvchi roli
@@ -1709,7 +1797,7 @@ function clearTable() {
     // Jadval va statistikalarni tozalash
     const colspan = userRole === 'sotuvchi' ? '10' : '11';
     document.getElementById('salesTableBody').innerHTML = 
-        `<tr><td colspan="${colspan}" class="loading">Ma'lumotlar yuklanmoqda...</td></tr>`;
+        `<tr><td colspan="${colspan}" class="loading">${SHLANG.loading}</td></tr>`;
     document.getElementById('totalSales').textContent = '0';
     document.getElementById('totalRevenue').textContent = '$0';
     
@@ -1914,7 +2002,7 @@ function displaySalesData(data) {
     
     if (!salesData || salesData.length === 0) {
         const colspan = userRole === 'sotuvchi' ? '10' : '11';
-        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">Savdo ma'lumotlari topilmadi</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colspan}" class="loading">${SHLANG.no_data}</td></tr>`;
         return;
     }
     
@@ -1934,7 +2022,7 @@ function displaySalesData(data) {
         // Agar items bo'sh bo'lsa, default item yaratamiz
         if (items.length === 0) {
             items.push({
-                product_name: 'Items mavjud emas',
+                product_name: SHLANG.no_items,
                 quantity: '-',
                 unit_price: 0,
                 total_price: sale.total_amount || 0,
@@ -2107,7 +2195,7 @@ function showEditModal(saleData) {
         <div id="editModal" class="modal-overlay" onclick="closeEditModal(event)">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <div class="modal-header">
-                    <h3><i class="fas fa-edit"></i> Savdoni Tahrirlash</h3>
+                    <h3><i class="fas fa-edit"></i> ${SHLANG.edit_sale}</h3>
                     <button class="close-btn" onclick="closeEditModal()">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -2115,60 +2203,60 @@ function showEditModal(saleData) {
                         <input type="hidden" id="editSaleId" value="${saleData.id}">
                         
                         <div class="form-group">
-                            <label>Mahsulot:</label>
+                            <label>${SHLANG.product}:</label>
                             <input type="text" value="${saleData.product_name}" readonly class="readonly-field">
                         </div>
                         
                         <div class="form-group">
-                            <label>Mijoz:</label>
+                            <label>${SHLANG.customer}:</label>
                             <input type="text" value="${saleData.customer_name}" readonly class="readonly-field">
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="editQuantity">Miqdori:</label>
+                                <label for="editQuantity">${SHLANG.quantity}:</label>
                                 <input type="number" id="editQuantity" value="${saleData.quantity}" min="1" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editUnitPrice">Birlik narxi ($):</label>
+                                <label for="editUnitPrice">${SHLANG.unit_price}:</label>
                                 <input type="number" id="editUnitPrice" value="${saleData.unit_price}" min="0" step="0.01" required>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="editPaymentMethod">To'lov usuli:</label>
+                                <label for="editPaymentMethod">${SHLANG.payment_method}:</label>
                                 <select id="editPaymentMethod" required>
-                                    <option value="cash" ${saleData.payment_method === 'cash' ? 'selected' : ''}>Naqd</option>
-                                    <option value="card" ${saleData.payment_method === 'card' ? 'selected' : ''}>Karta</option>
-                                    <option value="credit" ${saleData.payment_method === 'credit' ? 'selected' : ''}>Kredit</option>
+                                    <option value="cash" ${saleData.payment_method === 'cash' ? 'selected' : ''}>${SHLANG.cash}</option>
+                                    <option value="card" ${saleData.payment_method === 'card' ? 'selected' : ''}>${SHLANG.card}</option>
+                                    <option value="credit" ${saleData.payment_method === 'credit' ? 'selected' : ''}>${SHLANG.credit}</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editPaymentStatus">To'lov holati:</label>
+                                <label for="editPaymentStatus">${SHLANG.payment_status}:</label>
                                 <select id="editPaymentStatus" required>
-                                    <option value="paid" ${saleData.payment_status === 'paid' ? 'selected' : ''}>To'langan</option>
-                                    <option value="pending" ${saleData.payment_status === 'pending' ? 'selected' : ''}>Kutilmoqda</option>
-                                    <option value="partial" ${saleData.payment_status === 'partial' ? 'selected' : ''}>Qisman</option>
+                                    <option value="paid" ${saleData.payment_status === 'paid' ? 'selected' : ''}>${SHLANG.paid}</option>
+                                    <option value="pending" ${saleData.payment_status === 'pending' ? 'selected' : ''}>${SHLANG.pending}</option>
+                                    <option value="partial" ${saleData.payment_status === 'partial' ? 'selected' : ''}>${SHLANG.partial}</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="editNotes">Izoh:</label>
+                            <label for="editNotes">${SHLANG.note}:</label>
                             <textarea id="editNotes" rows="3">${saleData.notes || ''}</textarea>
                         </div>
                         
                         <div class="total-display">
-                            <strong>Jami summa: $<span id="editTotalAmount">${(saleData.quantity * saleData.unit_price).toFixed(2)}</span></strong>
+                            <strong>${SHLANG.total_sum}: $<span id="editTotalAmount">${(saleData.quantity * saleData.unit_price).toFixed(2)}</span></strong>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Bekor qilish</button>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedSale()">Saqlash</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">${SHLANG.cancel}</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedSale()">${SHLANG.save}</button>
                 </div>
             </div>
         </div>
@@ -2227,22 +2315,22 @@ function saveEditedSale() {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            alert('✅ Savdo muvaffaqiyatli yangilandi!');
+            alert('✅ ' + SHLANG.sale_updated);
             closeEditModal();
             forceRefresh(); // Jadvalni yangilash
         } else {
-            alert('❌ Savdoni yangilashda xatolik: ' + result.error);
+            alert('❌ ' + SHLANG.sale_update_error + ': ' + result.error);
         }
     })
     .catch(error => {
         console.error('Update error:', error);
-        alert('❌ Tarmoq xatoligi: ' + error.message);
+        alert('❌ ' + SHLANG.network_error + ': ' + error.message);
     });
 }
 
 function deleteGroup(saleId) {
     // Savdo guruhini o'chirish funksiyasi
-    if (confirm(`Bu savdoni to'liq o'chirishni xohlaysizmi?`)) {
+    if (confirm(SHLANG.delete_group_confirm)) {
         console.log(`🗑️ Savdo o'chirilmoqda: ${saleId}`);
         
         fetch('/api/sales/' + saleId, {
@@ -2256,23 +2344,23 @@ function deleteGroup(saleId) {
             console.log('Delete result:', result);
             
             if (result.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi');
+                alert('✅ ' + SHLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Savdoni o\'chirishda xatolik: ' + result.error);
+                alert('❌ ' + SHLANG.sale_delete_error + ': ' + result.error);
                 forceRefresh(); // Baribir yangilash
             }
         })
         .catch(error => {
             console.error('Delete group error:', error);
-            alert('❌ Savdo guruhini o\'chirishda xatolik: ' + error.message);
+            alert('❌ ' + SHLANG.sale_group_delete_error + ': ' + error.message);
         });
     }
 }
 
 function deleteSale(saleId) {
     // Savdoni o'chirish funksiyasi (eski funksiya, hozir ishlatilmaydi)
-    if (confirm('Bu savdoni o\'chirishni xohlaysizmi?')) {
+    if (confirm(SHLANG.delete_sale_confirm)) {
         console.log(`🗑️ Savdo ${saleId} o'chirilmoqda...`);
         
         fetch('/api/sales/' + saleId, {
@@ -2289,15 +2377,15 @@ function deleteSale(saleId) {
             console.log('Delete response:', data);
             
             if (data.success) {
-                alert('✅ Savdo muvaffaqiyatli o\'chirildi');
+                alert('✅ ' + SHLANG.sale_deleted);
                 forceRefresh(); // Jadvalni majburan yangilash
             } else {
-                alert('❌ Xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + SHLANG.error_prefix + ': ' + (data.error || SHLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Delete xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + SHLANG.network_error + ': ' + error.message);
         });
     }
 }
@@ -2318,7 +2406,7 @@ function updatePaginationButtons() {
     
     // Oldingi sahifa tugmasi
     if (currentPage > 1) {
-        buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})">← Oldingi</button>`;
+        buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})">← ${SHLANG.previous}</button>`;
     }
     
     // Sahifa raqamlari
@@ -2355,7 +2443,7 @@ function updatePaginationButtons() {
     
     // Keyingi sahifa tugmasi
     if (currentPage < totalPages) {
-        buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})">Keyingi →</button>`;
+        buttonsHtml += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})">${SHLANG.next} →</button>`;
     }
     
     paginationContainer.innerHTML = buttonsHtml;
@@ -2384,12 +2472,12 @@ function viewSaleDetails(saleId) {
             if (data.success && data.sale) {
                 showSaleDetailsModal(data.sale);
             } else {
-                alert('❌ Savdo tafsilotlarini olishda xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                alert('❌ ' + SHLANG.sale_details_error + ': ' + (data.error || SHLANG.unknown_error));
             }
         })
         .catch(error => {
             console.error('Savdo tafsilotlari xatolik:', error);
-            alert('❌ Tarmoq xatoligi: ' + error.message);
+            alert('❌ ' + SHLANG.network_error + ': ' + error.message);
         });
 }
 
@@ -2402,15 +2490,15 @@ function showSaleDetailsModal(sale) {
         <div id="saleDetailsModal" class="modal sale-details-modal">
             <div class="modal-content sale-details-content">
                 <div class="modal-header">
-                    <h3><i class="fas fa-eye"></i> Savdo Tafsilotlari</h3>
+                    <h3><i class="fas fa-eye"></i> ${SHLANG.sale_details}</h3>
                     <div class="modal-header-actions">
-                        <button class="btn-print" onclick="printSaleReceipt('uzs')" title="UZS chop etish" style="background: #28a745;">
-                            <i class="fas fa-print"></i> UZS chop etish
+                        <button class="btn-print" onclick="printSaleReceipt('uzs')" title="${SHLANG.print_uzs}" style="background: #28a745;">
+                            <i class="fas fa-print"></i> ${SHLANG.print_uzs}
                         </button>
-                        <button class="btn-print" onclick="printSaleReceipt('usd')" title="USD chop etish" style="background: #17a2b8;">
-                            <i class="fas fa-print"></i> USD chop etish
+                        <button class="btn-print" onclick="printSaleReceipt('usd')" title="${SHLANG.print_usd}" style="background: #17a2b8;">
+                            <i class="fas fa-print"></i> ${SHLANG.print_usd}
                         </button>
-                        <button class="btn-excel" onclick="exportSaleToExcel()" title="Excel ga export">
+                        <button class="btn-excel" onclick="exportSaleToExcel()" title="${SHLANG.export_excel}">
                             <i class="fas fa-file-excel"></i> Excel
                         </button>
                         <button class="close-btn" onclick="closeSaleDetailsModal()">&times;</button>
@@ -2419,11 +2507,11 @@ function showSaleDetailsModal(sale) {
                 <div class="modal-body">
                     <!-- Asosiy ma'lumotlar bir qatorda -->
                     <div class="sale-main-info">
-                        <span class="customer-label">Mijoz:</span>
+                        <span class="customer-label">${SHLANG.customer}:</span>
                         <span class="customer-name">${sale.customer_name || ''}</span>
                         ${sale.customer_phone ? `<span class="customer-phone">(${sale.customer_phone})</span>` : ''}
                         <span class="date-separator">•</span>
-                        <span class="date-label">Savdo sanasi:</span>
+                        <span class="date-label">${SHLANG.sale_date}:</span>
                         <span class="date-value">${new Date(sale.sale_date).toLocaleString('uz-UZ', { 
                             timeZone: 'Asia/Tashkent',
                             year: 'numeric', 
@@ -2434,16 +2522,16 @@ function showSaleDetailsModal(sale) {
                         })}</span>
                     </div>
                     
-                    <h4>Mahsulotlar:</h4>
+                    <h4>${SHLANG.products}:</h4>
                     <div class="products-table">
                         <table class="modal-table">
                             <thead>
                                 <tr>
-                                    <th>Mahsulot</th>
-                                    <th>Joylashuv</th>
-                                    <th>Miqdori</th>
-                                    <th>Narx</th>
-                                    <th>Yig'indi</th>
+                                    <th>${SHLANG.product}</th>
+                                    <th>${SHLANG.location}</th>
+                                    <th>${SHLANG.quantity}</th>
+                                    <th>${SHLANG.price}</th>
+                                    <th>${SHLANG.subtotal}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2461,23 +2549,23 @@ function showSaleDetailsModal(sale) {
                                     
                                     return `
                                     <tr style="${rowStyle}">
-                                        <td style="font-weight: ${isReturned ? '600' : 'normal'};">${quantityBadge}${item.product_name}${isReturned ? ' (Qaytarilgan)' : ''}</td>
+                                        <td style="font-weight: ${isReturned ? '600' : 'normal'};">${quantityBadge}${item.product_name}${isReturned ? ' (' + SHLANG.returned + ')' : ''}</td>
                                         <td>${item.location_name}</td>
                                         <td style="font-weight: ${isReturned ? '600' : 'normal'};">${item.quantity}</td>
                                         <td>
                                             <div>$${unitPriceUSD.toFixed(2)}</div>
-                                            <div style="font-size: 11px; color: ${isReturned ? '#c62828' : '#666'};">${unitPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                            <div style="font-size: 11px; color: ${isReturned ? '#c62828' : '#666'};">${unitPriceUZS.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
                                         </td>
                                         <td>
                                             <div>$${totalPriceUSD.toFixed(2)}</div>
-                                            <div style="font-size: 11px; color: ${isReturned ? '#c62828' : '#666'};">${totalPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                            <div style="font-size: 11px; color: ${isReturned ? '#c62828' : '#666'};">${totalPriceUZS.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
                                         </td>
                                     </tr>
                                 `}).join('')}
                                 ${sale.returned_products && sale.returned_products.length > 0 ? `
                                     <tr style="background: #fff3cd; border-top: 2px solid #ffc107;">
                                         <td colspan="5" style="text-align: center; font-weight: 600; padding: 10px; color: #856404;">
-                                            ⚠️ Qaytarilgan mahsulotlar
+                                            ⚠️ ${SHLANG.returned_products}
                                         </td>
                                     </tr>
                                     ${sale.returned_products.map(item => {
@@ -2489,16 +2577,16 @@ function showSaleDetailsModal(sale) {
                                         
                                         return `
                                         <tr style="background: #ffebee; color: #c62828;">
-                                            <td style="font-weight: 600;">❌ ${item.product_name} (Qaytarilgan)</td>
+                                            <td style="font-weight: 600;">❌ ${item.product_name} (${SHLANG.returned})</td>
                                             <td>${item.location_name}</td>
                                             <td style="font-weight: 600;">-${item.returned_quantity}</td>
                                             <td>
                                                 <div>$${unitPriceUSD.toFixed(2)}</div>
-                                                <div style="font-size: 11px; color: #c62828;">${unitPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                                <div style="font-size: 11px; color: #c62828;">${unitPriceUZS.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
                                             </td>
                                             <td>
                                                 <div>-$${totalPriceUSD.toFixed(2)}</div>
-                                                <div style="font-size: 11px; color: #c62828;">-${totalPriceUZS.toLocaleString('uz-UZ')} so'm</div>
+                                                <div style="font-size: 11px; color: #c62828;">-${totalPriceUZS.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
                                                 <div style="font-size: 11px; font-style: italic; margin-top: 4px;">
                                                     ${item.return_date ? new Date(item.return_date).toLocaleString('uz-UZ', {timeZone: 'Asia/Tashkent', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : ''}
                                                 </div>
@@ -2515,7 +2603,7 @@ function showSaleDetailsModal(sale) {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeSaleDetailsModal()">Yopish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSaleDetailsModal()">${SHLANG.close}</button>
                 </div>
             </div>
         </div>
@@ -2535,11 +2623,11 @@ function closeSaleDetailsModal() {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return '💵 Naqd pul';
-        case 'click': return '📱 Click';
-        case 'terminal': return '💳 Terminal';
-        case 'debt': return '📝 Qarz';
-        default: return method || 'Naqd pul';
+        case 'cash': return '💵 ' + SHLANG.cash_payment;
+        case 'click': return '📱 ' + SHLANG.click_payment;
+        case 'terminal': return '💳 ' + SHLANG.terminal_payment;
+        case 'debt': return '📝 ' + SHLANG.debt_payment;
+        default: return method || SHLANG.cash_payment;
     }
 }
 
@@ -2564,10 +2652,10 @@ function generatePaymentDetailsHTML(sale) {
     const debtUZS = debtUSD * rate;
     
     const payments = [
-        { name: '💵 Naqd pul', usd: cashUSD, uzs: cashUZS, isDebt: false },
-        { name: '📱 Click', usd: clickUSD, uzs: clickUZS, isDebt: false },
-        { name: '💳 Terminal', usd: terminalUSD, uzs: terminalUZS, isDebt: false },
-        { name: '📝 Qarz', usd: debtUSD, uzs: debtUZS, isDebt: true }
+        { name: '💵 ' + SHLANG.cash_payment, usd: cashUSD, uzs: cashUZS, isDebt: false },
+        { name: '📱 ' + SHLANG.click_payment, usd: clickUSD, uzs: clickUZS, isDebt: false },
+        { name: '💳 ' + SHLANG.terminal_payment, usd: terminalUSD, uzs: terminalUZS, isDebt: false },
+        { name: '📝 ' + SHLANG.debt_payment, usd: debtUSD, uzs: debtUZS, isDebt: true }
     ];
     
     const activePayments = payments.filter(p => p.usd > 0);
@@ -2575,7 +2663,7 @@ function generatePaymentDetailsHTML(sale) {
     if (activePayments.length === 0) {
         return `
             <div class="total-row">
-                <span class="total-label">To'lov turi:</span>
+                <span class="total-label">${SHLANG.payment_type}:</span>
                 <span class="total-value">${getPaymentMethodText(sale.payment_method)}</span>
             </div>
         `;
@@ -2586,7 +2674,7 @@ function generatePaymentDetailsHTML(sale) {
             <div style="display: inline-block; background: #f8f9fa; padding: 8px 14px; margin: 4px ${p.isDebt ? '40px' : '8px'} 4px 0; border-radius: 6px; border-left: 4px solid #007bff;">
                 <div style="font-weight: 600; color: #495057; margin-bottom: 2px;">${p.name}</div>
                 <div style="font-size: 15px; font-weight: 700; color: #28a745;">$${p.usd.toFixed(2)}</div>
-                <div style="font-size: 12px; color: #6c757d;">${p.uzs.toLocaleString('uz-UZ')} so'm</div>
+                <div style="font-size: 12px; color: #6c757d;">${p.uzs.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
             </div>
         `)
         .join('');
@@ -2596,9 +2684,9 @@ function generatePaymentDetailsHTML(sale) {
     
     const totalHTML = `
         <div style="display: inline-block; background: #007bff; padding: 8px 14px; margin: 4px 8px 4px 0; border-radius: 6px; border-left: 4px solid #0056b3;">
-            <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">Jami to'lov</div>
+            <div style="font-weight: 600; color: #ffffff; margin-bottom: 2px;">${SHLANG.total_payment}</div>
             <div style="font-size: 15px; font-weight: 700; color: #ffffff;">$${totalUSD.toFixed(2)}</div>
-            <div style="font-size: 12px; color: #ffffff;">${totalUZS.toLocaleString('uz-UZ')} so'm</div>
+            <div style="font-size: 12px; color: #ffffff;">${totalUZS.toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
         </div>
     `;
     
@@ -2607,7 +2695,7 @@ function generatePaymentDetailsHTML(sale) {
     if (sale.payment_refunds && sale.payment_refunds.length > 0) {
         refundsHTML = `
             <div style="margin-top: 15px; padding: 15px; background: #ffebee; border-radius: 6px; border-left: 4px solid #dc3545;">
-                <div style="font-weight: 600; margin-bottom: 10px; color: #c62828;">❌ Qaytarilgan to'lovlar:</div>
+                <div style="font-weight: 600; margin-bottom: 10px; color: #c62828;">❌ ${SHLANG.refunded_payments}:</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">`;
         
         const paymentTypeIcons = {
@@ -2619,17 +2707,17 @@ function generatePaymentDetailsHTML(sale) {
         
         // To'lov turlari nomlari (inglizcha -> o'zbekcha)
         const paymentTypeNames = {
-            'cash': 'Naqd',
+            'cash': SHLANG.cash,
             'click': 'Click',
             'terminal': 'Terminal',
             'payme': 'Payme',
-            'debt': 'Qarz'
+            'debt': SHLANG.debt_payment
         };
         
         sale.payment_refunds.forEach(refund => {
             const paymentType = refund.payment_type || 'cash';
             const icon = paymentTypeIcons[paymentType] || '💰';
-            const typeName = paymentTypeNames[paymentType] || (paymentType ? paymentType.toUpperCase() : 'NOMA\'LUM');
+            const typeName = paymentTypeNames[paymentType] || (paymentType ? paymentType.toUpperCase() : SHLANG.unknown_customer);
             const amountUSD = parseFloat(refund.refund_amount_usd || 0);
             const amountUZS = parseFloat(refund.refund_amount_uzs || 0);
             
@@ -2637,7 +2725,7 @@ function generatePaymentDetailsHTML(sale) {
                 <div style="background: white; padding: 10px 15px; border-radius: 4px; border-left: 3px solid #dc3545;">
                     <div style="font-weight: 600; color: #c62828; margin-bottom: 4px;">${icon} ${typeName}</div>
                     <div style="color: #c62828; font-weight: 600;">-$${amountUSD.toFixed(2)}</div>
-                    <div style="font-size: 11px; color: #c62828;">-${Math.round(amountUZS).toLocaleString('uz-UZ')} so'm</div>
+                    <div style="font-size: 11px; color: #c62828;">-${Math.round(amountUZS).toLocaleString('uz-UZ')} ${SHLANG.sum}</div>
                 </div>`;
         });
         
@@ -2648,7 +2736,7 @@ function generatePaymentDetailsHTML(sale) {
     
     return `
         <div class="total-row">
-            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">To'lovlar:</div>
+            <div style="margin-bottom: 8px; font-weight: 500; color: #495057;">${SHLANG.payments}:</div>
             <div style="display: flex; flex-wrap: wrap; align-items: center;">${paymentsHTML}${totalHTML}</div>
             ${refundsHTML}
         </div>
@@ -2658,22 +2746,22 @@ function generatePaymentDetailsHTML(sale) {
 // To'lov holati matnini olish
 function getPaymentStatusText(status) {
     switch (status) {
-        case 'paid': return 'To\'landi';
-        case 'pending': return 'Kutilmoqda';
-        case 'cancelled': return 'Bekor qilindi';
-        default: return status || 'Noma\'lum';
+        case 'paid': return SHLANG.paid_status;
+        case 'pending': return SHLANG.pending;
+        case 'cancelled': return SHLANG.cancelled;
+        default: return status || SHLANG.unknown_customer;
     }
 }
 
 // Excel export funksiyasi (HTML-XLS format - avtomatik qator balandligi)
 function exportSaleToExcel() {
     if (!currentSaleData) {
-        alert('❌ Savdo ma\'lumotlari topilmadi!');
+        alert('❌ ' + SHLANG.sale_data_not_found);
         return;
     }
     const sale = currentSaleData;
     const dateStr = new Date(sale.sale_date).toLocaleString('uz-UZ', {timeZone:'Asia/Tashkent'});
-    const storeName = sale.store_name || "Do'kon";
+    const storeName = sale.store_name || SHLANG.store;
 
     // Mahsulotlar qatorlari
     let itemsHtml = '';
@@ -2692,7 +2780,7 @@ function exportSaleToExcel() {
     '<head><meta charset="UTF-8">' +
     '<style>table{width:100%;border-collapse:collapse;font-size:20pt;table-layout:fixed;}td,th{padding:12px 10px;word-wrap:break-word;overflow:hidden;}</style>' +
     '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
-    '<x:Name>Savdo ' + sale.id + '</x:Name>' +
+    '<x:Name>' + SHLANG.sale + ' ' + sale.id + '</x:Name>' +
     '<x:WorksheetOptions><x:Print><x:ValidPrinterInfo/><x:PaperSizeIndex>9</x:PaperSizeIndex><x:HorizontalResolution>600</x:HorizontalResolution><x:VerticalResolution>600</x:VerticalResolution></x:Print><x:FitToPage/><x:DoNotDisplayGridlines/><x:PageSetup><x:Layout x:Orientation="Landscape"/></x:PageSetup></x:WorksheetOptions>' +
     '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
     '</head><body>' +
@@ -2700,11 +2788,11 @@ function exportSaleToExcel() {
     '<tr><td colspan="15" style="text-align:center;font-size:22pt;font-weight:bold;background-color:#d9e2f3;">' + storeName + '</td></tr>' +
     '<tr><td colspan="15">&nbsp;</td></tr>' +
     '<tr style="background-color:#f0f0f0;font-weight:bold;">' +
-        '<td colspan="3">Sana</td>' +
-        '<td colspan="4">Mijoz</td>' +
-        '<td colspan="2">Mijoz telefoni</td>' +
-        '<td colspan="4">Sotuvchi</td>' +
-        '<td colspan="2">Sotuvchi telefoni</td>' +
+        '<td colspan="3">' + SHLANG.date + '</td>' +
+        '<td colspan="4">' + SHLANG.customer + '</td>' +
+        '<td colspan="2">' + SHLANG.customer_phone + '</td>' +
+        '<td colspan="4">' + SHLANG.seller + '</td>' +
+        '<td colspan="2">' + SHLANG.seller_phone + '</td>' +
     '</tr>' +
     '<tr>' +
         '<td colspan="3">' + dateStr + '</td>' +
@@ -2717,10 +2805,10 @@ function exportSaleToExcel() {
     '<tr style="background-color:#f0f0f0;font-weight:bold;">' +
         '<td colspan="1">✓</td>' +
         '<td colspan="1">№</td>' +
-        '<td colspan="10">Mahsulot nomi</td>' +
-        '<td colspan="1" style="text-align:center;">Miqdor</td>' +
-        '<td colspan="1">Birlik narxi</td>' +
-        '<td colspan="1">Jami narx</td>' +
+        '<td colspan="10">' + SHLANG.product_name + '</td>' +
+        '<td colspan="1" style="text-align:center;">' + SHLANG.quantity + '</td>' +
+        '<td colspan="1">' + SHLANG.unit_price_label + '</td>' +
+        '<td colspan="1">' + SHLANG.total_price + '</td>' +
     '</tr>' +
     itemsHtml +
     '<tr><td colspan="15">&nbsp;</td></tr>' +
@@ -2729,7 +2817,7 @@ function exportSaleToExcel() {
         '<td colspan="1"></td>' +
         '<td colspan="10"></td>' +
         '<td colspan="1"></td>' +
-        '<td colspan="1" style="font-weight:bold;">Jami:</td>' +
+        '<td colspan="1" style="font-weight:bold;">' + SHLANG.total_label + ':</td>' +
         '<td colspan="1" style="font-weight:bold;">' + parseFloat(sale.total_amount).toFixed(2) + '$</td>' +
     '</tr>' +
     '</table></body></html>';
@@ -2749,7 +2837,7 @@ function exportSaleToExcel() {
 // Chop etish funksiyasi - Mini X90 printer uchun
 function printSaleReceipt(currency = 'uzs') {
     if (!currentSaleData) {
-        alert('❌ Savdo ma\'lumotlari topilmadi!');
+        alert('❌ ' + SHLANG.sale_data_not_found);
         return;
     }
     
@@ -2775,22 +2863,22 @@ function formatPaymentDetails(paymentDetails, currency = 'uzs', exchangeRate = 1
         
         if (currency === 'uzs') {
             // Faqat UZS qiymat ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (clickUSD > 0) formatted.push('Click: ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (terminalUSD > 0) formatted.push('Terminal: ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (debtUSD > 0) formatted.push('Qarz: ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
+            if (cashUSD > 0) formatted.push(SHLANG.cash + ': ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (clickUSD > 0) formatted.push('Click: ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (terminalUSD > 0) formatted.push('Terminal: ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (debtUSD > 0) formatted.push(SHLANG.debt_payment + ': ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
         } else if (currency === 'both') {
             // Ikkala valyutani ham ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: $' + cashUSD.toFixed(2) + ' / ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (clickUSD > 0) formatted.push('Click: $' + clickUSD.toFixed(2) + ' / ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (terminalUSD > 0) formatted.push('Terminal: $' + terminalUSD.toFixed(2) + ' / ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
-            if (debtUSD > 0) formatted.push('Qarz: $' + debtUSD.toFixed(2) + ' / ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' som');
+            if (cashUSD > 0) formatted.push(SHLANG.cash + ': $' + cashUSD.toFixed(2) + ' / ' + Math.round(cashUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (clickUSD > 0) formatted.push('Click: $' + clickUSD.toFixed(2) + ' / ' + Math.round(clickUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (terminalUSD > 0) formatted.push('Terminal: $' + terminalUSD.toFixed(2) + ' / ' + Math.round(terminalUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
+            if (debtUSD > 0) formatted.push(SHLANG.debt_payment + ': $' + debtUSD.toFixed(2) + ' / ' + Math.round(debtUSD * exchangeRate).toLocaleString('uz-UZ') + ' ' + SHLANG.sum);
         } else {
             // Faqat USD qiymat ko'rsatish
-            if (cashUSD > 0) formatted.push('Naqd: $' + cashUSD.toFixed(2));
+            if (cashUSD > 0) formatted.push(SHLANG.cash + ': $' + cashUSD.toFixed(2));
             if (clickUSD > 0) formatted.push('Click: $' + clickUSD.toFixed(2));
             if (terminalUSD > 0) formatted.push('Terminal: $' + terminalUSD.toFixed(2));
-            if (debtUSD > 0) formatted.push('Qarz: $' + debtUSD.toFixed(2));
+            if (debtUSD > 0) formatted.push(SHLANG.debt_payment + ': $' + debtUSD.toFixed(2));
         }
         
         return formatted.join('<br>');
@@ -2830,7 +2918,7 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Savdo ID: ${sale.id}</title>
+            <title>${SHLANG.sale_id}: ${sale.id}</title>
             <meta charset="utf-8">
             <style>
                 * {
@@ -3035,20 +3123,20 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
         </head>
         <body>
             <div class="header">
-                <div class="shop-name">${sale.store_name || "Do'kon"}</div>
+                <div class="shop-name">${sale.store_name || SHLANG.store}</div>
                 <div style="border-top: 1px solid #000; padding-top: 2mm; margin-top: 2mm;">
-                    <div class="receipt-info">Savdo ID: ${sale.id} | ${new Date(sale.sale_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' })}</div>
+                    <div class="receipt-info">${SHLANG.sale_id}: ${sale.id} | ${new Date(sale.sale_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' })}</div>
                 </div>
                 
                 <div class="customer-seller-info">
                     <div>
-                        <div class="info-label">Mijoz:</div>
-                        <div class="info-name">${sale.customer_name || 'Naqd mijoz'}</div>
+                        <div class="info-label">${SHLANG.customer}:</div>
+                        <div class="info-name">${sale.customer_name || SHLANG.cash_customer}</div>
                         ${sale.customer_phone ? '<div class="info-phone">' + formatPhoneForPrint(sale.customer_phone) + '</div>' : ''}
                     </div>
                     <div>
-                        <div class="info-label">Sotuvchi:</div>
-                        <div class="info-name">${sale.seller_name || 'Sotuvchi'}</div>
+                        <div class="info-label">${SHLANG.seller}:</div>
+                        <div class="info-name">${sale.seller_name || SHLANG.seller}</div>
                         ${sale.seller_phone ? '<div class="info-phone">' + formatPhoneForPrint(sale.seller_phone) + '</div>' : ''}
                     </div>
                 </div>
@@ -3058,9 +3146,9 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
                 <table>
                     <thead>
                         <tr>
-                            <th>Mahsulot</th>
-                            <th>Miqdor</th>
-                            <th>Narx</th>
+                            <th>${SHLANG.product}</th>
+                            <th>${SHLANG.quantity}</th>
+                            <th>${SHLANG.price}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -3085,7 +3173,7 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
             
             <div class="totals">
                 <div style="display: flex; justify-content: space-between;">
-                    <span>Jami summa:</span>
+                    <span>${SHLANG.total_sum}:</span>
                     <span>${currency === 'both' 
                         ? '$' + parseFloat(sale.total_amount).toFixed(2) + '<br><span class="uzs-value">' + Math.round(parseFloat(sale.total_amount) * exchangeRate).toLocaleString('uz-UZ') + '</span>'
                         : currency === 'uzs' 
@@ -3095,11 +3183,11 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
                 </div>
             </div>
             
-            ${sale.payment_details ? "<div class='payment-info'><div class='payment-label'>To'lov:</div><div class='payment-details'>" + formatPaymentDetails(sale.payment_details, currency, exchangeRate) + "</div></div>" : ''}
+            ${sale.payment_details ? "<div class='payment-info'><div class='payment-label'>" + SHLANG.payment_label + ":</div><div class='payment-details'>" + formatPaymentDetails(sale.payment_details, currency, exchangeRate) + "</div></div>" : ''}
             
             <div class="footer">
-                <div>Rahmat!</div>
-                <div>Yana tashrif buyuring!</div>
+                <div>${SHLANG.thank_you}</div>
+                <div>${SHLANG.visit_again}</div>
             </div>
             
             <div class="qr-code">
@@ -3123,10 +3211,10 @@ function generatePrintableReceipt(sale, currency = 'uzs') {
 // To'lov turi matnini olish
 function getPaymentMethodText(method) {
     switch (method) {
-        case 'cash': return 'Naqd';
-        case 'card': return 'Plastik karta';
-        case 'transfer': return 'O\'tkazma';
-        default: return method || 'Noma\'lum';
+        case 'cash': return SHLANG.cash;
+        case 'card': return SHLANG.plastic_card;
+        case 'transfer': return SHLANG.transfer;
+        default: return method || SHLANG.unknown_customer;
     }
 }
 
@@ -3299,7 +3387,7 @@ async function loadLocationsForFilter() {
         if (stores && stores.length > 0) {
             console.log(`✅ ${stores.length} ta do'kon topildi`);
             const storeGroup = document.createElement('optgroup');
-            storeGroup.label = '🏪 Do\'konlar';
+            storeGroup.label = '🏪 ' + SHLANG.stores;
             
             stores.forEach((store, index) => {
                 console.log(`🏪 Do'kon ${index + 1}:`, {
@@ -3311,7 +3399,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `store_${store.id}`;
-                option.textContent = `${store.name} (Do'kon)`;
+                option.textContent = `${store.name} (${SHLANG.store})`;
                 storeGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3333,7 +3421,7 @@ async function loadLocationsForFilter() {
         if (warehouses && warehouses.length > 0) {
             console.log(`✅ ${warehouses.length} ta ombor topildi`);
             const warehouseGroup = document.createElement('optgroup');
-            warehouseGroup.label = '🏭 Omborlar';
+            warehouseGroup.label = '🏭 ' + SHLANG.warehouses;
             
             warehouses.forEach((warehouse, index) => {
                 console.log(`🏭 Ombor ${index + 1}:`, {
@@ -3345,7 +3433,7 @@ async function loadLocationsForFilter() {
                 
                 const option = document.createElement('option');
                 option.value = `warehouse_${warehouse.id}`;
-                option.textContent = `${warehouse.name} (Ombor)`;
+                option.textContent = `${warehouse.name} (${SHLANG.warehouse})`;
                 warehouseGroup.appendChild(option);
                 
                 console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
@@ -3438,9 +3526,9 @@ function updateCustomerDropdown() {
     const allOption = document.createElement('div');
     allOption.className = 'customer-option';
     allOption.dataset.value = '';
-    allOption.textContent = 'Barcha mijozlar';
+    allOption.textContent = SHLANG.all_customers;
     allOption.addEventListener('click', function() {
-        selectCustomer('', 'Barcha mijozlar', '');
+        selectCustomer('', SHLANG.all_customers, '');
     });
     customerDropdown.appendChild(allOption);
     
@@ -3791,7 +3879,7 @@ function updateTableForCompactView() {
     } else {
         // Agar ma'lumotlar yo'q bo'lsa
         const tbody = document.getElementById('salesTableBody');
-        tbody.innerHTML = '<tr><td colspan="7" class="loading">Compact view uchun ma\'lumotlar topilmadi</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">' + SHLANG.compact_no_data + '</td></tr>';
     }
 }
 
