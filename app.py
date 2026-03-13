@@ -12707,17 +12707,35 @@ def api_login():
         # Session'ni har doim permanent qilish (8 soat)
         session.permanent = True
 
-        # Foydalanuvchi tilini yuklash (faqat DB dan — yagona manba)
+        # Foydalanuvchi tilini yuklash
+        # Login sahifasida tanlangan til (session da bor, lekin DB da yo'q) — prioritet
+        login_selected_lang = session.get('language')
+        valid_languages = ['uz_latin', 'uz_cyrillic', 'ru']
         try:
             user_lang_setting = Settings.query.filter_by(key=f'user_language_{user.id}').first()
-            if user_lang_setting:
-                session['language'] = user_lang_setting.value
-                logger.info(f"🌐 Foydalanuvchi tili DB dan yuklandi: {user_lang_setting.value}")
+            if login_selected_lang and login_selected_lang in valid_languages:
+                # Login sahifasida til tanlangan — uni ishlatamiz va DB ga saqlaymiz
+                final_lang = login_selected_lang
+                if user_lang_setting:
+                    user_lang_setting.value = final_lang
+                else:
+                    db.session.add(Settings(
+                        key=f'user_language_{user.id}',
+                        value=final_lang,
+                        description=f'Foydalanuvchi {user.id} uchun til'
+                    ))
+                db.session.commit()
+                logger.info(f"🌐 Login sahifasidagi til saqlandi: {final_lang}")
+            elif user_lang_setting and user_lang_setting.value in valid_languages:
+                # Login sahifasida til tanlanmagan — DB dan yuklaymiz
+                final_lang = user_lang_setting.value
+                logger.info(f"🌐 Foydalanuvchi tili DB dan yuklandi: {final_lang}")
             else:
-                session['language'] = 'uz_latin'  # Standart til
+                final_lang = 'uz_latin'
+            session['language'] = final_lang
         except Exception as e:
             logger.error(f"Til yuklashda xato: {e}")
-            session['language'] = 'uz_latin'
+            session['language'] = login_selected_lang if login_selected_lang in valid_languages else 'uz_latin'
 
         # Muvaffaqiyatli javob
         redirect_url = '/dashboard'  # Barcha foydalanuvchilar bosh sahifaga
