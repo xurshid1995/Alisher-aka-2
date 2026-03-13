@@ -268,9 +268,82 @@
         }
     }
 
+    /* Language Selector */
+    .login-lang-selector {
+        position: fixed;
+        top: 16px;
+        right: 20px;
+        z-index: 100;
+    }
+    .login-lang-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 13px;
+        cursor: pointer;
+        outline: none;
+        backdrop-filter: blur(4px);
+        transition: background 0.2s;
+    }
+    .login-lang-btn:hover { background: rgba(255,255,255,0.25); }
+    .login-lang-menu {
+        display: none;
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        min-width: 160px;
+        overflow: hidden;
+        z-index: 9999;
+    }
+    .login-lang-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #333;
+        transition: background 0.2s;
+    }
+    .login-lang-option:hover { background: #f0f4ff; }
+    .login-lang-option.active { background: #e8edff; font-weight: 600; }
     </style>
 </head>
 <body>
+    <!-- Til tanlash -->
+    <div class="login-lang-selector">
+        <button type="button" class="login-lang-btn" id="loginLangBtn" onclick="toggleLoginLang()">
+            {% if current_language == 'uz_cyrillic' %}
+            <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#0099B5"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#1EB53A"/><rect y="4.17" width="20" height="1" fill="#CE1126"/><rect y="8.83" width="20" height="1" fill="#CE1126"/><circle cx="6" cy="2.3" r="1.3" fill="#fff"/><circle cx="6.6" cy="2.3" r="1" fill="#0099B5"/></svg> <span>Ўзбекча</span>
+            {% elif current_language == 'ru' %}
+            <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#fff"/><rect y="4.67" width="20" height="4.67" fill="#0039A6"/><rect y="9.33" width="20" height="4.67" fill="#D52B1E"/></svg> <span>Русский</span>
+            {% else %}
+            <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#0099B5"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#1EB53A"/><rect y="4.17" width="20" height="1" fill="#CE1126"/><rect y="8.83" width="20" height="1" fill="#CE1126"/><circle cx="6" cy="2.3" r="1.3" fill="#fff"/><circle cx="6.6" cy="2.3" r="1" fill="#0099B5"/></svg> <span>O'zbekcha</span>
+            {% endif %}
+            <span style="font-size:10px;">▼</span>
+        </button>
+        <div class="login-lang-menu" id="loginLangMenu">
+            <div class="login-lang-option{% if current_language == 'uz_latin' %} active{% endif %}" onclick="changeLoginLang('uz_latin')">
+                <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#0099B5"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#1EB53A"/><rect y="4.17" width="20" height="1" fill="#CE1126"/><rect y="8.83" width="20" height="1" fill="#CE1126"/><circle cx="6" cy="2.3" r="1.3" fill="#fff"/><circle cx="6.6" cy="2.3" r="1" fill="#0099B5"/></svg> O'zbekcha
+            </div>
+            <div class="login-lang-option{% if current_language == 'uz_cyrillic' %} active{% endif %}" onclick="changeLoginLang('uz_cyrillic')">
+                <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#0099B5"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#1EB53A"/><rect y="4.17" width="20" height="1" fill="#CE1126"/><rect y="8.83" width="20" height="1" fill="#CE1126"/><circle cx="6" cy="2.3" r="1.3" fill="#fff"/><circle cx="6.6" cy="2.3" r="1" fill="#0099B5"/></svg> Ўзбекча
+            </div>
+            <div class="login-lang-option{% if current_language == 'ru' %} active{% endif %}" onclick="changeLoginLang('ru')">
+                <svg width="20" height="14" viewBox="0 0 20 14" style="border-radius:2px;flex-shrink:0;"><rect width="20" height="4.67" fill="#fff"/><rect y="4.67" width="20" height="4.67" fill="#0039A6"/><rect y="9.33" width="20" height="4.67" fill="#D52B1E"/></svg> Русский
+            </div>
+        </div>
+    </div>
+
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
@@ -496,6 +569,31 @@
         }
     }
 
+    // Til o'zgartirish (login sahifasi)
+    function changeLoginLang(lang) {
+        fetch('/api/settings/language', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({language: lang})
+        }).then(res => res.json()).then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        }).catch(err => console.error('Til xato:', err));
+    }
+
+    function toggleLoginLang() {
+        const menu = document.getElementById('loginLangMenu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('loginLangMenu');
+        const btn = document.getElementById('loginLangBtn');
+        if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
     </script>
 </body>
 </html>
