@@ -2031,8 +2031,8 @@ def api_products():
     from sqlalchemy import desc, func
     from sqlalchemy import select as sa_select
 
-    # Correlated subquery: har bir mahsulot uchun joylashuvdagi umumiy sotilgan miqdor
-    sold_sq = sa_select(func.coalesce(func.sum(SaleItem.quantity), 0)).where(
+    # Correlated subquery: har bir mahsulot uchun joylashuvdagi sotuvlar soni
+    sold_sq = sa_select(func.coalesce(func.count(SaleItem.id), 0)).where(
         SaleItem.product_id == Product.id
     )
     if final_loc_type and final_loc_id:
