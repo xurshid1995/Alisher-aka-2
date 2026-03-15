@@ -6113,7 +6113,10 @@ def api_debts():
                     MIN(s.payment_due_date) as nearest_due_date
                 FROM customers c
                 LEFT JOIN sales s ON c.id = s.customer_id AND s.debt_usd > 0
-                WHERE c.store_id = :location_id
+                WHERE c.id IN (
+                    SELECT DISTINCT customer_id FROM sales
+                    WHERE location_id = :location_id AND debt_usd > 0
+                )
                 GROUP BY c.id, c.name, c.phone, c.address, c.last_debt_payment_date, c.last_debt_payment_usd, c.last_debt_payment_rate
                 HAVING COALESCE(SUM(s.debt_usd), 0) > 0
                 ORDER BY remaining_debt DESC
@@ -6144,7 +6147,10 @@ def api_debts():
                         MIN(s.payment_due_date) as nearest_due_date
                     FROM customers c
                     LEFT JOIN sales s ON c.id = s.customer_id AND s.debt_usd > 0
-                    WHERE c.store_id = ANY(:location_ids)
+                    WHERE c.id IN (
+                        SELECT DISTINCT customer_id FROM sales
+                        WHERE location_id = ANY(:location_ids) AND debt_usd > 0
+                    )
                     GROUP BY c.id, c.name, c.phone, c.address, c.last_debt_payment_date, c.last_debt_payment_usd, c.last_debt_payment_rate
                     HAVING COALESCE(SUM(s.debt_usd), 0) > 0
                     ORDER BY remaining_debt DESC
