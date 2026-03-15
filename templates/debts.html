@@ -1592,7 +1592,7 @@
     // To'langan qarzlarni yuklash
     async function loadPaidDebts() {
         try {
-            const url = selectedLocation ? `/api/debts/paid?location_id=${selectedLocation}` : '/api/debts/paid';
+            const url = selectedLocation ? `/api/debts/paid?location_id=${selectedLocation}&location_type=${selectedLocationType}` : '/api/debts/paid';
             
             const response = await fetch(url);
             if (!response.ok) throw new Error('Ma\'lumotlarni yuklashda xatolik');

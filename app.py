@@ -6257,6 +6257,7 @@ def api_paid_debts():
 
         # Location filter parametri
         location_id = request.args.get('location_id', type=int)
+        location_type = request.args.get('location_type', type=str, default='store')
 
         # Allowed locations tekshirish
         allowed_location_ids = None
@@ -6276,6 +6277,10 @@ def api_paid_debts():
             if allowed_location_ids is not None and location_id not in allowed_location_ids:
                 return jsonify({'success': True, 'paid_debts': []})
 
+            # Warehouse tanlansa, customers da warehouse_id maydoni yo'q
+            if location_type == 'warehouse':
+                return jsonify({'success': True, 'paid_debts': []})
+
             query = text("""
                 SELECT
                     s.id as sale_id,
@@ -6291,7 +6296,7 @@ def api_paid_debts():
                 JOIN debt_payments dp ON dp.sale_id = s.id
                 WHERE s.payment_status = 'paid'
                     AND s.debt_usd = 0
-                    AND s.location_id = :location_id
+                    AND c.store_id = :location_id
                 GROUP BY s.id, c.name, s.created_at, s.total_amount, s.cash_usd, s.click_usd, s.terminal_usd
                 ORDER BY MAX(dp.payment_date) DESC
                 LIMIT 200
@@ -6303,8 +6308,13 @@ def api_paid_debts():
                 if not allowed_location_ids:
                     return jsonify({'success': True, 'paid_debts': []})
 
-                placeholders = ','.join([f':loc{i}' for i in range(len(allowed_location_ids))])
-                query = text(f"""
+                # Faqat store ID larini olish
+                allowed_store_ids = extract_location_ids(
+                    current_user.allowed_locations or [], 'store')
+                if not allowed_store_ids:
+                    return jsonify({'success': True, 'paid_debts': []})
+
+                query = text("""
                 SELECT
                     s.id as sale_id,
                     MAX(dp.payment_date) as payment_date,
@@ -6319,13 +6329,12 @@ def api_paid_debts():
                 JOIN debt_payments dp ON dp.sale_id = s.id
                 WHERE s.payment_status = 'paid'
                     AND s.debt_usd = 0
-                    AND s.location_id IN ({placeholders})
+                    AND c.store_id = ANY(:store_ids)
                 GROUP BY s.id, c.name, s.created_at, s.total_amount, s.cash_usd, s.click_usd, s.terminal_usd
                 ORDER BY MAX(dp.payment_date) DESC
                 LIMIT 200
             """)
-                params = {f'loc{i}': loc_id for i, loc_id in enumerate(allowed_location_ids)}
-                result = db.session.execute(query, params)
+                result = db.session.execute(query, {'store_ids': allowed_store_ids})
             else:
                 # Admin - barcha qarzlarni ko'radi
                 query = text("""
