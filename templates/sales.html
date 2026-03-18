@@ -100,7 +100,7 @@
     .sales-product-table {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 630px !important;
+        min-width: 0 !important;
         border-collapse: collapse !important;
         table-layout: fixed !important;
     }
@@ -185,6 +185,26 @@
         }
     }
     
+    /* O'rta ekranlar uchun (tablet/medium) - Amal ustunini yashirish */
+    @media (max-width: 1100px) {
+        .sales-product-table th:nth-child(4),
+        .sales-product-table td:nth-child(4) {
+            display: none !important;
+        }
+        .sales-product-table th:nth-child(1) { width: 45% !important; }
+        .sales-product-table th:nth-child(2) { width: 22% !important; }
+        .sales-product-table th:nth-child(3) { width: 33% !important; }
+        .sales-product-table td:nth-child(1) { width: 45% !important; }
+        .sales-product-table td:nth-child(2) { width: 22% !important; }
+        .sales-product-table td:nth-child(3) { width: 33% !important; }
+        .sales-product-table tbody tr {
+            cursor: pointer !important;
+        }
+        .sales-product-table tbody tr:hover {
+            background-color: #f0f8ff !important;
+        }
+    }
+
     /* Mobile responsive */
     @media (max-width: 768px) {
         .sales-layout-box {
