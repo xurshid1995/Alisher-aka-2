@@ -166,7 +166,7 @@
 
 .sales-history-page .sales-table {
     width: 100% !important;
-    min-width: 0 !important;
+    min-width: 1000px !important;
     max-width: 100% !important;
     border-collapse: collapse;
     font-size: 14px;
@@ -186,30 +186,6 @@
 .sales-history-page .sales-table .col-profit { width: 7%; text-align: right; font-weight: 600; color: #27ae60; font-size: 13px !important; white-space: nowrap !important; }
 .sales-history-page .sales-table .col-actions { width: 5%; text-align: center; border-right: none; font-size: 13px !important; white-space: nowrap !important; }
 
-/* O'rta ekranlar (≤1200px): col-seller, col-location, col-quantity, col-price, col-subtotal, col-profit yashirish */
-@media (max-width: 1200px) {
-    .sales-history-page .sales-table .col-seller,
-    .sales-history-page .sales-table .col-location,
-    .sales-history-page .sales-table .col-quantity,
-    .sales-history-page .sales-table .col-price,
-    .sales-history-page .sales-table .col-subtotal,
-    .sales-history-page .sales-table .col-profit {
-        display: none !important;
-    }
-    .sales-history-page .sales-table .col-datetime { width: 13%; }
-    .sales-history-page .sales-table .col-customer { width: 17%; }
-    .sales-history-page .sales-table .col-product { width: 50%; }
-    .sales-history-page .sales-table .col-total { width: 13%; white-space: normal !important; }
-    .sales-history-page .sales-table .col-actions { width: 7%; }
-}
-
-/* Kichik ekranlar (≤768px) */
-@media (max-width: 768px) {
-    .sales-history-page .sales-table .col-customer { width: 18%; }
-    .sales-history-page .sales-table .col-product { width: 52%; }
-    .sales-history-page .sales-table .col-total { width: 13%; }
-    .sales-history-page .sales-table .col-actions { width: 7%; }
-}
 
 .sales-history-page .sales-table td {
     padding: 8px 6px;
