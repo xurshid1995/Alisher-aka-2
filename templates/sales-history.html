@@ -3836,8 +3836,8 @@ function updateTableForCompactView() {
                         <div class="customer-name">${firstItem.customer_name || ''}</div>
                         ${firstItem.customer_phone ? `<div class="customer-phone">${firstItem.customer_phone}</div>` : ''}
                     </td>
-                    <td class="col-seller">${firstItem.seller_name || 'Admin'}</td>
-                    <td class="col-location">${firstItem.items && firstItem.items.length > 0 ? firstItem.items[0].location_name : (firstItem.store_name || '🚫 O\'chirilgan do\'kon')}</td>
+                    <td class="col-seller compact-hide">${firstItem.seller_name || 'Admin'}</td>
+                    <td class="col-location compact-hide">${firstItem.items && firstItem.items.length > 0 ? firstItem.items[0].location_name : (firstItem.store_name || '🚫 O\'chirilgan do\'kon')}</td>
                     <td class="col-product">${firstItem.items ? firstItem.items.length : 0} ta mahsulot</td>
                     <td class="col-quantity compact-hide" style="display: none;"></td>
                     <td class="col-price compact-hide" style="display: none;"></td>
