@@ -49,21 +49,14 @@
 
     <!-- Mahsulot bor savdolar jadvali -->
     <div id="recentSalesSection" style="display: none; background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3 style="margin-bottom: 15px; color: #333;">📊 {{ t('product_sales') }}</h3>
-        
-        <!-- Filtr paneli -->
-        <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; align-items: end;">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-                <label style="font-size: 12px; font-weight: 500; color: #666;">Mijoz bo'yicha qidiruv:</label>
-                <input type="text" id="saleCustomerFilter" oninput="filterProductSales()" placeholder="Mijoz ismi..." 
-                       style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 200px; outline: none;">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-                <label style="font-size: 12px; font-weight: 500; color: #666;">Savdo ID:</label>
-                <input type="number" id="saleIdFilterReturn" oninput="filterProductSales()" placeholder="ID raqam" 
-                       style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 120px; outline: none;" min="1">
-            </div>
-            <button onclick="clearProductSaleFilters()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 13px;">✕ Tozalash</button>
+        <!-- Sarlavha va filtrlar bir qatorda -->
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 15px; flex-wrap: wrap;">
+            <h3 style="margin: 0; color: #333; white-space: nowrap;">📊 {{ t('product_sales') }}</h3>
+            <input type="text" id="saleCustomerFilter" oninput="filterProductSales()" placeholder="Mijoz ismi..." 
+                   style="padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 190px; outline: none;">
+            <input type="number" id="saleIdFilterReturn" oninput="filterProductSales()" placeholder="Savdo ID" 
+                   style="padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 110px; outline: none;" min="1">
+            <button onclick="clearProductSaleFilters()" style="padding: 7px 14px; background: #6c757d; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 13px;">✕ Tozalash</button>
         </div>
         
         <div style="overflow-x: auto;">
