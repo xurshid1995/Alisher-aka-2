@@ -52,10 +52,12 @@
         <!-- Sarlavha va filtrlar bir qatorda -->
         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 15px; flex-wrap: wrap;">
             <h3 style="margin: 0; color: #333; white-space: nowrap;">📊 {{ t('product_sales') }}</h3>
-            <select id="saleCustomerFilter" onchange="filterProductSales()"
-                   style="padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 200px; outline: none; cursor: pointer; background: white;">
-                <option value="">Barcha mijozlar</option>
-            </select>
+            <div style="position: relative;">
+                <input type="text" id="saleCustomerFilter" oninput="onCustomerFilterInput()" onfocus="onCustomerFilterInput()" 
+                       placeholder="Mijoz ismi..." autocomplete="off"
+                       style="padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 190px; outline: none;">
+                <div id="customerFilterDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #ddd; border-radius:8px; max-height:200px; overflow-y:auto; z-index:999; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-top:4px;"></div>
+            </div>
             <input type="number" id="saleIdFilterReturn" oninput="filterProductSales()" placeholder="Savdo ID" 
                    style="padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; width: 110px; outline: none;" min="1">
             <button onclick="clearProductSaleFilters()" style="padding: 7px 14px; background: #6c757d; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 13px;">✕ Tozalash</button>
@@ -518,14 +520,58 @@
         salesTableBody.innerHTML = html;
     }
 
-    function filterProductSales() {
-        const customerFilter = document.getElementById('saleCustomerFilter').value;
-        const idFilter = document.getElementById('saleIdFilterReturn').value.trim();
+    let selectedCustomerName = ''; // tanlangan mijoz nomi
 
+    function onCustomerFilterInput() {
+        const input = document.getElementById('saleCustomerFilter');
+        const dropdown = document.getElementById('customerFilterDropdown');
+        const term = input.value.trim().toLowerCase();
+
+        // Agar foydalanuvchi o'chirsa — filterni ham tozala
+        if (!input.value.trim()) {
+            selectedCustomerName = '';
+            filterProductSales();
+        }
+
+        const uniqueCustomers = [...new Set(allProductSalesData.map(s => s.customer_name).filter(Boolean))].sort();
+        const matched = term ? uniqueCustomers.filter(n => n.toLowerCase().includes(term)) : uniqueCustomers;
+
+        if (matched.length === 0) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        dropdown.innerHTML = matched.map(name =>
+            `<div onclick="selectCustomerFilter('${name.replace(/'/g, "\\'")}')"
+                  style="padding:9px 14px; cursor:pointer; font-size:13px; border-bottom:1px solid #f0f0f0;"
+                  onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background=''">${
+                    name.replace(new RegExp(term, 'gi'), m => `<b>${m}</b>`)}
+            </div>`
+        ).join('');
+        dropdown.style.display = 'block';
+    }
+
+    function selectCustomerFilter(name) {
+        selectedCustomerName = name;
+        document.getElementById('saleCustomerFilter').value = name;
+        document.getElementById('customerFilterDropdown').style.display = 'none';
+        filterProductSales();
+    }
+
+    document.addEventListener('click', function(e) {
+        const input = document.getElementById('saleCustomerFilter');
+        const dropdown = document.getElementById('customerFilterDropdown');
+        if (dropdown && input && !input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    function filterProductSales() {
+        const idFilter = document.getElementById('saleIdFilterReturn').value.trim();
         let filtered = allProductSalesData;
 
-        if (customerFilter) {
-            filtered = filtered.filter(s => (s.customer_name || '') === customerFilter);
+        if (selectedCustomerName) {
+            filtered = filtered.filter(s => (s.customer_name || '') === selectedCustomerName);
         }
         if (idFilter) {
             filtered = filtered.filter(s => String(s.id) === idFilter);
@@ -535,18 +581,14 @@
     }
 
     function buildCustomerDropdown(sales) {
-        const select = document.getElementById('saleCustomerFilter');
-        const uniqueCustomers = [...new Set(sales.map(s => s.customer_name).filter(Boolean))].sort();
-        let html = '<option value="">Barcha mijozlar</option>';
-        uniqueCustomers.forEach(name => {
-            html += `<option value="${name}">${name}</option>`;
-        });
-        select.innerHTML = html;
+        // Dropdown avtomatik quriladi — hech narsa qilish shart emas
     }
 
     function clearProductSaleFilters() {
+        selectedCustomerName = '';
         document.getElementById('saleCustomerFilter').value = '';
         document.getElementById('saleIdFilterReturn').value = '';
+        document.getElementById('customerFilterDropdown').style.display = 'none';
         renderProductSalesTable(allProductSalesData);
     }
 
