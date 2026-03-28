@@ -474,6 +474,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Tekshirilgan mahsulotlarni sinxronlashtirish (real-time yangilanish)
 async function syncCheckedProducts() {
+    // Agar foydalanuvchi haqiqiy miqdor inputini tahrirlayotgan bo'lsa, sinxronlashtirishni o'tkazib yuborish
+    const activeEl = document.activeElement;
+    if (activeEl && activeEl.type === 'number' && activeEl.closest('#checkedTableBody')) {
+        return;
+    }
+
     try {
         const response = await fetch(`/api/check_stock/items/${sessionId}`);
         const data = await response.json();
@@ -1045,20 +1051,42 @@ function displayCheckedTable(products) {
 }
 
 // Haqiqiy miqdorni yangilash
-function updateActualQuantity(productId, actualQty) {
+async function updateActualQuantity(productId, actualQty) {
     const product = checkedProducts.find(p => p.id === productId);
-    if (product) {
-        product.actual_quantity = parseFloat(actualQty) || 0;
-        product.difference = product.actual_quantity - product.system_quantity;
-        
-        // Tekshirish uchun status yangilash
-        if (product.difference > 0) product.status = 'kamomad';
-        else if (product.difference < 0) product.status = 'ortiqcha';
-        else product.status = 'normal';
-        
-        const query = document.getElementById('checkedSearch').value.trim().toLowerCase();
-        filterAndDisplayChecked(query);
+    if (!product) return;
+
+    const newActual = parseFloat(actualQty) || 0;
+    const newDiff = newActual - product.system_quantity;
+    let newStatus = 'normal';
+    if (newDiff > 0) newStatus = 'ortiqcha';
+    else if (newDiff < 0) newStatus = 'kamomad';
+
+    // Lokal xotirani yangilash
+    product.actual_quantity = newActual;
+    product.difference = newDiff;
+    product.status = newStatus;
+
+    // Serverga saqlash (aks holda syncCheckedProducts eski qiymatni qaytaradi)
+    try {
+        await fetch('/api/check_stock/add_item', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: sessionId,
+                product_id: product.id,
+                product_name: product.name,
+                system_quantity: product.system_quantity,
+                actual_quantity: newActual,
+                difference: newDiff,
+                status: newStatus
+            })
+        });
+    } catch (e) {
+        console.error('Yangilashda xatolik:', e);
     }
+
+    const query = document.getElementById('checkedSearch').value.trim().toLowerCase();
+    filterAndDisplayChecked(query);
 }
 
 // Tekshirilganlardan o'chirish
