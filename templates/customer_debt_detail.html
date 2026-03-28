@@ -79,7 +79,7 @@
 
     .debt-stats {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 15px;
         margin-bottom: 0;
     }
@@ -293,13 +293,13 @@
         <!-- Qarz statistikasi -->
         <div style="flex: 1; min-width: 300px;">
             <div class="debt-stats" style="margin-bottom: 0;">
-                <div class="stat-card total">
-                    <h3>💰 {{ t('cdd_total_debt') }}</h3>
-                    <div class="value" id="totalDebt">$0.00</div>
-                </div>
                 <div class="stat-card remaining">
                     <h3>🛒 {{ t('cdd_sales_count') }}</h3>
                     <div class="value" id="salesCount">0</div>
+                </div>
+                <div class="stat-card total">
+                    <h3>💰 {{ t('cdd_total_debt') }}</h3>
+                    <div class="value" id="totalDebt">$0.00</div>
                 </div>
             </div>
         </div>
