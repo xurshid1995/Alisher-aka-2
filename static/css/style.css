@@ -552,6 +552,16 @@ body {
     background: linear-gradient(135deg, #27ae60, #2ecc71);
 }
 
+.btn-danger {
+    background: #e74c3c !important;
+    border-color: #c0392b !important;
+}
+
+.btn-danger:hover {
+    background: #c0392b !important;
+    border-color: #a93226 !important;
+}
+
 .btn-success:hover {
     background: linear-gradient(135deg, #2ecc71, #27ae60);
     box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
