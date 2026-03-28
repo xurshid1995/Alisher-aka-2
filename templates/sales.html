@@ -42,7 +42,7 @@
     
     .sales-container {
         padding: 20px;
-        background: #f0f4fb;
+        background: transparent;
         min-height: 100vh;
         width: 100%;
         max-width: 100%;
@@ -56,14 +56,14 @@
         align-items: center;
         margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 2px solid rgba(74,122,247,0.15);
+        border-bottom: 2px solid rgba(139,92,246,0.1);
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .page-header h1 {
         margin: 0;
-        color: #1e3a5f;
+        color: #1a1a2e;
         font-size: 24px;
         font-weight: 700;
     }
@@ -109,8 +109,8 @@
     }
     
     .sales-product-table thead tr {
-        background: linear-gradient(135deg, #4a7af7 0%, #2651c7 100%);
-        border-bottom: 2px solid #2651c7;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-bottom: 2px solid #7c3aed;
     }
     
     .sales-product-table th {
@@ -143,8 +143,8 @@
     }
     
     .cart-table thead tr {
-        background: linear-gradient(135deg, #4a7af7 0%, #2651c7 100%);
-        border-bottom: 2px solid #2651c7;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-bottom: 2px solid #7c3aed;
     }
     
     .cart-table th {
@@ -338,7 +338,7 @@
         /* Sticky ustun uchun background */
         .sales-product-table th:first-child,
         .cart-table th:first-child {
-            background: #4a7af7;
+            background: #8b5cf6;
         }
         
         .sales-product-table td:first-child,
@@ -542,8 +542,8 @@
     
     .sales-tabs-wrapper {
         background: white;
-        border-radius: 12px 12px 0 0;
-        box-shadow: 0 2px 12px rgba(74,122,247,0.1);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 4px 24px rgba(139,92,246,0.1);
         margin-bottom: 0;
         overflow: hidden;
     }
@@ -551,8 +551,8 @@
     .sales-tabs-header {
         display: flex;
         align-items: center;
-        background: linear-gradient(to bottom, #f0f4ff 0%, #e8effe 100%);
-        border-bottom: 2px solid rgba(74,122,247,0.2);
+        background: linear-gradient(to bottom, #faf8ff 0%, #f3effe 100%);
+        border-bottom: 2px solid rgba(139,92,246,0.15);
         padding: 8px 15px;
         gap: 10px;
         overflow-x: auto;
@@ -587,14 +587,14 @@
         align-items: center;
         gap: 8px;
         padding: 8px 14px;
-        background: rgba(74,122,247,0.08);
-        border: 1px solid rgba(74,122,247,0.2);
-        border-radius: 8px 8px 0 0;
+        background: rgba(139,92,246,0.07);
+        border: 1px solid rgba(139,92,246,0.18);
+        border-radius: 10px 10px 0 0;
         cursor: pointer;
         transition: all 0.2s;
         font-size: 14px;
         font-weight: 500;
-        color: #3b67e8;
+        color: #7c3aed;
         white-space: nowrap;
         user-select: none;
         min-width: 120px;
@@ -602,16 +602,16 @@
     }
     
     .sales-tab:hover {
-        background: rgba(74,122,247,0.15);
-        border-color: rgba(74,122,247,0.35);
+        background: rgba(139,92,246,0.13);
+        border-color: rgba(139,92,246,0.3);
     }
     
     .sales-tab.active {
         background: white;
         border-bottom-color: white;
-        color: #4a7af7;
+        color: #8b5cf6;
         font-weight: 600;
-        box-shadow: 0 -3px 8px rgba(74,122,247,0.12);
+        box-shadow: 0 -3px 10px rgba(139,92,246,0.12);
     }
     
     .tab-title {
@@ -649,24 +649,24 @@
     }
     
     .btn-new-sale {
-        background: linear-gradient(135deg, #4a7af7, #2651c7);
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
         color: white;
         border: none;
         padding: 9px 18px;
-        border-radius: 8px;
+        border-radius: 10px;
         cursor: pointer;
         font-size: 14px;
         font-weight: 600;
         white-space: nowrap;
         transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(74,122,247,0.35);
+        box-shadow: 0 4px 14px rgba(139,92,246,0.35);
         align-self: flex-end;
         margin-bottom: 2px;
     }
     
     .btn-new-sale:hover {
-        background: linear-gradient(135deg, #3b67e8, #1e3fc4);
-        box-shadow: 0 6px 16px rgba(74,122,247,0.45);
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        box-shadow: 0 6px 18px rgba(139,92,246,0.45);
         transform: translateY(-1px);
     }
     
@@ -696,7 +696,7 @@
     
     /* Tab badge (mijoz/mahsulotlar soni) */
     .tab-badge {
-        background: #4a7af7;
+        background: #8b5cf6;
         color: white;
         font-size: 10px;
         padding: 2px 6px;
@@ -706,7 +706,7 @@
     }
     
     .sales-tab.active .tab-badge {
-        background: #2651c7;
+        background: #7c3aed;
     }
 </style>
 {% endblock %}
@@ -753,7 +753,7 @@
         <!-- Ikkita 665px kenglikda layout -->
     <div class="sales-grid">
         <!-- Birinchi layout -->
-        <div class="sales-layout-box" style="background: white; border-radius: 14px; padding: 22px; box-shadow: 0 4px 16px rgba(74,122,247,0.1); box-sizing: border-box;">
+        <div class="sales-layout-box" style="background: white; border-radius: 20px; padding: 22px; box-shadow: 0 4px 24px rgba(139,92,246,0.08); box-sizing: border-box;">
             <!-- Joylashuv va Mijoz tanlash -->
             <div class="location-customer-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                 <div>
@@ -765,7 +765,7 @@
                 <div style="position: relative;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                         <label style="font-size: 14px; font-weight: 500; color: #495057;">👤 {{ t('label_customer_short') }}<span class="customer-optional-text"> {{ t('label_customer_optional_suffix') }}</span></label>
-                        <button id="addCustomerBtn" class="add-customer-btn" onclick="openAddCustomerModal()" style="padding: 3px 8px; background: #4a7af7; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
+                        <button id="addCustomerBtn" class="add-customer-btn" onclick="openAddCustomerModal()" style="padding: 3px 8px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 2px 8px rgba(139,92,246,0.3);">
                             {{ t('btn_new') }}
                         </button>
                     </div>
@@ -782,7 +782,7 @@
                            id="universalSearch" 
                            placeholder="{{ t('placeholder_scan_or_search') }}" 
                            autocomplete="off"
-                           style="flex: 1; padding: 10px 14px; border: 2px solid #4a7af7; border-radius: 8px; font-size: 14px; background: white; transition: box-shadow 0.2s;">
+                           style="flex: 1; padding: 10px 14px; border: 2px solid rgba(139,92,246,0.3); border-radius: 12px; font-size: 14px; background: #faf8ff; transition: box-shadow 0.2s;">
                     <!-- Mobile uchun native camera input (yashirin) -->
                     <input type="file" 
                            id="nativeCameraInput" 
@@ -825,7 +825,7 @@
         </div>
 
         <!-- Ikkinchi layout -->
-        <div class="sales-layout-box" style="background: white; border-radius: 14px; padding: 22px; box-shadow: 0 4px 16px rgba(74,122,247,0.1); box-sizing: border-box;">
+        <div class="sales-layout-box" style="background: white; border-radius: 20px; padding: 22px; box-shadow: 0 4px 24px rgba(139,92,246,0.08); box-sizing: border-box;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <div id="cartCustomerInfo">
                     <h3 style="margin: 0; color: #333;">🛒 {{ t('label_shopping_cart') }}</h3>
@@ -851,12 +851,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="cartTotal" style="border-top: 2px solid rgba(74,122,247,0.15); padding-top: 10px; font-weight: bold; font-size: 16px; text-align: right;"></div>
+                <div id="cartTotal" style="border-top: 2px solid rgba(139,92,246,0.1); padding-top: 10px; font-weight: bold; font-size: 16px; text-align: right;"></div>
                 
                 <!-- Tugmalar -->
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
                     <button onclick="savePending()" style="background: #ffc107; color: #333; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">{{ t('btn_save_pending') }}</button>
-                    <button onclick="completeSale()" style="background: linear-gradient(135deg, #4a7af7, #2651c7); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(74,122,247,0.35);">{{ t('btn_complete_sale') }}</button>
+                    <button onclick="completeSale()" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(139,92,246,0.35);">{{ t('btn_complete_sale') }}</button>
                 </div>
             </div>
         </div>
@@ -899,7 +899,7 @@
             </div>
             <div style="display: flex; gap: 10px;">
                 <button onclick="closeModal()" style="flex: 1; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">{{ t('btn_cancel') }}</button>
-                <button onclick="confirmAddToCart()" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #4a7af7, #2651c7); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(74,122,247,0.3);">{{ t('btn_add') }}</button>
+                <button onclick="confirmAddToCart()" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 14px rgba(139,92,246,0.3);">{{ t('btn_add') }}</button>
             </div>
         </div>
     </div>
@@ -934,25 +934,25 @@
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_cash') }}</label>
                 <input type="number" id="paymentCashUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentCashUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentCashUSD')" style="padding: 8px 12px; background: #4a7af7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentCashUSD')" style="padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_click') }}</label>
                 <input type="number" id="paymentClickUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentClickUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentClickUSD')" style="padding: 8px 12px; background: #4a7af7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentClickUSD')" style="padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_terminal') }}</label>
                 <input type="number" id="paymentTerminalUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentTerminalUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentTerminalUSD')" style="padding: 8px 12px; background: #4a7af7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentTerminalUSD')" style="padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_debt') }}</label>
                 <input type="number" id="paymentDebtUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentDebtUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentDebtUSD')" style="padding: 8px 12px; background: #4a7af7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentDebtUSD')" style="padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             
             <!-- Qarz to'lash muddati -->
@@ -974,7 +974,7 @@
         
         <div style="display: flex; gap: 10px;">
             <button onclick="closePaymentModal()" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">{{ t('btn_cancel') }}</button>
-            <button id="confirmPaymentBtn" onclick="confirmPayment()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #4a7af7, #2651c7); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(74,122,247,0.35);">{{ t('btn_confirm') }}</button>
+            <button id="confirmPaymentBtn" onclick="confirmPayment()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(139,92,246,0.35);">{{ t('btn_confirm') }}</button>
         </div>
     </div>
 </div>
@@ -3978,14 +3978,14 @@
         
         // Jami summani sarlavhada ko'rsatish
         cartTotalHeader.innerHTML = `
-            <div style="padding: 10px 16px; background: rgba(74,122,247,0.06); border-radius: 10px; border: 2px solid rgba(74,122,247,0.15);">
-                <div style="font-size: 14px; font-weight: 600; color: #1e3a5f; display: flex; align-items: center; gap: 10px;">
-                    <div style="background: linear-gradient(135deg, #4a7af7, #2651c7); color: white; padding: 4px 10px; border-radius: 6px; font-size: 14px; min-width: 40px; text-align: center; box-shadow: 0 2px 6px rgba(74,122,247,0.35);">
+            <div style="padding: 10px 16px; background: rgba(139,92,246,0.06); border-radius: 12px; border: 1px solid rgba(139,92,246,0.12);">
+                <div style="font-size: 14px; font-weight: 600; color: #1a1a2e; display: flex; align-items: center; gap: 10px;">
+                    <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 4px 10px; border-radius: 8px; font-size: 14px; min-width: 40px; text-align: center; box-shadow: 0 2px 8px rgba(139,92,246,0.3);">
                         ${cart.length}
                     </div>
                     <div>
-                        Jami: <span style="color: #4a7af7; font-size: 16px;">$${totalUSD.toFixed(2)}</span>
-                        <span style="margin-left: 15px; color: #3b67e8; font-size: 16px;">${formatPrice(totalUZS)} so'm</span>
+                        Jami: <span style="color: #8b5cf6; font-size: 16px;">$${totalUSD.toFixed(2)}</span>
+                        <span style="margin-left: 15px; color: #7c3aed; font-size: 16px;">${formatPrice(totalUZS)} so'm</span>
                     </div>
                 </div>
             </div>

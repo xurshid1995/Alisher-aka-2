@@ -22,15 +22,15 @@ html {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 55%, #ede9fe 100%) fixed;
+    color: #1a1a2e;
+    background: #f4f2fd;
     display: flex;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* Gorizontal scroll oldini olish */
-    overflow-y: auto; /* Vertikal scroll ruxsat berish */
+    overflow-x: hidden;
+    overflow-y: auto;
     min-height: 100vh;
-    min-width: 320px; /* Minimal kenglik */
+    min-width: 320px;
     max-width: 100vw;
     width: 100%;
 }
@@ -87,13 +87,13 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: rgba(74, 122, 247, 0.3);
+    background: rgba(139, 92, 246, 0.25);
     border-radius: 10px;
     transition: background 0.3s ease;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(74, 122, 247, 0.6);
+    background: rgba(139, 92, 246, 0.5);
 }
 
 .sidebar-menu {
@@ -112,12 +112,14 @@ body {
 .sidebar-menu a {
     display: flex;
     align-items: center;
-    padding: 8px 10px;
+    padding: 10px 10px;
     justify-content: flex-start;
-    color: #334155;
+    color: #6b7280;
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-left: 3px solid transparent;
+    border-radius: 12px;
+    margin: 2px 4px;
     font-size: 14px;
     position: relative;
     overflow: hidden;
@@ -156,7 +158,7 @@ body {
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #4a7af7, #818cf8);
+    background: linear-gradient(90deg, #8b5cf6, #a78bfa);
     transform: translateX(-100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -169,16 +171,16 @@ body {
     right: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #818cf8, #4a7af7);
+    background: linear-gradient(90deg, #a78bfa, #8b5cf6);
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-menu a:hover {
-    background: rgba(74, 122, 247, 0.1);
-    color: #4a7af7;
-    border-left-color: #4a7af7;
-    transform: translateX(5px);
+    background: rgba(139, 92, 246, 0.08);
+    color: #8b5cf6;
+    border-left-color: #8b5cf6;
+    transform: translateX(3px);
 }
 
 .sidebar-menu a:hover::before {
@@ -190,12 +192,13 @@ body {
 }
 
 .sidebar-menu a.active {
-    background: linear-gradient(135deg, #4a7af7, #2651c7);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: #ffffff;
-    border-left-color: #4a7af7;
+    border-left-color: transparent;
     font-weight: 600;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(74, 122, 247, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+    margin: 2px 4px;
 }
 
 .sidebar-menu a.active::before {
@@ -240,13 +243,14 @@ body {
     left: 0;
     right: 0;
     height: 70px;
-    background: linear-gradient(135deg, #4a7af7 0%, #3b67e8 50%, #2651c7 100%);
+    background: #ffffff;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
     z-index: 999;
-    box-shadow: 0 4px 20px rgba(74,122,247,0.3);
+    box-shadow: 0 2px 20px rgba(139,92,246,0.08);
+    border-bottom: 1px solid rgba(139,92,246,0.08);
 }
 
 .header-left {
@@ -256,9 +260,9 @@ body {
 }
 
 .header-left h1 {
-    color: white;
+    color: #1a1a2e;
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
     overflow: hidden;
     white-space: nowrap;
@@ -275,35 +279,32 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(139,92,246,0.08);
     padding: 0.5rem 1rem;
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(139,92,246,0.15);
+    box-shadow: 0 2px 8px rgba(139,92,246,0.08);
 }
 
 .currency-display:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(139,92,246,0.14);
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 14px rgba(139,92,246,0.18);
 }
 
 .currency-rate {
-    color: white;
+    color: #6d28d9;
     font-weight: 600;
     font-size: 0.9rem;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     transition: color 0.3s ease;
 }
 
 .edit-rate-btn {
-    background: rgba(255,255,255,0.2);
+    background: rgba(139,92,246,0.1);
     border: none;
-    color: white;
+    color: #7c3aed;
     padding: 0.3rem 0.6rem;
     border-radius: 50%;
     cursor: pointer;
@@ -317,16 +318,16 @@ body {
 }
 
 .edit-rate-btn:hover {
-    background: rgba(255,255,255,0.4);
+    background: rgba(139,92,246,0.2);
     transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(139,92,246,0.2);
 }
 
 .user-info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: white;
+    color: #374151;
     cursor: pointer;
     padding: 0.5rem 1rem;
     border-radius: 25px;
@@ -334,16 +335,17 @@ body {
 }
 
 .user-info:hover {
-    background: rgba(255,255,255,0.15);
+    background: rgba(139,92,246,0.08);
 }
 
 .user-name {
     font-weight: 600;
+    color: #1a1a2e;
 }
 
 .user-role {
     font-size: 0.8rem;
-    opacity: 0.8;
+    color: #8b5cf6;
     margin-left: 0.5rem;
 }
 
@@ -352,25 +354,22 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.25);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: none;
     padding: 0.6rem 1rem;
     border-radius: 25px;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.3s ease;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 14px rgba(139,92,246,0.35);
 }
 
 .logout-btn:hover {
-    background: rgba(135, 206, 250, 0.8);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(135, 206, 250, 0.3);
+    box-shadow: 0 6px 20px rgba(139,92,246,0.45);
 }
 
 .logout-btn:active {
@@ -1294,19 +1293,21 @@ footer {
     left: 0;
     right: 0;
     height: 80px;
-    background: linear-gradient(135deg, #4a7af7 0%, #2651c7 100%);
-    color: white;
+    background: #ffffff;
+    color: #1a1a2e;
     z-index: 1100;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(74,122,247,0.3);
+    box-shadow: 0 4px 15px rgba(139,92,246,0.1);
+    border-bottom: 1px solid rgba(139,92,246,0.08);
 }
 
 .mobile-header h1 {
     font-size: 1.8rem;
     margin: 0;
     font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    color: #7c3aed;
+    text-shadow: none;
 }
 
 /* Mobile Sidebar Overlay */
@@ -1350,18 +1351,18 @@ footer {
     }
     
     .mobile-header {
-        display: none !important; /* Mobilda ham ko'rsatmaymiz */
+        display: none !important;
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 70px;
-        background: linear-gradient(135deg, #4a7af7 0%, #2651c7 100%);
-        color: white;
+        background: #ffffff;
+        color: #1a1a2e;
         z-index: 1100;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 10px rgba(74,122,247,0.3);
+        box-shadow: 0 2px 16px rgba(139,92,246,0.1);
     }
     
     .mobile-header h1 {
@@ -1381,7 +1382,9 @@ footer {
         display: flex !important;
         height: 60px;
         padding: 0 0.3rem;
-        background: linear-gradient(135deg, #4a7af7 0%, #2651c7 100%);
+        background: #ffffff;
+        box-shadow: 0 2px 16px rgba(139,92,246,0.1);
+        border-bottom: 1px solid rgba(139,92,246,0.08);
         position: fixed;
         top: 0;
         left: 0;
@@ -1412,8 +1415,8 @@ footer {
         display: flex !important;
         padding: 0.2rem 0.4rem;
         font-size: 0.7rem;
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
+        background: rgba(139,92,246,0.08);
+        border: 1px solid rgba(139,92,246,0.15);
         border-radius: 6px;
         align-items: center;
         gap: 0.2rem;
@@ -1429,13 +1432,13 @@ footer {
         font-size: 0.7rem;
         font-weight: 600;
         white-space: nowrap;
-        color: white;
+        color: #6d28d9;
     }
     .top-header .edit-rate-btn {
         display: inline-flex !important;
         padding: 0.15rem 0.2rem;
         font-size: 0.65rem;
-        background: rgba(255,255,255,0.2);
+        background: rgba(139,92,246,0.1);
         border: none;
         border-radius: 4px;
         cursor: pointer;
@@ -1462,8 +1465,8 @@ footer {
         display: flex !important;
         padding: 0.2rem 0.35rem;
         font-size: 0.65rem;
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
+        background: rgba(139,92,246,0.08);
+        border: 1px solid rgba(139,92,246,0.15);
         border-radius: 6px;
         gap: 0.15rem;
         align-items: center;
@@ -1480,6 +1483,7 @@ footer {
         white-space: nowrap;
         font-size: 0.65rem;
         font-weight: 600;
+        color: #1a1a2e;
     }
     .top-header .user-role {
         display: none; /* (admin) ni yashirish */
@@ -1489,16 +1493,17 @@ footer {
     .top-header .logout-btn {
         padding: 0.2rem 0.35rem;
         font-size: 0.7rem;
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        border: none;
         border-radius: 6px;
-        box-shadow: none;
+        box-shadow: 0 2px 8px rgba(139,92,246,0.3);
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 30px;
         height: 30px;
+        color: white;
     }
     .top-header .logout-text {
         display: none; /* Faqat icon */
@@ -1530,14 +1535,14 @@ footer {
         width: 280px !important;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease !important;
         z-index: 1250 !important;
-        background: linear-gradient(180deg, #1e3a8a 0%, #2651c7 100%) !important;
+        background: #ffffff !important;
         box-shadow: none !important;
         border-radius: 0;
         overflow-y: scroll !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: thin;
-        padding: 70px 0 0 0 !important; /* Faqat tepada padding */
+        padding: 70px 0 0 0 !important;
         box-sizing: border-box !important;
     }
     
@@ -1624,9 +1629,10 @@ footer {
     }
     
     .sidebar-menu li a.active {
-        background: rgba(74, 122, 247, 0.4);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #fff;
-        border-left: 4px solid #4a7af7;
+        border-left: 4px solid transparent;
+        box-shadow: 0 4px 14px rgba(139,92,246,0.3);
     }
     
     .sidebar-menu li a i {
