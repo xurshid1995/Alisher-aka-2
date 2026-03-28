@@ -22,8 +22,8 @@ html {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #1a1a2e;
-    background: #f8fafc;
+    color: #334155;
+    background: #f1f5f9;
     display: flex;
     margin: 0;
     padding: 0;
@@ -51,11 +51,11 @@ body {
 /* Sidebar Navigation */
 .sidebar {
     width: 70px; /* Oddiy holatda tor */
-    background: linear-gradient(180deg, #ffffff 0%, #f5f6ff 100%);
-    border-right: 1px solid rgba(99, 102, 241, 0.08);
+    background: #ffffff;
+    border-right: 1px solid #e8ecf0;
     height: calc(100vh - 70px);
     padding: 0;
-    box-shadow: 2px 0 12px rgba(99, 102, 241, 0.06);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
     position: fixed;
     left: 0;
     top: 70px;
@@ -87,13 +87,13 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.25);
+    background: rgba(20, 184, 166, 0.25);
     border-radius: 10px;
     transition: background 0.3s ease;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.5);
+    background: rgba(20, 184, 166, 0.5);
 }
 
 .sidebar-menu {
@@ -158,7 +158,7 @@ body {
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #6366f1, #a5b4fc);
+    background: linear-gradient(90deg, #14b8a6, #5eead4);
     transform: translateX(-100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -171,15 +171,15 @@ body {
     right: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #a5b4fc, #6366f1);
+    background: linear-gradient(90deg, #5eead4, #14b8a6);
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-menu a:hover {
-    background: rgba(99, 102, 241, 0.08);
-    color: #6366f1;
-    border-left-color: #6366f1;
+    background: rgba(20, 184, 166, 0.07);
+    color: #0d9488;
+    border-left-color: #14b8a6;
     transform: translateX(3px);
 }
 
@@ -192,12 +192,12 @@ body {
 }
 
 .sidebar-menu a.active {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     color: #ffffff;
     border-left-color: transparent;
     font-weight: 600;
-    border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.22);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(20, 184, 166, 0.28);
     margin: 2px 4px;
 }
 
@@ -249,8 +249,8 @@ body {
     align-items: center;
     padding: 0 2rem;
     z-index: 999;
-    box-shadow: 0 2px 20px rgba(99, 102, 241,0.08);
-    border-bottom: 1px solid rgba(99, 102, 241,0.08);
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.07);
+    border-bottom: 1px solid #e8ecf0;
 }
 
 .header-left {
@@ -260,7 +260,7 @@ body {
 }
 
 .header-left h1 {
-    color: #1a1a2e;
+    color: #0f172a;
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0;
@@ -279,32 +279,32 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(99, 102, 241,0.08);
+    background: #f0fdf9;
     padding: 0.5rem 1rem;
-    border-radius: 25px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(99, 102, 241,0.15);
-    box-shadow: 0 2px 8px rgba(99, 102, 241,0.08);
+    transition: all 0.2s ease;
+    border: 1px solid #ccfbf1;
+    box-shadow: none;
 }
 
 .currency-display:hover {
-    background: rgba(99, 102, 241,0.14);
+    background: #ccfbf1;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(99, 102, 241,0.18);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .currency-rate {
-    color: #4338ca;
+    color: #0d9488;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 .edit-rate-btn {
-    background: rgba(99, 102, 241,0.1);
+    background: rgba(20, 184, 166,0.1);
     border: none;
-    color: #4f46e5;
+    color: #0d9488;
     padding: 0.3rem 0.6rem;
     border-radius: 50%;
     cursor: pointer;
@@ -318,9 +318,9 @@ body {
 }
 
 .edit-rate-btn:hover {
-    background: rgba(99, 102, 241,0.2);
+    background: rgba(20, 184, 166,0.2);
     transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(99, 102, 241,0.2);
+    box-shadow: 0 2px 8px rgba(20, 184, 166,0.2);
 }
 
 .user-info {
@@ -335,17 +335,17 @@ body {
 }
 
 .user-info:hover {
-    background: rgba(99, 102, 241,0.08);
+    background: rgba(0, 0, 0, 0.04);
 }
 
 .user-name {
     font-weight: 600;
-    color: #1a1a2e;
+    color: #0f172a;
 }
 
 .user-role {
     font-size: 0.8rem;
-    color: #6366f1;
+    color: #0d9488;
     margin-left: 0.5rem;
 }
 
@@ -354,7 +354,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     color: white;
     border: none;
     padding: 0.6rem 1rem;
@@ -363,13 +363,13 @@ body {
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 14px rgba(99, 102, 241,0.35);
+    box-shadow: 0 2px 10px rgba(20, 184, 166, 0.22);
 }
 
 .logout-btn:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.3);
 }
 
 .logout-btn:active {
@@ -1294,19 +1294,19 @@ footer {
     right: 0;
     height: 80px;
     background: #ffffff;
-    color: #1a1a2e;
+    color: #0f172a;
     z-index: 1100;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(99, 102, 241,0.1);
-    border-bottom: 1px solid rgba(99, 102, 241,0.08);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.07);
+    border-bottom: 1px solid #e8ecf0;
 }
 
 .mobile-header h1 {
     font-size: 1.8rem;
     margin: 0;
     font-weight: 600;
-    color: #4f46e5;
+    color: #0d9488;
     text-shadow: none;
 }
 
@@ -1362,7 +1362,7 @@ footer {
         z-index: 1100;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 16px rgba(99, 102, 241,0.1);
+        box-shadow: 0 2px 16px rgba(20, 184, 166,0.1);
     }
     
     .mobile-header h1 {
@@ -1383,8 +1383,8 @@ footer {
         height: 60px;
         padding: 0 0.3rem;
         background: #ffffff;
-        box-shadow: 0 2px 16px rgba(99, 102, 241,0.1);
-        border-bottom: 1px solid rgba(99, 102, 241,0.08);
+        box-shadow: 0 2px 16px rgba(20, 184, 166,0.1);
+        border-bottom: 1px solid rgba(20, 184, 166,0.08);
         position: fixed;
         top: 0;
         left: 0;
@@ -1415,8 +1415,8 @@ footer {
         display: flex !important;
         padding: 0.2rem 0.4rem;
         font-size: 0.7rem;
-        background: rgba(99, 102, 241,0.08);
-        border: 1px solid rgba(99, 102, 241,0.15);
+        background: rgba(20, 184, 166,0.08);
+        border: 1px solid rgba(20, 184, 166,0.15);
         border-radius: 6px;
         align-items: center;
         gap: 0.2rem;
@@ -1432,13 +1432,13 @@ footer {
         font-size: 0.7rem;
         font-weight: 600;
         white-space: nowrap;
-        color: #4338ca;
+        color: #0f766e;
     }
     .top-header .edit-rate-btn {
         display: inline-flex !important;
         padding: 0.15rem 0.2rem;
         font-size: 0.65rem;
-        background: rgba(99, 102, 241,0.1);
+        background: rgba(20, 184, 166,0.1);
         border: none;
         border-radius: 4px;
         cursor: pointer;
@@ -1465,8 +1465,8 @@ footer {
         display: flex !important;
         padding: 0.2rem 0.35rem;
         font-size: 0.65rem;
-        background: rgba(99, 102, 241,0.08);
-        border: 1px solid rgba(99, 102, 241,0.15);
+        background: rgba(20, 184, 166,0.08);
+        border: 1px solid rgba(20, 184, 166,0.15);
         border-radius: 6px;
         gap: 0.15rem;
         align-items: center;
@@ -1493,10 +1493,10 @@ footer {
     .top-header .logout-btn {
         padding: 0.2rem 0.35rem;
         font-size: 0.7rem;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        background: linear-gradient(135deg, #14b8a6, #0d9488);
         border: none;
         border-radius: 6px;
-        box-shadow: 0 2px 8px rgba(99, 102, 241,0.3);
+        box-shadow: 0 2px 8px rgba(20, 184, 166,0.3);
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -1554,7 +1554,7 @@ footer {
     
     .sidebar.active {
         left: 0 !important;
-        box-shadow: 4px 0 24px rgba(99, 102, 241, 0.15) !important;
+        box-shadow: 4px 0 24px rgba(20, 184, 166, 0.15) !important;
     }
     
     .sidebar.active:hover {
@@ -1598,23 +1598,23 @@ footer {
     }
     
     .sidebar::-webkit-scrollbar-track {
-        background: rgba(99, 102, 241, 0.05);
+        background: rgba(20, 184, 166, 0.05);
     }
     
     .sidebar::-webkit-scrollbar-thumb {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(20, 184, 166, 0.2);
         border-radius: 10px;
     }
     
     .sidebar::-webkit-scrollbar-thumb:hover {
-        background: rgba(99, 102, 241, 0.35);
+        background: rgba(20, 184, 166, 0.5);
     }
     
     .sidebar-menu li a {
         padding: 15px 20px;
         font-size: 1rem;
         font-weight: 500;
-        border-bottom: 1px solid rgba(99, 102, 241, 0.06);
+        border-bottom: 1px solid rgba(20, 184, 166, 0.06);
         display: flex;
         align-items: center;
         min-height: 50px;
@@ -1623,16 +1623,16 @@ footer {
     }
     
     .sidebar-menu li a:hover {
-        background: rgba(99, 102, 241, 0.07);
-        color: #6366f1;
+        background: rgba(20, 184, 166, 0.07);
+        color: #14b8a6;
         padding-left: 25px;
     }
     
     .sidebar-menu li a.active {
-        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #fff;
         border-left: 4px solid transparent;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+        box-shadow: 0 4px 14px rgba(20, 184, 166, 0.2);
     }
     
     .sidebar-menu li a i {
