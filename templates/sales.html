@@ -187,18 +187,20 @@
         }
     }
     
-    /* O'rta ekranlar uchun (tablet/medium) - Amal ustunini yashirish */
+    /* O'rta ekranlar uchun (tablet/medium) - jadval moslashishi */
     @media (max-width: 1100px) {
-        .sales-product-table th:nth-child(4),
-        .sales-product-table td:nth-child(4) {
-            display: none !important;
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .sales-product-table th:nth-child(1) { width: 45% !important; }
-        .sales-product-table th:nth-child(2) { width: 22% !important; }
-        .sales-product-table th:nth-child(3) { width: 33% !important; }
-        .sales-product-table td:nth-child(1) { width: 45% !important; }
-        .sales-product-table td:nth-child(2) { width: 22% !important; }
-        .sales-product-table td:nth-child(3) { width: 33% !important; }
+        .sales-product-table th:nth-child(1) { width: 42% !important; }
+        .sales-product-table th:nth-child(2) { width: 18% !important; }
+        .sales-product-table th:nth-child(3) { width: 30% !important; }
+        .sales-product-table th:nth-child(4) { width: 10% !important; }
+        .sales-product-table td:nth-child(1) { width: 42% !important; }
+        .sales-product-table td:nth-child(2) { width: 18% !important; }
+        .sales-product-table td:nth-child(3) { width: 30% !important; }
+        .sales-product-table td:nth-child(4) { width: 10% !important; }
         .sales-product-table tbody tr {
             cursor: pointer !important;
         }
