@@ -137,17 +137,17 @@
 </div>
 
 <style>
-/* Oddiy va toza CSS */
+/* ===== MODERN SALES HISTORY DESIGN ===== */
 .sales-history-page {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px;
+    background: #f4f6fb;
+    border-radius: 12px;
+    padding: 20px;
     margin: 0;
     width: 100%;
     max-width: none;
 }
 
-/* Jadval container yaxshilash */
+/* Jadval container */
 .sales-history-page .table-responsive {
     width: 100% !important;
     max-width: none !important;
@@ -158,8 +158,8 @@
 .sales-history-page .table-container {
     width: 100% !important;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     overflow-x: auto;
     overflow-y: visible;
 }
@@ -173,7 +173,7 @@
     table-layout: auto !important;
 }
 
-/* JADVAL USTUN KENGLIKLARI - class asosida moslashuvchan */
+/* JADVAL USTUN KENGLIKLARI */
 .sales-history-page .sales-table .col-datetime { width: 8%; text-align: center; font-size: 13px !important; white-space: normal !important; word-wrap: break-word !important; line-height: 1.3 !important; }
 .sales-history-page .sales-table .col-customer { width: 10%; text-align: left; font-size: 13px !important; font-weight: 500; white-space: normal !important; word-wrap: break-word !important; line-height: 1.3 !important; }
 .sales-history-page .sales-table .col-seller { width: 9%; text-align: center; font-size: 13px !important; font-weight: 500; white-space: normal !important; word-wrap: break-word !important; line-height: 1.3 !important; }
@@ -183,40 +183,43 @@
 .sales-history-page .sales-table .col-price { width: 6%; text-align: right; font-weight: 600; font-size: 13px !important; white-space: nowrap !important; }
 .sales-history-page .sales-table .col-subtotal { width: 7%; text-align: right; font-weight: 600; font-size: 13px !important; white-space: nowrap !important; }
 .sales-history-page .sales-table .col-total { width: 7%; text-align: right; font-weight: 600; font-size: 13px !important; white-space: nowrap !important; }
-.sales-history-page .sales-table .col-profit { width: 7%; text-align: right; font-weight: 600; color: #27ae60; font-size: 13px !important; white-space: nowrap !important; }
+.sales-history-page .sales-table .col-profit { width: 7%; text-align: right; font-weight: 600; color: #00b894; font-size: 13px !important; white-space: nowrap !important; }
 .sales-history-page .sales-table .col-actions { width: 5%; text-align: center; border-right: none; font-size: 13px !important; white-space: nowrap !important; }
 
-
 .sales-history-page .sales-table td {
-    padding: 8px 6px;
-    border-bottom: 1px solid #e9ecef;
+    padding: 10px 8px;
+    border-bottom: 1px solid #f0f2f5;
     font-size: 14px !important;
     line-height: 1.3;
     text-align: center;
     height: auto;
-    min-height: 42px;
+    min-height: 44px;
     vertical-align: middle;
     white-space: normal !important;
     word-wrap: break-word !important;
 }
 
 .sales-history-page .sales-table th {
-    background: #007bff;
+    background: #1a1f36;
     color: white !important;
-    padding: 8px 6px;
+    padding: 12px 8px;
     text-align: center;
     font-weight: 600;
-    font-size: 14px !important;
-    height: 45px;
+    font-size: 13px !important;
+    height: 46px;
     vertical-align: middle;
     line-height: 1.4;
+    letter-spacing: 0.3px;
 }
+
+.sales-history-page .sales-table th:first-child { border-radius: 10px 0 0 0; }
+.sales-history-page .sales-table th:last-child { border-radius: 0 10px 0 0; }
 
 .sales-history-page .sales-table tr:hover {
-    background: #f8f9fa;
+    background: #f8f9ff;
 }
 
-/* Amallar tugmalarini vertikal joylashtirish */
+/* Amallar tugmalari */
 .sales-history-page .sales-table .col-actions .btn-action {
     display: block;
     margin: 1px auto;
@@ -225,189 +228,145 @@
     padding: 2px;
     font-size: 8px;
 }
+.sales-history-page .sales-table .col-actions .btn-action i { font-size: 8px; line-height: 1; }
 
-.sales-history-page .sales-table .col-actions .btn-action i {
-    font-size: 8px;
-    line-height: 1;
-}
-
-/* Mobile uchun yanada compact */
 @media (max-width: 480px) {
-    .sales-history-page {
-        padding: 8px;
-        border-radius: 6px;
-    }
+    .sales-history-page { padding: 10px; border-radius: 8px; }
 }
 
+/* ===== PAGE HEADER ===== */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #eef0f7;
 }
 
 .page-header h1 {
-    color: #495057;
-    font-size: 1.8rem;
+    color: #1a1f36;
+    font-size: 1.75rem;
     margin: 0;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
 .page-header h1 i {
-    color: #007bff;
+    color: #4a6cf7;
     margin-right: 10px;
 }
 
-/* Toggle Switch */
-.header-controls {
-    display: flex;
-    align-items: center;
-}
-
-.toggle-switch {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-}
-
-.toggle-switch input[type="checkbox"] {
-    display: none;
-}
-
+/* ===== TOGGLE SWITCH ===== */
+.header-controls { display: flex; align-items: center; }
+.toggle-switch { display: flex; align-items: center; cursor: pointer; user-select: none; }
+.toggle-switch input[type="checkbox"] { display: none; }
 .toggle-slider {
     position: relative;
-    width: 50px;
-    height: 26px;
-    background-color: #ccc;
-    border-radius: 26px;
+    width: 46px;
+    height: 24px;
+    background-color: #d1d5db;
+    border-radius: 24px;
     transition: background-color 0.3s;
     margin-right: 10px;
 }
-
 .toggle-slider:before {
     content: "";
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     background-color: white;
     border-radius: 50%;
     transition: transform 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
+.toggle-switch input[type="checkbox"]:checked + .toggle-slider { background-color: #4a6cf7; }
+.toggle-switch input[type="checkbox"]:checked + .toggle-slider:before { transform: translateX(22px); }
+.toggle-label { font-size: 0.875rem; color: #6b7280; font-weight: 500; }
 
-.toggle-switch input[type="checkbox"]:checked + .toggle-slider {
-    background-color: #007bff;
-}
+/* Compact view */
+.compact-mode .compact-hide { display: none !important; }
+.compact-mode .col-product { display: table-cell !important; }
+.compact-mode .sales-history-page .sales-table { width: 100% !important; min-width: auto !important; max-width: 100% !important; table-layout: auto !important; }
+.compact-mode .sales-history-page .sales-table th,
+.compact-mode .sales-history-page .sales-table td { white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; padding: 8px !important; }
+.compact-mode .compact-row { background-color: rgba(74, 108, 247, 0.02); }
+.compact-mode .compact-row:hover { background-color: rgba(74, 108, 247, 0.07); }
 
-.toggle-switch input[type="checkbox"]:checked + .toggle-slider:before {
-    transform: translateX(24px);
-}
-
-.toggle-label {
-    font-size: 0.9rem;
-    color: #495057;
-    font-weight: 500;
-}
-
-/* Compact view styles */
-.compact-mode .compact-hide {
-    display: none !important;
-}
-
-/* Compact view da mahsulot ustunini ko'rsatish */
-.compact-mode .col-product {
-    display: table-cell !important;
-}
-
-/* Compact mode da BARCHA ustunlar uchun aniq kenglik */
-.compact-mode .sales-history-page .sales-table { 
-    width: 100% !important; 
-    min-width: auto !important;
-    max-width: 100% !important;
-    table-layout: auto !important;
-}
-
-.compact-mode .sales-history-page .sales-table th, 
-.compact-mode .sales-history-page .sales-table td { 
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    padding: 8px !important;
-}
-
-/* Compact row styling */
-.compact-mode .compact-row {
-    background-color: rgba(0, 123, 255, 0.02);
-}
-
-.compact-mode .compact-row:hover {
-    background-color: rgba(0, 123, 255, 0.08);
-}
-
+/* ===== STAT CARDS ===== */
 .sales-stats {
     display: flex;
-    gap: 20px;
-    margin-bottom: 25px;
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .stat-card {
-    background: #007bff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    background: white;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
     flex: 1;
-    color: white;
+    border-left: 4px solid #4a6cf7;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.stat-card:nth-child(2) {
-    background: #dc3545;
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
 
-.stat-card:nth-child(3) {
-    background: #28a745;
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-}
+.stat-card:nth-child(2) { border-left-color: #ff6b6b; }
+.stat-card:nth-child(3) { border-left-color: #00b894; }
 
 .stat-card i {
     font-size: 2rem;
-    color: white;
+    color: #4a6cf7;
+    background: rgba(74, 108, 247, 0.1);
+    padding: 14px;
+    border-radius: 12px;
+    line-height: 1;
 }
+
+.stat-card:nth-child(2) i { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
+.stat-card:nth-child(3) i { color: #00b894; background: rgba(0, 184, 148, 0.1); }
 
 .stat-number {
     display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a1f36;
     line-height: 1.2;
+    letter-spacing: -0.5px;
 }
 
 .stat-label {
     display: block;
-    font-size: 0.9rem;
-    color: white;
-    opacity: 0.9;
+    font-size: 0.825rem;
+    color: #9ca3af;
+    font-weight: 500;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Qidiruv va filtr paneli */
+/* ===== SEARCH & FILTER PANEL ===== */
 .search-filter-panel {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     margin-bottom: 20px;
-    padding: 20px;
+    padding: 20px 24px;
+    border: 1px solid #eef0f7;
 }
 
 .search-filter-row {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     align-items: end;
     flex-wrap: wrap;
 }
@@ -421,46 +380,45 @@
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #6c757d;
+    color: #9ca3af;
     font-size: 14px;
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 12px 10px 35px;
-    border: 2px solid #e9ecef;
-    border-radius: 25px;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
     font-size: 14px;
-    transition: border-color 0.3s ease;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+    color: #1a1f36;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+    background: white;
 }
 
 .clear-search-btn {
     position: absolute;
-    right: 8px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #6c757d;
+    color: #9ca3af;
     cursor: pointer;
     padding: 4px;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s ease;
 }
-
-.clear-search-btn:hover {
-    background-color: #f8f9fa;
-    color: #495057;
-}
+.clear-search-btn:hover { background-color: #f3f4f6; color: #374151; }
 
 .filter-group {
     display: flex;
@@ -470,228 +428,134 @@
 }
 
 .filter-group label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #495057;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
     margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .filter-input, .filter-select {
-    padding: 8px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 20px;
+    padding: 9px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
     font-size: 13px;
-    transition: border-color 0.3s ease;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+    color: #1a1f36;
 }
 
 .filter-input:focus, .filter-select:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+    background: white;
 }
 
 /* Mijoz qidiruv dropdown */
-.customer-search-container {
-    position: relative;
-}
-
+.customer-search-container { position: relative; }
 .customer-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     background: white;
-    border: 2px solid #e9ecef;
+    border: 1.5px solid #e5e7eb;
     border-top: none;
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 10px 10px;
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
+.customer-option { padding: 10px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f3f4f6; transition: background-color 0.15s ease; }
+.customer-option:hover { background-color: #f3f4f6; }
+.customer-option:last-child { border-bottom: none; }
+.customer-option.selected { background-color: #4a6cf7; color: white; }
 
-.customer-option {
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 13px;
-    border-bottom: 1px solid #f8f9fa;
-    transition: background-color 0.2s ease;
-}
-
-.customer-option:hover {
-    background-color: #f8f9fa;
-}
-
-.customer-option:last-child {
-    border-bottom: none;
-}
-
-.customer-option.selected {
-    background-color: #007bff;
-    color: white;
-}
-
-.customer-search-input:focus + .customer-dropdown {
-    border-color: #007bff;
-}
-
-
-
-/* Joylashuv filtri uchun maxsus kenglik */
-.filter-group-location {
-    min-width: 180px;
-}
-
-/* Desktop va tablet uchun horizontal scroll */
-/* Media query olib tashlandi - pending-sales bilan bir xil qilish uchun */
-
-/* OLIB TASHLANDI - Jadval siqilishiga sabab bo'lgan */
-
-.date-range-row {
-    display: flex;
-    gap: 20px;
-    align-items: end;
-}
+.filter-group-location { min-width: 180px; }
+.date-range-row { display: flex; gap: 16px; align-items: end; }
 
 @media (max-width: 768px) {
-    .search-filter-panel {
-        padding: 15px;
-    }
-    
-    .search-filter-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-    }
-    
-    .search-input-container {
-        max-width: 100%;
-        min-width: auto;
-    }
-    
-    .filter-group {
-        min-width: auto;
-    }
-
-    .date-range-row {
-        display: flex;
-        gap: 10px;
-    }
-
-    .date-range-row .filter-group {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .date-range-row .filter-input {
-        width: 100%;
-        padding: 8px 6px;
-        font-size: 12px;
-    }
+    .search-filter-panel { padding: 15px; }
+    .search-filter-row { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search-input-container { max-width: 100%; min-width: auto; }
+    .filter-group { min-width: auto; }
+    .date-range-row { gap: 10px; }
+    .date-range-row .filter-group { flex: 1; min-width: 0; }
+    .date-range-row .filter-input { width: 100%; padding: 8px 10px; font-size: 12px; }
 }
 
-/* Natijalar ma'lumoti */
+/* ===== RESULTS INFO ===== */
 .results-info {
-    background: #e3f2fd;
-    border: 1px solid #90caf9;
-    border-radius: 4px;
-    padding: 8px 12px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #1565c0;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #1d4ed8;
+    font-weight: 500;
 }
 
-/* Pagination styles */
+/* ===== PAGINATION ===== */
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 1rem;
     background: white;
-    border-top: 1px solid #e9ecef;
+    border-top: 1px solid #f0f2f5;
     margin-top: 0;
 }
 
 #paginationButtons {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .pagination-btn {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #dee2e6;
+    padding: 0.45rem 0.75rem;
+    border: 1.5px solid #e5e7eb;
     background: white;
-    color: #495057;
-    border-radius: 6px;
+    color: #374151;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 0.9rem;
-    min-width: 40px;
+    font-size: 0.875rem;
+    min-width: 38px;
     text-align: center;
+    font-weight: 500;
 }
-
-.pagination-btn:hover:not(.active) {
-    background: #f8f9fa;
-    border-color: #adb5bd;
-}
-
-.pagination-btn.active {
-    background: #667eea;
-    color: white;
-    border-color: #667eea;
-    font-weight: 600;
-}
-
-.pagination-dots {
-    padding: 0.5rem 0.25rem;
-    color: #6c757d;
-    font-weight: bold;
-}
+.pagination-btn:hover:not(.active) { background: #f9fafb; border-color: #9ca3af; }
+.pagination-btn.active { background: #4a6cf7; color: white; border-color: #4a6cf7; font-weight: 600; }
+.pagination-dots { padding: 0.45rem 0.25rem; color: #9ca3af; font-weight: bold; }
 
 .table-container {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
-/* DUBLIKAT QOIDA O'CHIRILDI - YUQORIDAGI 172-QATORDAGI QOIDA ISHLAYDI */
+.loading { text-align: center; color: #9ca3af; font-style: italic; }
 
-/* th stili yuqorida .sales-table td bilan birgalikda aniqlangan */
+.sales-history-page .sales-table .col-location { text-align: left; }
 
-/* ESKI QOIDALAR O'CHIRILDI - FAQAT YUQORIDAGI YANGI QOIDALAR ISHLAYDI */
-
-.loading {
-    text-align: center;
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Mahsulot ustuni chap tomonga joylashtiriladi */
-.sales-history-page .sales-table .col-location {
-    text-align: left;
-}
-
-.profit-positive {
-    color: #28a745;
-    font-weight: bold;
-}
-
-.profit-negative {
-    color: #dc3545;
-    font-weight: bold;
-}
+.profit-positive { color: #00b894; font-weight: bold; }
+.profit-negative { color: #ff6b6b; font-weight: bold; }
 
 .btn-action {
     background: none;
-    border: 1px solid #dee2e6;
+    border: 1.5px solid #e5e7eb;
     padding: 3px 5px;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
     margin: 1px;
     font-size: 10px;
@@ -703,389 +567,112 @@
     line-height: 12px;
 }
 
-.btn-edit {
-    color: #007bff;
-    border-color: #007bff;
-}
+.btn-edit { color: #4a6cf7; border-color: #4a6cf7; }
+.btn-edit:hover { background: #4a6cf7; color: white; }
+.btn-delete { color: #ff6b6b; border-color: #ff6b6b; }
+.btn-delete:hover { background: #ff6b6b; color: white; }
+.btn-view { color: #00b894; border-color: #00b894; }
+.btn-view:hover { background: #00b894; color: white; }
 
-.btn-edit:hover {
-    background: #007bff;
-    color: white;
-}
+.customer-info { display: flex; flex-direction: column; gap: 2px; word-wrap: break-word; max-width: 150px; }
+.customer-name { font-weight: 600; color: #1a1f36; font-size: 14px !important; }
+.customer-phone { font-size: 12px !important; color: #9ca3af; font-style: italic; white-space: nowrap; overflow: hidden; }
 
-.btn-delete {
-    color: #dc3545;
-    border-color: #dc3545;
-}
-
-.btn-delete:hover {
-    background: #dc3545;
-    color: white;
-}
-
-.btn-view {
-    color: #28a745;
-    border-color: #28a745;
-}
-
-.btn-view:hover {
-    background: #28a745;
-    color: white;
-}
-
-
-
-.customer-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    word-wrap: break-word;
-    max-width: 150px;
-}
-
-.customer-name {
-    font-weight: 600;
-    color: #495057;
-    font-size: 14px !important;
-}
-
-.customer-phone {
-    font-size: 12px !important;
-    color: #6c757d;
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-/* Savdo gruppa uslublari */
-.sale-group-start, .sale-group-item {
-    background-color: rgba(0, 123, 255, 0.02);
-}
-
-/* Savdo guruhlarini ajratish */
-.sale-group-start {
-    border-top: 1px solid #dee2e6;
-}
-
-/* Birinchi savdo guruhida yuqoridagi chegara yo'q */
-tbody tr.sale-group-start:first-child {
-    border-top: none;
-}
-
-/* Savdo guruhlarini vizual jihatdan birlashtirish */
-.sale-group-start, .sale-group-item {
-    position: relative;
-}
-
-/* Savdo guruhi ichidagi barcha qatorlarni bir xil ko'rinishda qilish */
+.sale-group-start, .sale-group-item { background-color: rgba(74, 108, 247, 0.01); }
+.sale-group-start { border-top: 1px solid #eef0f7; }
+tbody tr.sale-group-start:first-child { border-top: none; }
+.sale-group-start, .sale-group-item { position: relative; }
 .sale-group-start td, .sale-group-item td {
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #f0f2f5;
     vertical-align: middle;
     font-size: 14px !important;
-    padding: 8px 6px;
+    padding: 9px 8px;
     line-height: 1.4;
 }
+.sale-group-end { border-bottom: 2px solid #d1d5db !important; }
 
-/* Savdo guruhi oxirgi qatori uchun */
-.sale-group-end {
-    border-bottom: 2px solid #6c757d !important;
-}
-
-.group-cell {
-    vertical-align: middle !important;
-    text-align: center !important;
-    background-color: #ffffff !important;
-    font-weight: 600;
-    font-size: 14px !important;
-}
-
-/* Group sale'ning ustun text-align (class asosida) */
+.group-cell { vertical-align: middle !important; text-align: center !important; background-color: #ffffff !important; font-weight: 600; font-size: 14px !important; }
 .group-cell.col-product { text-align: left !important; }
 .group-cell.col-quantity { text-align: center !important; }
 .group-cell.col-price { text-align: right !important; }
 .group-cell.col-subtotal { text-align: right !important; }
+.group-location { text-align: left !important; }
 
-/* Joylashuv ustuni uchun chap tomonga tekislash */
-.group-location {
-    text-align: left !important;
-}
+.warehouse-location { background-color: #fef9c3 !important; padding: 2px 6px !important; border-radius: 4px !important; }
+.group-datetime { background-color: #eff6ff !important; }
 
-/* Ombor matnini sariq fon bilan ajratish */
-.warehouse-location {
-    background-color: #fff3cd !important;
-    padding: 2px 6px !important;
-    border-radius: 3px !important;
-}
-
-.group-datetime {
-    background-color: #e3f2fd !important;
-}
-
-.datetime-info {
-    text-align: center;
-}
-
-.sale-date {
-    font-weight: 600;
-    font-size: 14px;
-    color: #2c3e50;
-    margin-bottom: 2px;
-}
-
+.datetime-info { text-align: center; }
+.sale-date { font-weight: 600; font-size: 13px; color: #1a1f36; margin-bottom: 2px; }
 .sale-time {
-    font-weight: 500;
-    font-size: 17px;
+    font-weight: 600;
+    font-size: 12px;
     color: white;
-    background: #007bff;
+    background: #4a6cf7;
     padding: 2px 8px;
-    border-radius: 0;
+    border-radius: 6px;
     display: inline-block;
 }
 
-.group-customer {
-    background-color: #e8f5e8 !important;
-}
+.group-customer { background-color: #f0fdf4 !important; }
+.group-location { background-color: #f0f9ff !important; font-size: 12px; color: #374151; text-align: center; }
+.group-total { background-color: #fefce8 !important; }
+.group-profit { background-color: #f0fdf4 !important; }
+.group-actions { background-color: #f9fafb !important; padding: 8px 4px !important; }
+.group-actions .btn-action { display: block; width: 100%; margin-right: 0; margin-bottom: 4px; text-align: center; }
+.group-actions .btn-action:last-child { margin-bottom: 0; }
 
-.group-location {
-    background-color: #f0f8ff !important;
-    font-size: 12px;
-    color: #495057;
-    text-align: center;
-}
-
-.group-total {
-    background-color: #fff3cd !important;
-}
-
-.group-profit {
-    background-color: #f8d7da !important;
-}
-
-.group-actions {
-    background-color: #e2e3e5 !important;
-    padding: 8px 4px !important;
-}
-
-.group-actions .btn-action {
-    display: block;
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 4px;
-    text-align: center;
-}
-
-.group-actions .btn-action:last-child {
-    margin-bottom: 0;
-}
-
-/* Mobile Responsive */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .sales-history-page {
-        padding: 15px;
-    }
-    
-    .page-header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: stretch;
-    }
-    
-    .page-header h1 {
-        font-size: 1.5rem;
-        text-align: center;
-    }
-    
-    .sales-stats {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    /* Mobile da table ni scroll bilan ko'rsatish */
-    .table-container {
-        display: block !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* JADVAL QOIDALARI OLIB TASHLANDI - Siqilishiga sabab bo'lgan */
-    
-    /* Mobile pagination */
-    .pagination {
-        padding: 1rem 0.5rem;
-    }
-
-    #paginationButtons {
-        gap: 0.25rem;
-    }
-
-    .pagination-btn {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.8rem;
-        min-width: 35px;
-    }
-
-    .pagination-dots {
-        padding: 0.4rem 0.15rem;
-    }
-    
-    /* Mobile sales cards */
-    .mobile-sales-cards {
-        display: block;
-    }
-    
+    .sales-history-page { padding: 12px; }
+    .page-header { flex-direction: column; gap: 12px; align-items: stretch; }
+    .page-header h1 { font-size: 1.4rem; text-align: center; }
+    .sales-stats { flex-direction: column; gap: 12px; }
+    .table-container { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+    .pagination { padding: 0.75rem 0.5rem; }
+    #paginationButtons { gap: 0.25rem; }
+    .pagination-btn { padding: 0.35rem 0.5rem; font-size: 0.8rem; min-width: 33px; }
+    .pagination-dots { padding: 0.35rem 0.15rem; }
+    .mobile-sales-cards { display: block; }
     .mobile-sale-card {
         background: white;
         border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        border-left: 5px solid #007bff;
+        padding: 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        border-left: 4px solid #4a6cf7;
     }
-    
-    .mobile-sale-card.sale-group-header {
-        border-left-color: #28a745;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    }
-    
-    .mobile-sale-card .sale-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e9ecef;
-    }
-    
-    .mobile-sale-card .sale-date {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    
-    .mobile-sale-card .sale-total {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #28a745;
-    }
-    
-    .mobile-sale-card .sale-info {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-    
-    .mobile-sale-card .info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-    
-    .mobile-sale-card .info-label {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #6c757d;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .mobile-sale-card .info-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #2c3e50;
-        word-break: break-word;
-    }
-    
-    .mobile-sale-card .product-details {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-    
-    .mobile-sale-card .product-name {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 8px;
-    }
-    
-    .mobile-sale-card .product-stats {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.95rem;
-    }
-    
-    .mobile-sale-card .product-stats .stat {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2px;
-    }
-    
-    .mobile-sale-card .product-stats .stat-label {
-        color: #6c757d;
-        font-size: 0.8rem;
-    }
-    
-    .mobile-sale-card .product-stats .stat-value {
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    
-    .mobile-sale-card .sale-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .mobile-sale-card .action-btn {
-        flex: 1;
-        padding: 12px;
-        border: none;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-    }
-    
-    .mobile-sale-card .edit-btn {
-        background: #007bff;
-        color: white;
-    }
-    
-    .mobile-sale-card .edit-btn:hover {
-        background: #0056b3;
-    }
-    
-    .mobile-sale-card .delete-btn {
-        background: #dc3545;
-        color: white;
-    }
-    
-    .mobile-sale-card .delete-btn:hover {
-        background: #c82333;
-    }
-    
-    .mobile-sale-card .view-btn {
-        background: #28a745;
-        color: white;
-    }
-    
-    .mobile-sale-card .view-btn:hover {
-        background: #218838;
-    }
-}
+    .mobile-sale-card.sale-group-header { border-left-color: #00b894; background: #f9fafb; }
+    .mobile-sale-card .sale-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1.5px solid #f0f2f5; }
+    .mobile-sale-card .sale-date { font-size: 1rem; font-weight: 600; color: #1a1f36; }
+    .mobile-sale-card .sale-total { font-size: 1.1rem; font-weight: 700; color: #00b894; }
+    .mobile-sale-card .sale-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .mobile-sale-card .info-item { display: flex; flex-direction: column; gap: 2px; }
+    .mobile-sale-card .info-label { font-size: 0.75rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mobile-sale-card .info-value { font-size: 0.95rem; font-weight: 600; color: #1a1f36; word-break: break-word; }
+    .mobile-sale-card .product-details { background: #f9fafb; border-radius: 8px; padding: 10px; }
+}</style>
 
+<style>
+/* Sotuvchi roli uchun foyda ustunini yashirish */
+{% if session.role == 'sotuvchi' %}
+.col-profit {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+{% endif %}
+.col-profit.hidden-for-seller {
+    display: none !important;  
+}
 /* Desktop da mobile cards ni yashirish */
-.mobile-sales-cards {
-    display: none;
-}
+.mobile-sales-cards { display: none; }
+</style>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+<style>
 /* Edit Modal CSS */
 .modal-overlay {
     position: fixed;
