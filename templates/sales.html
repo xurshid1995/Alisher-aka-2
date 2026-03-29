@@ -3338,18 +3338,14 @@
                 }, { once: false });
             }
             
-            // Narx USD → Narx UZS
+            // Narx USD → Savatga qo'shish
             const priceUSDInput = getActiveTabElement('modalPriceUSD');
             if (priceUSDInput) {
                 priceUSDInput.addEventListener('keydown', function handlePriceUSDEnter(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         e.stopPropagation();
-                        const priceUZSInput = getActiveTabElement('modalPriceUZS');
-                        if (priceUZSInput) {
-                            priceUZSInput.focus();
-                            priceUZSInput.select();
-                        }
+                        confirmAddToCart();
                         priceUSDInput.removeEventListener('keydown', handlePriceUSDEnter);
                     }
                 }, { once: false });
