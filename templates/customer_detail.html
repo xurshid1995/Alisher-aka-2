@@ -953,6 +953,7 @@ const CDLANG = {
 let userRole = '';
 let currentSaleData = null;
 let allCustomerOrders = [];
+let allSalesOrders = [];
 
 // SaleItem dan joylashuv nomini olish funksiyasi
 function getLocationName(item) {
@@ -1013,7 +1014,8 @@ function displayEmptyTable() {
 }
 
 function displayOrders(orders) {
-    // Global arrayni yangilash
+    // Global arraylarni yangilash
+    allSalesOrders = orders;
     allCustomerOrders = [];
     orders.forEach(sale => {
         const items = sale.items || [];
@@ -1156,6 +1158,76 @@ function displayOrders(orders) {
         }
     });
     
+    tbody.innerHTML = html;
+
+    // Compact mode holatini tekshirish va qo'llash
+    const compactToggle = document.getElementById('compactViewToggle');
+    if (compactToggle && compactToggle.checked) {
+        const tableContainer = document.querySelector('.table-container');
+        if (tableContainer) tableContainer.classList.add('compact-mode');
+        updateTableForCompactView();
+    }
+}
+
+function updateTableForCompactView() {
+    if (!allSalesOrders || allSalesOrders.length === 0) return;
+    const tbody = document.getElementById('salesTableBody');
+    let html = '';
+
+    allSalesOrders.forEach(sale => {
+        const items = sale.items || [];
+        const firstItem = items[0] || {};
+        const totalAmount = parseFloat(sale.total_amount) || 0;
+        const totalProfit = parseFloat(sale.total_profit) || 0;
+        const profitClass = totalProfit > 0 ? 'profit-positive' : totalProfit < 0 ? 'profit-negative' : '';
+
+        const saleDate = new Date(sale.sale_date);
+        const formattedDate = saleDate.toLocaleDateString('uz-UZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const formattedTime = saleDate.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+
+        html += '<tr class="compact-row sale-group-start sale-group-end">';
+        html += '<td class="group-cell group-datetime" style="white-space: normal; overflow: visible;">';
+        html += '<div class="datetime-info">';
+        html += '<div class="sale-id-badge">ID: ' + sale.id + '</div>';
+        html += '<div class="sale-date">' + formattedDate + '</div>';
+        html += '<div class="sale-time">' + formattedTime + '</div>';
+        html += '</div></td>';
+
+        html += '<td class="group-cell">';
+        html += '<div style="font-size: 14px; font-weight: 600; color: #495057;">' + (sale.seller_name || 'Admin') + '</div>';
+        if (sale.seller_phone) {
+            html += '<div style="font-size: 12px; color: #6c757d; font-style: italic;">' + sale.seller_phone + '</div>';
+        }
+        html += '</td>';
+
+        html += '<td class="group-cell">' + getLocationName(firstItem) + '</td>';
+        html += '<td class="group-cell">' + items.length + ' ta mahsulot</td>';
+
+        html += '<td class="group-cell group-total">';
+        html += '<div style="font-weight: 600; text-align: center;">$' + totalAmount.toFixed(2) + '</div>';
+        if (sale.currency_rate) {
+            html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalAmount * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
+        }
+        html += '</td>';
+
+        if (userRole === 'admin' || userRole === 'manager') {
+            html += '<td class="group-cell group-profit ' + profitClass + '">';
+            html += '<div style="font-weight: 600; text-align: center;">$' + totalProfit.toFixed(2) + '</div>';
+            if (sale.currency_rate) {
+                html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalProfit * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
+            }
+            html += '</td>';
+        }
+
+        html += '<td class="group-cell group-actions">';
+        html += '<div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">';
+        html += '<button class="btn-action btn-view" onclick="viewSaleDetails(' + sale.id + ')" title="Ko\'rish"><i class="fas fa-eye"></i></button>';
+        html += '<button class="btn-action btn-edit" onclick="editSaleGroup(' + sale.id + ')" title="Tahrirlash"><i class="fas fa-pencil-alt"></i></button>';
+        html += '<button class="btn-action btn-delete" onclick="deleteSale(' + sale.id + ')" title="O\'chirish"><i class="fas fa-trash"></i></button>';
+        html += '</div></td>';
+        html += '</tr>';
+    });
+
     tbody.innerHTML = html;
 }
 
@@ -2032,8 +2104,10 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('customerCompactView', this.checked.toString());
             if (this.checked) {
                 tableContainer.classList.add('compact-mode');
+                updateTableForCompactView();
             } else {
                 tableContainer.classList.remove('compact-mode');
+                if (allSalesOrders.length > 0) displayOrders(allSalesOrders);
             }
         });
     }
