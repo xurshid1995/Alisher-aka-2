@@ -16,15 +16,16 @@
         align-items: center;
         margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 2px solid #dee2e6;
+        border-bottom: 2px solid #e9ecef;
         gap: 15px;
     }
 
     .page-header h1 {
         margin: 0;
-        color: #333;
-        font-size: 28px;
-        font-weight: 600;
+        color: #0f172a;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
     }
 
     .stats-cards {
@@ -37,33 +38,35 @@
     .stat-card {
         background: white;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-left: 4px solid;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid #eef0f7;
+        text-align: center;
     }
 
-    .stat-card.total { border-left-color: #dc3545; }
-    .stat-card.paid { border-left-color: #28a745; }
-    .stat-card.customers { border-left-color: #ffc107; }
+    .stat-card.total .value { color: #e53935; }
+    .stat-card.paid .value { color: #059669; }
+    .stat-card.customers .value { color: #4338ca; }
 
     .stat-card h3 {
         margin: 0 0 10px 0;
-        font-size: 14px;
-        color: #666;
+        font-size: 0.82rem;
+        color: #6b7280;
         font-weight: 500;
     }
 
     .stat-card .value {
-        font-size: 28px;
+        font-size: 1.6rem;
         font-weight: 700;
-        color: #333;
+        color: #0f172a;
     }
 
     .filters-section {
         background: white;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid #eef0f7;
         margin-bottom: 20px;
     }
 
@@ -86,32 +89,42 @@
     .filter-group select {
         width: 100%;
         padding: 10px;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
         font-size: 14px;
+        transition: border-color 0.2s;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        outline: none;
+        border-color: #4338ca;
+        box-shadow: 0 0 0 3px rgba(67,56,202,0.08);
     }
 
     .filter-group button {
         width: 100%;
         padding: 10px;
-        background: #007bff;
+        background: #4338ca;
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 10px;
         cursor: pointer;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
     }
 
     .filter-group button:hover {
-        background: #0056b3;
+        background: #3730a3;
     }
 
     .debts-table-container {
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid #eef0f7;
         overflow: hidden;
+        padding: 20px;
     }
 
     .debts-table {
@@ -120,7 +133,7 @@
     }
 
     .debts-table thead {
-        background: #f8f9fa;
+        background: #f8fafc;
     }
 
     .debts-table th {
@@ -128,19 +141,19 @@
         text-align: left;
         font-size: 14px;
         font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
+        color: #4338ca;
+        border-bottom: 2px solid #eef0f7;
     }
 
     .debts-table td {
         padding: 15px;
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 1px solid #eef0f7;
         font-size: 14px;
-        color: #333;
+        color: #1e293b;
     }
 
     .debts-table tbody tr:hover {
-        background: #f8f9fa;
+        background: #f8fafc;
     }
 
     .status-badge {
@@ -168,57 +181,64 @@
 
     .btn-view {
         padding: 6px 12px;
-        background: #17a2b8;
-        color: white;
-        border: none;
-        border-radius: 4px;
+        background: #eef0f7;
+        color: #4338ca;
+        border: 1px solid #e0e2f0;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
-        font-weight: 500;
+        font-weight: 600;
+        transition: all 0.2s;
     }
 
     .btn-view:hover {
-        background: #138496;
+        background: #4338ca;
+        color: white;
+        border-color: #4338ca;
     }
 
     .btn-pay {
         padding: 6px 12px;
-        background: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
+        background: #f0fdf4;
+        color: #059669;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
-        font-weight: 500;
+        font-weight: 600;
+        transition: all 0.2s;
     }
 
     .btn-pay:hover {
-        background: #218838;
+        background: #059669;
+        color: white;
+        border-color: #059669;
     }
 
     .btn-sms {
-        background: white;
-        color: #333;
-        border: 2px solid #25D366;
+        background: #f0fdf9;
+        color: #059669;
+        border: 1px solid #6ee7b7;
         padding: 6px 12px;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
-        font-weight: 500;
-        transition: all 0.3s;
+        font-weight: 600;
+        transition: all 0.2s;
         white-space: nowrap;
     }
 
     .btn-sms:hover {
         background: #25D366;
         color: white;
-        transform: translateY(-2px);
+        border-color: #25D366;
     }
 
     .btn-sms:disabled {
-        background: #ccc;
+        background: #f1f5f9;
+        color: #94a3b8;
+        border-color: #e2e8f0;
         cursor: not-allowed;
-        transform: none;
     }
 
     /* Qidiruv maydoni */
@@ -233,16 +253,16 @@
         flex: 1;
         max-width: 400px;
         padding: 10px 15px;
-        border: 2px solid #dee2e6;
-        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
         font-size: 14px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .search-input:focus {
         outline: none;
-        border-color: #17a2b8;
-        box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        border-color: #4338ca;
+        box-shadow: 0 0 0 3px rgba(67,56,202,0.08);
     }
 
     .search-input::placeholder {
@@ -1055,20 +1075,23 @@
 {% block content %}
 <div class="debts-container">
     <div class="page-header">
-        <h1>💰 {{ t('debts') }}</h1>
-        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <h1><span style="color:#4338ca">💰</span> {{ t('debts') }}</h1>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <!-- Joylashuv tugmalari -->
-            <div id="locationButtons" style="margin: 15px 0;">
+            <div id="locationButtons" style="margin: 0; display: flex; flex-wrap: wrap; gap: 6px;">
                 {% if current_user.role in ['admin', 'kassir'] %}
                 <button class="btn btn-sm me-2 mb-2 location-btn active" data-location="" onclick="selectLocation(this, '')">
                     🏢 {{ t('filter_all') }}
                 </button>
                 {% endif %}
             </div>
-            <button onclick="sendBulkDebtTelegram()" class="btn-sms" style="padding: 10px 20px; border-radius: 8px; font-weight: 500;">
-                <img src="https://img.icons8.com/fluency/150/telegram-app.png" alt="Telegram" style="width:20px; height:20px; vertical-align:middle;"> {{ t('send_telegram_all') }}
+            <button onclick="sendBulkDebtTelegram()" class="btn-sms" style="padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                <img src="https://img.icons8.com/fluency/150/telegram-app.png" alt="Telegram" style="width:18px; height:18px; vertical-align:middle;"> {{ t('send_telegram_all') }}
             </button>
-            <a href="/paid-debts-history" class="btn btn-primary" style="padding: 10px 20px; border-radius: 8px; font-weight: 500; text-decoration: none; color: white;">
+            <a href="/paid-debts-history"
+               style="background: #eef0f7; color: #4338ca; padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px; border: 1px solid #e0e2f0; transition: all 0.2s;"
+               onmouseover="this.style.background='#4338ca';this.style.color='white';this.style.borderColor='#4338ca'"
+               onmouseout="this.style.background='#eef0f7';this.style.color='#4338ca';this.style.borderColor='#e0e2f0'">
                 <i class="fas fa-history"></i> {{ t('debt_payment_history_link') }}
             </a>
         </div>
@@ -1088,9 +1111,9 @@
 
     <!-- Qarzlar jadvali -->
     <div class="debts-table-container">
-        <h2 style="margin-bottom: 15px; color: #dc3545; display: flex; align-items: center; gap: 10px;">
-            <span>💳 {{ t('debt_customer') }}</span>
-        </h2>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1.5px solid #ebebf5;">
+            <span style="font-size: 18px; font-weight: 700; color: #0f172a;">💳 {{ t('debt_customer') }}</span>
+        </div>
         <div class="search-container">
             <input type="text" id="debtSearchInput" class="search-input" placeholder="🔍 {{ t('search_debt_placeholder') }}" oninput="searchDebts()">
         </div>
@@ -1117,10 +1140,10 @@
     </div>
 
     <!-- To'langan qarzlar jadvali -->
-    <div class="debts-table-container" id="paidDebtsSection" style="margin-top: 30px;">
-        <h2 style="margin-bottom: 15px; color: #28a745; display: flex; align-items: center; gap: 10px;">
-            <span>✅ {{ t('paid_debts_history') }}</span>
-        </h2>
+    <div class="debts-table-container" id="paidDebtsSection" style="margin-top: 24px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1.5px solid #ebebf5;">
+            <span style="font-size: 18px; font-weight: 700; color: #0f172a;">✅ {{ t('paid_debts_history') }}</span>
+        </div>
         <div class="search-container">
             <input type="text" id="paidDebtSearchInput" class="search-input" placeholder="🔍 {{ t('search_paid_debts_placeholder') }}" oninput="searchPaidDebts()">
         </div>
