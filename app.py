@@ -8879,6 +8879,10 @@ def get_customers():
                 customer_dict['total_amount'] = round(total_amount, 2)
                 customer_dict['total_profit'] = round(total_profit, 2)
 
+                # Oxirgi savdo sanasini olish (vaqt filtrisiz)
+                last_sale = Sale.query.filter_by(customer_id=customer.id).order_by(Sale.sale_date.desc()).first()
+                customer_dict['last_sale_date'] = last_sale.sale_date.strftime('%d.%m.%Y') if last_sale else None
+
                 # ⚠️ MUHIM: Agar vaqt filtri qo'llangan bo'lsa va mijozning savdosi bo'lmasa, uni ro'yxatga qo'shmaslik
                 if time_filter != 'all' and total_sales == 0:
                     continue  # Bu mijozni o'tkazib yuborish

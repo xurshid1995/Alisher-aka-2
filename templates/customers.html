@@ -823,7 +823,7 @@
                     <th><span class="emoji">👤</span>{{ t('header_customer_name') }}</th>
                     <th><span class="emoji">📞</span>{{ t('header_phone') }}</th>
                     <th><span class="emoji">📊</span>{{ t('sales_history') }}</th>
-                    <th><span class="emoji">📍</span>{{ t('header_address') }}</th>
+                    <th><span class="emoji">�</span>{{ t('header_last_sale') }}</th>
                     <th><span class="emoji">📅</span>{{ t('header_added_date') }}</th>
                     <th><span class="emoji">⚙️</span>{{ t('actions') }}</th>
                 </tr>
@@ -953,7 +953,7 @@
                                 ${userRole !== 'sotuvchi' ? `<span style="font-size: 0.82rem; background: #f0fdf4; color: #059669; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">📊 ${CSLANG.profit}: <strong>$${customer.total_profit ? parseFloat(customer.total_profit).toFixed(2) : '0.00'}</strong></span>` : ''}
                             </div>
                         </td>
-                        <td>${customer.address || '-'}</td>
+                        <td>${customer.last_sale_date || '-'}</td>
                         <td>${createdDate}</td>
                         <td class="actions">
                             <button onclick="viewCustomer(${customer.id})" class="btn-view" title="${CSLANG.view}"><i class="fas fa-eye"></i></button>
