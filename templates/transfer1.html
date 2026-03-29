@@ -128,6 +128,11 @@
     border-bottom: 2px solid #3730a3;
     white-space: nowrap;
 }
+.transfer1-table .pending-thead th {
+    background: #fef3c7;
+    color: #92400e;
+    border-bottom: 2px solid #f59e0b;
+}
 .transfer1-table th:first-child { border-radius: 0; }
 .transfer1-table th:last-child  { border-radius: 0; }
 .transfer1-table td {
@@ -210,7 +215,7 @@
         </div>
         <div class="transfer1-table-wrap">
             <table class="transfer1-table" id="pendingTransfersTable">
-                <thead>
+                <thead class="pending-thead">
                     <tr>
                         <th>{{ t('tr1_th_from') }}</th>
                         <th>{{ t('tr1_th_to') }}</th>
