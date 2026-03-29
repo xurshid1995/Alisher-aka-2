@@ -475,6 +475,7 @@
 .customer-option:hover { background-color: #f3f4f6; }
 .customer-option:last-child { border-bottom: none; }
 .customer-option.selected { background-color: #4338ca; color: white; }
+.customer-option.keyboard-focused { background-color: #eef0fd; outline: 2px solid #4338ca; }
 
 .filter-group-location { min-width: 180px; }
 .date-range-row { display: flex; gap: 16px; align-items: end; }
@@ -3083,9 +3084,11 @@ async function loadLocationsForFilter() {
 function initializeCustomerSearch() {
     const customerInput = document.getElementById('customerFilter');
     const customerDropdown = document.getElementById('customerDropdown');
-    
+    let focusedIndex = -1;
+
     // Input qidiruv hodisasi - faqat yozganda dropdown ko'rsin
     customerInput.addEventListener('input', function() {
+        focusedIndex = -1;
         if (this.value.trim().length > 0) {
             updateCustomerDropdown();
             customerDropdown.style.display = 'block';
@@ -3097,13 +3100,46 @@ function initializeCustomerSearch() {
         updateClearButtonVisibility();
         applySearchAndFilters();
     });
-    
+
+    // Klaviatura navigatsiyasi
+    customerInput.addEventListener('keydown', function(e) {
+        const options = customerDropdown.querySelectorAll('.customer-option');
+        if (!options.length || customerDropdown.style.display === 'none') return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            focusedIndex = Math.min(focusedIndex + 1, options.length - 1);
+            highlightOption(options, focusedIndex);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            focusedIndex = Math.max(focusedIndex - 1, 0);
+            highlightOption(options, focusedIndex);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (focusedIndex >= 0 && options[focusedIndex]) {
+                options[focusedIndex].click();
+            }
+        } else if (e.key === 'Escape') {
+            customerDropdown.style.display = 'none';
+            focusedIndex = -1;
+        }
+    });
+
     // Tashqi joyga bosganda yashirish
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.customer-search-container')) {
             customerDropdown.style.display = 'none';
+            focusedIndex = -1;
         }
     });
+
+    function highlightOption(options, index) {
+        options.forEach(opt => opt.classList.remove('keyboard-focused'));
+        if (index >= 0 && options[index]) {
+            options[index].classList.add('keyboard-focused');
+            options[index].scrollIntoView({ block: 'nearest' });
+        }
+    }
 }
 
 // Mijoz dropdown ni yangilash
