@@ -196,9 +196,9 @@
 {% block content %}
 <!-- Page Header -->
 <div class="page-header">
-    <div>
-        <h1><span class="ph-icon">🏬</span> {{ store.name }}</h1>
-        <div class="store-meta">
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 16px; flex: 1;">
+        <h1 style="margin: 0; white-space: nowrap;"><span class="ph-icon">🏬</span> {{ store.name }}</h1>
+        <div class="store-meta" style="margin-top: 0;">
             <span><span style="color:#4338ca">📍</span>{{ store.address or t('sd_address_empty') }}</span>
             <span><span style="color:#4338ca">👤</span>{{ store.manager_name or t('sd_manager_empty') }}</span>
             <span><span style="color:#4338ca">📞</span>{{ store.phone or t('sd_phone_empty') }}</span>
