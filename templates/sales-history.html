@@ -83,10 +83,14 @@
             </div>
             
             <div class="filter-group filter-group-location">
-                <label for="locationFilter">{{ t('header_location') }}:</label>
-                <select id="locationFilter" class="filter-input">
-                    <option value="">{{ t('all_locations') }}</option>
-                </select>
+                <label>{{ t('header_location') }}:</label>
+                <div class="location-search-container">
+                    <input type="text" id="locationFilterInput" class="filter-input" 
+                           placeholder="{{ t('all_locations') }}" autocomplete="off"
+                           style="cursor:pointer;">
+                    <input type="hidden" id="locationFilter" value="">
+                    <div id="locationDropdown" class="location-dropdown" style="display: none;"></div>
+                </div>
             </div>
             
             <div class="filter-group">
@@ -456,21 +460,42 @@
     background: white;
 }
 
-/* Select option tanlanganda kulrang, fokusda indigo rang */
-#locationFilter option:checked {
-    background-color: #374151 !important;
-    color: white !important;
+/* Location custom dropdown */
+.location-search-container { position: relative; }
+.location-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1.5px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
-
-#locationFilter option:hover {
-    background-color: #4338ca !important;
-    color: white !important;
+.location-option {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.15s ease;
 }
-
-#locationFilter optgroup {
+.location-option:hover { background-color: #eef0fd; color: #4338ca; }
+.location-option:last-child { border-bottom: none; }
+.location-option.selected { background-color: #4338ca; color: white; }
+.location-option.keyboard-focused { background-color: #3730a3; color: white; outline: none; }
+.location-group-label {
+    padding: 6px 14px;
+    font-size: 11px;
     font-weight: 700;
-    color: #6b7280;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     background: #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 /* Mijoz qidiruv dropdown */
@@ -1592,8 +1617,7 @@ function displaySalesData(data) {
             sortedSales.slice(0, 3).map(s => s.sale_date));
         
         // Joylashuvlar ro'yxatini faqat birinchi marta yuklash
-        const locationSelect = document.getElementById('locationFilter');
-        if (locationSelect && locationSelect.options.length <= 1) {
+        if (!window._locationItems || window._locationItems.length === 0) {
             loadLocationsForFilter();
         }
     }
@@ -2867,6 +2891,8 @@ function initializeSearchAndFilters() {
         dateToFilter.value = '';
         customerFilter.value = '';
         locationFilter.value = '';
+        const locationFilterInput = document.getElementById('locationFilterInput');
+        if (locationFilterInput) locationFilterInput.value = '';
         saleIdFilter.value = '';
         selectedCustomerId = '';
         this.style.display = 'none';
@@ -2892,11 +2918,8 @@ function initializeSearchAndFilters() {
     // Mijoz qidiruv funksiyasini sozlash
     initializeCustomerSearch();
     
-    // Joylashuv filtr change hodisasi
-    locationFilter.addEventListener('change', function() {
-        updateClearButtonVisibility();
-        applySearchAndFilters();
-    });
+    // Joylashuv custom dropdown
+    initializeLocationSearch();
     
     // Savdo ID filtr change hodisasi
     saleIdFilter.addEventListener('input', function() {
@@ -2951,154 +2974,142 @@ async function loadCustomersForFilter() {
 // Joylashuvlar ro'yxatini yuklash (barcha do'konlar va omborlar)
 async function loadLocationsForFilter() {
     try {
-        console.log('📍 ===== JOYLASHUVLAR YUKLASH BOSHLANDI =====');
-        
-        // Backend'dan foydalanuvchi ruxsatlari bo'yicha joylashuvlarni olish
-        console.log('🔄 API so\'rovlari yuborilmoqda...');
         const [storesResponse, warehousesResponse] = await Promise.all([
-            fetch('/api/stores'),  // Foydalanuvchi huquqlari bo'yicha filterlangan
-            fetch('/api/warehouses')  // Foydalanuvchi huquqlari bo'yicha filterlangan
+            fetch('/api/stores'),
+            fetch('/api/warehouses')
         ]);
-        
-        console.log('✅ API javoblari olindi:', {
-            storesStatus: storesResponse.status,
-            storesOk: storesResponse.ok,
-            warehousesStatus: warehousesResponse.status,
-            warehousesOk: warehousesResponse.ok
-        });
-        
-        // Response'larni tekshirish
-        if (!storesResponse.ok) {
-            console.error('❌ Stores API xatosi:', storesResponse.status, storesResponse.statusText);
-        }
-        if (!warehousesResponse.ok) {
-            console.error('❌ Warehouses API xatosi:', warehousesResponse.status, warehousesResponse.statusText);
-        }
-        
         const stores = await storesResponse.json();
         const warehouses = await warehousesResponse.json();
-        
-        console.log('🏪 Do\'konlar (raw data):', stores);
-        console.log('🏪 Do\'konlar soni:', stores?.length || 0);
-        console.log('🏭 Omborlar (raw data):', warehouses);
-        console.log('🏭 Omborlar soni:', warehouses?.length || 0);
-        
-        // Do'konlar va omborlar ma'lumotlarini global o'zgaruvchilarda saqlash
-        window.storesData = stores;
-        window.warehousesData = warehouses;
-        
-        // Select elementini yangilash
-        console.log('🔍 locationFilter elementini qidirish...');
-        const locationSelect = document.getElementById('locationFilter');
-        
-        if (!locationSelect) {
-            console.error('❌ locationFilter elementi topilmadi!');
-            console.log('🔍 Mavjud elementlar:', document.querySelectorAll('select'));
-            return;
-        }
-        
-        console.log('✅ locationFilter elementi topildi:', locationSelect);
-        console.log('🔍 Hozirgi select tarkibi:', locationSelect.innerHTML);
-        
-        // Avvalgi optionlarni tozalash
-        locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
-        console.log('🧹 Select tozalandi, yangi tarkib:', locationSelect.innerHTML);
-        
-        // Do'konlarni qo'shish
-        console.log('🏪 Do\'konlarni qo\'shish jarayoni...');
-        if (stores && stores.length > 0) {
-            console.log(`✅ ${stores.length} ta do'kon topildi`);
-            const storeGroup = document.createElement('optgroup');
-            storeGroup.label = '🏪 ' + SHLANG.stores;
-            
-            stores.forEach((store, index) => {
-                console.log(`🏪 Do'kon ${index + 1}:`, {
-                    id: store.id,
-                    name: store.name,
-                    address: store.address,
-                    manager_name: store.manager_name
-                });
-                
-                const option = document.createElement('option');
-                option.value = `store_${store.id}`;
-                option.textContent = `${store.name} (${SHLANG.store})`;
-                storeGroup.appendChild(option);
-                
-                console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
-            });
-            
-            console.log(`🏪 StoreGroup yaratildi, children: ${storeGroup.children.length}`);
-            if (storeGroup.children.length > 0) {
-                locationSelect.appendChild(storeGroup);
-                console.log('✅ Do\'konlar guruhi select\'ga qo\'shildi');
-            } else {
-                console.warn('⚠️ StoreGroup bo\'sh, qo\'shilmadi');
-            }
-        } else {
-            console.warn('⚠️ Do\'konlar yo\'q yoki bo\'sh array');
-        }
-        
-        // Omborlarni qo'shish
-        console.log('🏭 Omborlarni qo\'shish jarayoni...');
-        if (warehouses && warehouses.length > 0) {
-            console.log(`✅ ${warehouses.length} ta ombor topildi`);
-            const warehouseGroup = document.createElement('optgroup');
-            warehouseGroup.label = '🏭 ' + SHLANG.warehouses;
-            
-            warehouses.forEach((warehouse, index) => {
-                console.log(`🏭 Ombor ${index + 1}:`, {
-                    id: warehouse.id,
-                    name: warehouse.name,
-                    address: warehouse.address,
-                    manager_name: warehouse.manager_name
-                });
-                
-                const option = document.createElement('option');
-                option.value = `warehouse_${warehouse.id}`;
-                option.textContent = `${warehouse.name} (${SHLANG.warehouse})`;
-                warehouseGroup.appendChild(option);
-                
-                console.log(`   ➕ Option yaratildi: "${option.textContent}" = "${option.value}"`);
-            });
-            
-            console.log(`🏭 WarehouseGroup yaratildi, children: ${warehouseGroup.children.length}`);
-            locationSelect.appendChild(warehouseGroup);
-            console.log('✅ Omborlar guruhi select\'ga qo\'shildi');
-        } else {
-            console.warn('⚠️ Omborlar yo\'q yoki bo\'sh array');
-        }
-        
-        // Final natija
-        console.log('🔍 FINAL SELECT TARKIBI:');
-        console.log('   innerHTML:', locationSelect.innerHTML);
-        console.log('   Children soni:', locationSelect.children.length);
-        console.log('   Options soni:', locationSelect.querySelectorAll('option').length);
-        console.log('📍 ===== JOYLASHUVLAR YUKLASH TUGADI =====');
+        buildLocationDropdown(stores, warehouses);
         
     } catch (error) {
         console.error('Joylashuvlarni yuklashda xatolik:', error);
-        
-        // Xato holatida eski mantiqni ishlatish
-        console.log('⚠️ Backend xatosi, savdo ma\'lumotlaridan joylashuvlar olinadi...');
-        if (allSalesData && allSalesData.length > 0) {
-            const uniqueLocations = [...new Set(
-                allSalesData.flatMap(sale => 
-                    sale.items.map(item => item.location_name)
-                ).filter(location => location && location.trim())
-            )].sort();
-            
-            const locationSelect = document.getElementById('locationFilter');
-            if (locationSelect) {
-                locationSelect.innerHTML = '<option value="">Barcha joylashuvlar</option>';
-                uniqueLocations.forEach(location => {
-                    const option = document.createElement('option');
-                    option.value = location;
-                    option.textContent = location;
-                    locationSelect.appendChild(option);
-                });
-            }
+    }
+}
+
+// Custom location dropdown qurish
+function buildLocationDropdown(stores, warehouses) {
+    window._locationItems = [];
+
+    if (stores && stores.length > 0) {
+        stores.forEach(store => {
+            window._locationItems.push({ value: `store_${store.id}`, label: `${store.name} (${SHLANG.store})`, group: '🏪 ' + SHLANG.stores });
+        });
+    }
+    if (warehouses && warehouses.length > 0) {
+        warehouses.forEach(w => {
+            window._locationItems.push({ value: `warehouse_${w.id}`, label: `${w.name} (${SHLANG.warehouse})`, group: '🏭 ' + SHLANG.warehouses });
+        });
+    }
+}
+
+// Location dropdown ni render qilish
+function renderLocationDropdown(searchTerm) {
+    const dropdown = document.getElementById('locationDropdown');
+    const currentValue = document.getElementById('locationFilter').value;
+    dropdown.innerHTML = '';
+
+    const allOpt = document.createElement('div');
+    allOpt.className = 'location-option' + (currentValue === '' ? ' selected' : '');
+    allOpt.textContent = SHLANG.all_locations || 'Barcha joylashuvlar';
+    allOpt.addEventListener('click', function() { selectLocation('', ''); });
+    dropdown.appendChild(allOpt);
+
+    const items = (window._locationItems || []).filter(item => {
+        if (!searchTerm) return true;
+        return item.label.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    let lastGroup = '';
+    items.forEach(item => {
+        if (item.group !== lastGroup) {
+            const groupLabel = document.createElement('div');
+            groupLabel.className = 'location-group-label';
+            groupLabel.textContent = item.group;
+            dropdown.appendChild(groupLabel);
+            lastGroup = item.group;
+        }
+        const opt = document.createElement('div');
+        opt.className = 'location-option' + (item.value === currentValue ? ' selected' : '');
+        opt.textContent = item.label;
+        opt.dataset.value = item.value;
+        opt.dataset.label = item.label;
+        opt.addEventListener('click', function() { selectLocation(item.value, item.label); });
+        dropdown.appendChild(opt);
+    });
+}
+
+// Location tanlash
+function selectLocation(value, label) {
+    document.getElementById('locationFilter').value = value;
+    document.getElementById('locationFilterInput').value = label;
+    document.getElementById('locationDropdown').style.display = 'none';
+    updateClearButtonVisibility();
+    applySearchAndFilters();
+}
+
+// Location qidiruv funksiyasini sozlash
+function initializeLocationSearch() {
+    const locationInput = document.getElementById('locationFilterInput');
+    const locationDropdown = document.getElementById('locationDropdown');
+    let focusedIndex = -1;
+
+    function getOptions() {
+        return locationDropdown.querySelectorAll('.location-option');
+    }
+
+    function highlightLocationOption(options, idx) {
+        options.forEach(o => o.classList.remove('keyboard-focused'));
+        if (idx >= 0 && options[idx]) {
+            options[idx].classList.add('keyboard-focused');
+            options[idx].scrollIntoView({ block: 'nearest' });
         }
     }
+
+    locationInput.addEventListener('click', function() {
+        if (locationDropdown.style.display === 'none' || !locationDropdown.style.display) {
+            renderLocationDropdown(this.value);
+            locationDropdown.style.display = 'block';
+        } else {
+            locationDropdown.style.display = 'none';
+        }
+    });
+
+    locationInput.addEventListener('input', function() {
+        focusedIndex = -1;
+        renderLocationDropdown(this.value);
+        locationDropdown.style.display = 'block';
+    });
+
+    locationInput.addEventListener('keydown', function(e) {
+        const options = getOptions();
+        if (!options.length || locationDropdown.style.display === 'none') return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            focusedIndex = Math.min(focusedIndex + 1, options.length - 1);
+            highlightLocationOption(options, focusedIndex);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            focusedIndex = Math.max(focusedIndex - 1, 0);
+            highlightLocationOption(options, focusedIndex);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (focusedIndex >= 0 && options[focusedIndex]) {
+                options[focusedIndex].click();
+            }
+        } else if (e.key === 'Escape') {
+            locationDropdown.style.display = 'none';
+            focusedIndex = -1;
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.location-search-container')) {
+            locationDropdown.style.display = 'none';
+            focusedIndex = -1;
+        }
+    });
 }
 
 // Mijoz qidiruv funksiyasini sozlash
