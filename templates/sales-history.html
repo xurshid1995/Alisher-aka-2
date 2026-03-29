@@ -23,24 +23,24 @@
     </div>
 
     <div class="sales-stats" id="salesStats">
-        <div class="stat-card">
-            <i class="fas fa-shopping-cart"></i>
-            <div>
+        <div class="stat-card stat-blue">
+            <div class="stat-icon-box"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-info">
                 <span class="stat-number" id="totalSales">0</span>
                 <span class="stat-label">{{ t('total_sales_count') }}</span>
             </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-dollar-sign"></i>
-            <div>
+        <div class="stat-card stat-teal">
+            <div class="stat-icon-box"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-info">
                 <span class="stat-number" id="totalRevenue">$0</span>
                 <span class="stat-label">{{ t('total_sum') }}</span>
             </div>
         </div>
         {% if session.role != 'sotuvchi' %}
-        <div class="stat-card">
-            <i class="fas fa-chart-pie"></i>
-            <div>
+        <div class="stat-card stat-purple">
+            <div class="stat-icon-box"><i class="fas fa-chart-pie"></i></div>
+            <div class="stat-info">
                 <span class="stat-number" id="totalProfit">$0</span>
                 <span class="stat-label">{{ t('total_profit') }}</span>
             </div>
@@ -49,6 +49,11 @@
     </div>
 
     <!-- Qidiruv va Filtr paneli -->
+    <div class="sh-bar">
+        <i class="fas fa-sliders-h"></i>
+        <span>{{ t('filter') }}</span>
+        <span class="sh-chevron"><i class="fas fa-chevron-up"></i></span>
+    </div>
     <div class="search-filter-panel">
         <div class="search-filter-row">
             <div class="search-input-container">
@@ -105,6 +110,10 @@
         <span id="resultsText"></span>
     </div>
 
+    <div class="sh-bar sh-bar-tbl">
+        <i class="fas fa-list-alt"></i>
+        <span>{{ t('sales_history') }}</span>
+    </div>
     <div class="table-responsive">
         <div class="table-container">
             <table class="sales-table">
@@ -143,11 +152,13 @@
 <style>
 /* ===== MODERN SALES HISTORY DESIGN ===== */
 .sales-history-page {
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 0;
+    padding: 24px;
     margin: 0;
     width: 100%;
     max-width: none;
+    background: #f0f3f7;
+    min-height: 100vh;
 }
 
 /* Jadval container */
@@ -161,8 +172,8 @@
 .sales-history-page .table-container {
     width: 100% !important;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-radius: 0 0 12px 12px;
+    box-shadow: none;
     overflow-x: auto;
     overflow-y: visible;
 }
@@ -203,21 +214,21 @@
 }
 
 .sales-history-page .sales-table th {
-    background: #6366f1;
-    color: #ffffff !important;
+    background: #f0f3f7;
+    color: #546e7a !important;
     padding: 12px 8px;
     text-align: center;
-    font-weight: 600;
-    font-size: 13px !important;
-    height: 46px;
+    font-weight: 700;
+    font-size: 12px !important;
+    height: 42px;
     vertical-align: middle;
     line-height: 1.4;
-    letter-spacing: 0.3px;
-    border-bottom: 2px solid #3730a3;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #d0d8e4;
 }
 
-.sales-history-page .sales-table th:first-child { border-radius: 8px 0 0 0; }
-.sales-history-page .sales-table th:last-child { border-radius: 0 8px 0 0; }
+.sales-history-page .sales-table th:first-child { border-radius: 0; }
+.sales-history-page .sales-table th:last-child { border-radius: 0; }
 
 .sales-history-page .sales-table tr:hover {
     background: #f8f9ff;
@@ -246,20 +257,23 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1.5px solid #ebebf5;
+    padding: 16px 22px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border-left: 4px solid #546e7a;
 }
 
 .page-header h1 {
-    color: #0f172a;
-    font-size: 24px;
+    color: #2c3e50;
+    font-size: 20px;
     margin: 0;
     font-weight: 700;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
 }
 
 .page-header h1 i {
-    color: #4338ca;
+    color: #546e7a;
     margin-right: 10px;
 }
 
@@ -301,73 +315,110 @@
 .compact-mode .compact-row { background-color: rgba(74, 108, 247, 0.02); }
 .compact-mode .compact-row:hover { background-color: rgba(74, 108, 247, 0.07); }
 
-/* ===== STAT CARDS ===== */
+/* ===== STAT CARDS - Dashboard Style ===== */
 .sales-stats {
     display: flex;
-    gap: 16px;
+    gap: 0;
     margin-bottom: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+    overflow: hidden;
+    border: 1px solid #dde2ea;
 }
 
 .stat-card {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    border-right: 1px solid #e9ecf2;
+    border-left: none;
     background: white;
-    padding: 20px 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: background 0.2s;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.stat-card:last-child { border-right: none; }
+.stat-card:hover { background: #f9fbff; }
+
+.stat-icon-box {
+    width: 80px;
+    min-height: 82px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    flex: 1;
-    border-left: 4px solid #4338ca;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-}
+.stat-blue  .stat-icon-box { background: #1976d2; }
+.stat-teal  .stat-icon-box { background: #26c6da; }
+.stat-purple .stat-icon-box { background: #7e57c2; }
 
-.stat-card:nth-child(2) { border-left-color: #f59e0b; }
-.stat-card:nth-child(3) { border-left-color: #10b981; }
-
-.stat-card i {
-    font-size: 2rem;
-    color: #4338ca;
-    background: rgba(67, 56, 202, 0.1);
-    padding: 14px;
-    border-radius: 12px;
+.stat-icon-box i {
+    font-size: 1.8rem;
+    color: white;
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
     line-height: 1;
 }
 
-.stat-card:nth-child(2) i { color: #f59e0b; background: rgba(245,158,11,0.1); }
-.stat-card:nth-child(3) i { color: #10b981; background: rgba(16,185,129,0.1); }
+.stat-info {
+    padding: 14px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
 .stat-number {
     display: block;
-    font-size: 1.6rem;
+    font-size: 1.65rem;
     font-weight: 700;
-    color: #1a1f36;
+    color: #2c3e50;
     line-height: 1.2;
     letter-spacing: -0.5px;
 }
 
 .stat-label {
     display: block;
-    font-size: 0.825rem;
-    color: #9ca3af;
-    font-weight: 500;
-    margin-top: 2px;
+    font-size: 0.71rem;
+    color: #90a4ae;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
 }
+
+/* ===== SECTION HEADER BARS ===== */
+.sh-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #546e7a;
+    color: white;
+    padding: 11px 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+}
+.sh-chevron { margin-left: auto; opacity: 0.65; font-size: 12px; }
+.sh-bar-tbl { border-radius: 12px 12px 0 0; }
 
 /* ===== SEARCH & FILTER PANEL ===== */
 .search-filter-panel {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
     margin-bottom: 20px;
     padding: 20px 24px;
-    border: 1px solid #eef0f7;
+    border: 1px solid #dde2ea;
+    border-top: none;
 }
 
 .search-filter-row {
@@ -583,8 +634,8 @@
 
 .table-container {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
