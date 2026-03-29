@@ -3084,16 +3084,14 @@ function initializeCustomerSearch() {
     const customerInput = document.getElementById('customerFilter');
     const customerDropdown = document.getElementById('customerDropdown');
     
-    // Input focus hodisasi
-    customerInput.addEventListener('focus', function() {
-        updateCustomerDropdown();
-        customerDropdown.style.display = 'block';
-    });
-    
-    // Input qidiruv hodisasi
+    // Input qidiruv hodisasi - faqat yozganda dropdown ko'rsin
     customerInput.addEventListener('input', function() {
-        updateCustomerDropdown();
-        customerDropdown.style.display = 'block';
+        if (this.value.trim().length > 0) {
+            updateCustomerDropdown();
+            customerDropdown.style.display = 'block';
+        } else {
+            customerDropdown.style.display = 'none';
+        }
         updateClearButtonVisibility();
         applySearchAndFilters();
     });
