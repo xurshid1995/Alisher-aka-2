@@ -103,16 +103,16 @@
 .ps-table tbody tr:last-child td { border-bottom: none; }
 
 /* Column widths */
-.ps-table .col-barcode  { width: 80px;  text-align: center; }
+.ps-table .col-barcode  { min-width: 80px;  text-align: center; }
 .ps-table .col-name     { min-width: 200px; text-align: left; }
 .ps-table td.col-name   { text-align: left !important; }
 .ps-table td.product-name { text-align: left !important; }
 .ps-table .col-price    { min-width: 240px; text-align: left; }
 .ps-table td.col-price  { text-align: left !important; }
 .ps-table td.price-cell { text-align: left !important; }
-.ps-table .col-location { width: 230px; text-align: left; }
-.ps-table .col-quantity { width: 140px; text-align: center; }
-.ps-table .col-status   { width: 90px;  text-align: center; }
+.ps-table .col-location { min-width: 230px; text-align: left; }
+.ps-table .col-quantity { min-width: 140px; text-align: center; }
+.ps-table .col-status   { min-width: 90px;  text-align: center; }
 @media (min-width: 2000px) {
     .ps-table .col-price { max-width: none; }
 }
