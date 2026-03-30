@@ -126,9 +126,9 @@ body {
     white-space: nowrap;
 }
 
-/* Hover: padding kengayadi */
+/* Hover: faqat gorizontal padding kengayadi, vertikal o'zgarmaydi */
 .sidebar:hover .sidebar-menu a {
-    padding: 8px 20px;
+    padding: 10px 20px;
 }
 
 /* Oddiy holatda matn yashirin (desktop) */
