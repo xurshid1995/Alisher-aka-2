@@ -961,14 +961,14 @@
                         locations.push(`<span class="loc-row"><span class="loc-name loc-store">${stock.store_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
                     }
                 } else {
-                    // Aniq joylashuv tanlangan bo'lsa - faqat o'sha joylashuv ko'rsatilsin
+                    // Aniq joylashuv tanlangan bo'lsa - faqat joylashuv nomi (miqdorsiz)
                     const [locationType, locationId] = locationFilter.split('_');
                     
                     if (locationType === 'warehouse' && stock.warehouse_id == locationId && stock.warehouse_name) {
-                        locations.push(`<span class="loc-row"><span class="loc-name loc-warehouse">${stock.warehouse_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name loc-warehouse">${stock.warehouse_name}</span></span>`);
                     }
                     if (locationType === 'store' && stock.store_id == locationId && stock.store_name) {
-                        locations.push(`<span class="loc-row"><span class="loc-name loc-store">${stock.store_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name loc-store">${stock.store_name}</span></span>`);
                     }
                 }
             });
