@@ -5,8 +5,9 @@
 {% block extra_css %}
 <style>
     .products-container {
-        padding: 20px;
-        min-height: auto;
+        padding: 24px;
+        min-height: 100vh;
+        background: #f0f3f7;
     }
     
     /* Mobile uchun compact padding */
@@ -16,11 +17,11 @@
         }
 
         .products-table thead {
-            background: #6366f1 !important;
+            background: #546e7a !important;
         }
 
         .products-table thead th {
-            background: #6366f1 !important;
+            background: #546e7a !important;
             color: white !important;
             position: relative;
             z-index: 1;
@@ -42,7 +43,7 @@
 
         /* Sticky ustun uchun background */
         .products-table thead th:nth-child(2) {
-            background: #6366f1 !important;
+            background: #546e7a !important;
             z-index: 3;
         }
 
@@ -78,8 +79,8 @@
         padding: 20px 24px;
         border-radius: 12px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        border: 1px solid #eef0f7;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        border: 1px solid #dde2ea;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -192,9 +193,10 @@
 
     .products-table-container {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        border: 1px solid #eef0f7;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        border: 1px solid #dde2ea;
+        border-top: none;
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
@@ -210,7 +212,7 @@
     }
 
     .products-table thead {
-        background: #6366f1;
+        background: #546e7a;
         color: white;
     }
 
@@ -396,6 +398,23 @@
         color: #e74c3c;
     }
 
+    /* ===== SECTION HEADER BAR ===== */
+    .sh-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #546e7a;
+        color: white;
+        padding: 11px 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.9px;
+        border-radius: 12px 12px 0 0;
+        box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+    }
+    .sh-chevron { margin-left: auto; opacity: 0.65; font-size: 12px; }
+
     /* Search highlight styles */
     .search-highlight {
         background-color: #ffeb3b;
@@ -452,14 +471,16 @@
     }
 
     .table-info {
-        padding: 10px 16px;
-        background: white;
-        border-bottom: 1px solid #f0f2f5;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        padding: 8px 14px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: #1d4ed8;
+        font-weight: 500;
         display: flex;
         align-items: center;
-        font-size: 13px;
-        font-weight: 500;
-        color: #6b7280;
     }
 
     /* Pagination styles */
@@ -545,11 +566,11 @@
         }
 
         .products-table thead {
-            background: #6366f1 !important;
+            background: #546e7a !important;
         }
 
         .products-table thead th {
-            background: #6366f1 !important;
+            background: #546e7a !important;
             color: white !important;
             position: relative;
             z-index: 1;
@@ -571,7 +592,7 @@
 
         /* Sticky ustun uchun background */
         .products-table thead th:nth-child(2) {
-            background: #6366f1 !important;
+            background: #546e7a !important;
             z-index: 3;
         }
 
@@ -773,14 +794,18 @@
         </div>
     </div>
 
+    <!-- Table Info (jadval tepasida) -->
+    <div class="table-info" id="tableInfo" style="display: none;">
+        <span id="resultsInfo"></span>
+    </div>
+
     <!-- Products Table -->
     <div class="table-responsive">
-        <div class="products-table-container">
-        
-        <!-- Table Info (jadval tepasida) -->
-        <div class="table-info" id="tableInfo" style="display: none;">
-            <span id="resultsInfo"></span>
+        <div class="sh-bar">
+            <i class="fas fa-box"></i> {{ t('pr_page_title') }}
+            <i class="fas fa-chevron-down sh-chevron"></i>
         </div>
+        <div class="products-table-container">
         
         <div id="loadingState" class="loading-state">
             <div class="loading-spinner"></div>
