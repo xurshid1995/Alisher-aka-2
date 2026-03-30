@@ -263,7 +263,7 @@
                         <th>{{ t('tr1_th_date') }}</th>
                         <th>{{ t('tr1_th_from') }}</th>
                         <th>{{ t('tr1_th_to') }}</th>
-                        <th>{{ t('tr1_th_products2') }}</th>
+                        <th style="text-align: left;">{{ t('tr1_th_products2') }}</th>
                         <th>{{ t('tr1_th_quantity') }}</th>
                         <th>{{ t('tr1_th_user') }}</th>
                     </tr>
@@ -475,7 +475,7 @@
                             <td style="white-space: nowrap;">${formattedDate}</td>
                             <td>${transfer.from_location}</td>
                             <td>${transfer.to_location}</td>
-                            <td>${products}</td>
+                            <td style="text-align: left;">${products}</td>
                             <td>${quantities}</td>
                             <td>${transfer.user_name}</td>
                         </tr>
