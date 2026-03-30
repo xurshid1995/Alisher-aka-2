@@ -18,7 +18,8 @@
                         <i class="fas fa-search rp-search-icon"></i>
                         <input type="text" id="productSearchInput" placeholder="{{ t('select_location_first') }}"
                                autocomplete="off" disabled oninput="searchProducts()"
-                               class="rp-search-input">
+                               class="rp-search-input" style="padding-right:36px;">
+                        <button id="clearProductBtn" onclick="clearProductSelection()" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#94a3b8; font-size:16px; line-height:1; padding:2px 4px;" title="Tozalash">✕</button>
                         <div id="productSuggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; max-height: 300px; overflow-y: auto; z-index: 1000;"></div>
                     </div>
                 </div>
@@ -50,13 +51,13 @@
         <div class="rp-section-body" style="padding-bottom:0;">
             <div class="rp-filter-row" style="margin-bottom:16px;">
                 <div style="position:relative;">
-                    <input type="text" id="saleCustomerFilter" oninput="onCustomerFilterInput()" onfocus="onCustomerFilterInput()"
+                    <input type="text" id="saleCustomerFilter" oninput="onCustomerFilterInput(); updateClearFilterBtn()" onfocus="onCustomerFilterInput()"
                            placeholder="Mijoz ismi..." autocomplete="off" class="rp-filter-input" style="width:200px;">
                     <div id="customerFilterDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1.5px solid #e5e7eb; border-top:none; border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto; z-index:1500; box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
                 </div>
-                <input type="number" id="saleIdFilterReturn" oninput="filterProductSales()" placeholder="Savdo ID"
+                <input type="number" id="saleIdFilterReturn" oninput="filterProductSales(); updateClearFilterBtn()" placeholder="Savdo ID"
                        class="rp-filter-input" style="width:120px;" min="1">
-                <button onclick="clearProductSaleFilters()" class="rp-btn-clear">✕ Tozalash</button>
+                <button id="clearFilterBtn" onclick="clearProductSaleFilters()" class="rp-btn-clear" style="display:none;">✕ Tozalash</button>
             </div>
         </div>
         <div class="rp-table-wrap">
@@ -645,6 +646,8 @@
         document.getElementById('selectedProductName').textContent = productName;
         // Banner ko'rsatilmaydi
         // document.getElementById('selectedProductInfo').style.display = 'block';
+        // X tugmasini ko'rsatish
+        document.getElementById('clearProductBtn').style.display = 'block';
         
         // Bu mahsulot bor savdolarni yuklash
         await loadSalesByProduct(productId);
@@ -656,6 +659,7 @@
         document.getElementById('selectedProductInfo').style.display = 'none';
         document.getElementById('recentSalesSection').style.display = 'none';
         document.getElementById('saleDetails').style.display = 'none';
+        document.getElementById('clearProductBtn').style.display = 'none';
     }
 
     async function loadSalesByProduct(productId) {
@@ -813,6 +817,14 @@
         document.getElementById('saleIdFilterReturn').value = '';
         document.getElementById('customerFilterDropdown').style.display = 'none';
         renderProductSalesTable(allProductSalesData);
+        updateClearFilterBtn();
+    }
+
+    function updateClearFilterBtn() {
+        const customer = document.getElementById('saleCustomerFilter').value.trim();
+        const saleId = document.getElementById('saleIdFilterReturn').value.trim();
+        const btn = document.getElementById('clearFilterBtn');
+        if (btn) btn.style.display = (customer || saleId) ? 'inline-flex' : 'none';
     }
 
     async function selectSaleForReturn(saleId, productId) {
