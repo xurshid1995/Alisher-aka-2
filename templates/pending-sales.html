@@ -1110,7 +1110,7 @@ function displaySalesData(data) {
     const compactToggle = document.getElementById('compactViewToggle');
     if (compactToggle && compactToggle.checked) {
         console.log('🔄 Ma\'lumotlar yuklangandan keyin compact mode yoqilmoqda');
-        const tableContainer = document.querySelector('.table-container');
+        const tableContainer = document.querySelector('.ps-table-card');
         if (tableContainer) {
             tableContainer.classList.add('compact-mode');
         }
@@ -2504,7 +2504,7 @@ function initializeCompactView() {
     console.log('🚀 initializeCompactView ishga tushdi');
     
     const compactToggle = document.getElementById('compactViewToggle');
-    const tableContainer = document.querySelector('.table-container');
+    const tableContainer = document.querySelector('.ps-table-card');
     
     console.log('🔍 compactToggle element:', compactToggle);
     console.log('🔍 tableContainer element:', tableContainer);
@@ -2515,7 +2515,7 @@ function initializeCompactView() {
     }
     
     if (!tableContainer) {
-        console.error('❌ table-container elementi topilmadi!');
+        console.error('❌ ps-table-card elementi topilmadi!');
         return;
     }
 
