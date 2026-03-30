@@ -437,54 +437,25 @@ tbody tr.sale-group-start:first-child { border-top: none; }
     .ps-header { flex-direction: column; gap: 10px; }
     .ps-stats { grid-template-columns: 1fr; gap: 10px; }
 
-    /* Filter panel mobil: qidiruv ustida, qolganlar 2 ustunli grid */
+    /* Filter panel — grid layout */
     .ps-filter-panel { padding: 14px; }
     .ps-filter-row {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .ps-search-box {
-        max-width: 100%;
-        flex: 1 1 100%;
-    }
-    /* Sana, mijoz, joylashuv, ID — 2 ta qatorga 2 tadan */
-    .ps-filter-group {
-        flex: 1 1 calc(50% - 5px);
-        min-width: 0;
-    }
-    /* Barcha filter group larni 2 ustunli grid ga joylashtirish */
-    .ps-filter-row {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
+    /* Qidiruv — to'liq kenglik (1-qator, ikkala ustun) */
     .ps-search-box {
         grid-column: 1 / -1;
-    }
-    /* Sana juftini yonma-yon */
-    .ps-filter-row > .ps-filter-group:nth-child(2),
-    .ps-filter-row > .ps-filter-group:nth-child(3) {
-        display: inline-flex;
-    }
-    /* Inline grid layout */
-    .ps-filter-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .ps-search-box {
-        flex: 1 1 100%;
         max-width: 100%;
     }
-    .ps-filter-group {
-        flex: 1 1 calc(50% - 5px);
-        min-width: calc(50% - 5px);
-        max-width: calc(50% - 5px);
-    }
+    /* Joylashuv — to'liq kenglik */
     .ps-filter-location {
-        flex: 1 1 100%;
-        min-width: 100%;
-        max-width: 100%;
+        grid-column: 1 / -1;
+    }
+    /* Qolgan filter grouplar (sana, mijoz, id) — har biri yarim kenglik */
+    .ps-filter-group {
+        min-width: 0;
     }
 
     .ps-table-card { border-radius: 12px; }
