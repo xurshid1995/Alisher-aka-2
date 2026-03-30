@@ -643,7 +643,8 @@
         
         // Tanlangan mahsulot ma'lumotini ko'rsatish
         document.getElementById('selectedProductName').textContent = productName;
-        document.getElementById('selectedProductInfo').style.display = 'block';
+        // Banner ko'rsatilmaydi
+        // document.getElementById('selectedProductInfo').style.display = 'block';
         
         // Bu mahsulot bor savdolarni yuklash
         await loadSalesByProduct(productId);
