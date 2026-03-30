@@ -4,688 +4,213 @@
 
 {% block extra_css %}
 <style>
-    .products-container {
-        padding: 24px;
-        min-height: 100vh;
-        background: #f0f3f7;
-    }
-    
-    /* Mobile uchun compact padding */
-    @media (max-width: 480px) {
-        .products-container {
-            padding: 0.5rem;
-        }
-
-        .products-table thead {
-            background: #546e7a !important;
-        }
-
-        .products-table thead th {
-            background: #546e7a !important;
-            color: white !important;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Sticky column - faqat Mahsulot nomi */
-        .products-table th:nth-child(2),
-        .products-table td:nth-child(2) {
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            width: 180px !important;
-            max-width: 180px !important;
-            white-space: normal !important;
-            overflow: visible !important;
-            word-break: break-word !important;
-        }
-
-        /* Sticky ustun uchun background */
-        .products-table thead th:nth-child(2) {
-            background: #546e7a !important;
-            z-index: 3;
-        }
-
-        .products-table tbody td:nth-child(2) {
-            background: white;
-        }
-    }
-
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-        border-bottom: 1.5px solid #ebebf5;
-    }
-
-    .page-header h1 {
-        margin: 0;
-        font-size: 24px;
-        color: #0f172a;
-        font-weight: 700;
-        letter-spacing: -0.3px;
-    }
-
-    .page-header h1 i, .page-header h1 span {
-        color: #4338ca;
-        margin-right: 8px;
-    }
-
-    .controls-section {
-        background: white;
-        padding: 20px 24px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-        border: 1px solid #dde2ea;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .search-box {
-        flex: 1;
-        max-width: 400px;
-        min-width: 320px;
-        position: relative;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 10px 14px 10px 38px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 10px;
-        font-size: 14px;
-        transition: all 0.2s ease;
-        background: #f9fafb;
-        color: #1a1f36;
-    }
-
-    .search-box input:focus {
-        border-color: #4338ca;
-        box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
-        outline: none;
-        background: white;
-    }
-
-    .search-box::before {
-        content: '🔍';
-        position: absolute;
-        left: 0.75rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1rem;
-        z-index: 1;
-    }
-
-    .filter-section {
-        flex-shrink: 0;
-    }
-
-    .status-filter {
-        padding: 9px 14px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 10px;
-        font-size: 13px;
-        background: #f9fafb;
-        color: #1a1f36;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 140px;
-    }
-
-    .status-filter:focus {
-        border-color: #4338ca;
-        box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
-        outline: none;
-        background: white;
-    }
-
-    .status-filter:hover {
-        border-color: #4338ca;
-    }
-
-    .location-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-start;
-    }
-
-    .location-button {
-        padding: 7px 16px;
-        border: 1.5px solid #e5e7eb;
-        background: white;
-        color: #374151;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-        min-width: 80px;
-        text-align: center;
-    }
-
-    .location-button:hover {
-        border-color: #4338ca;
-        background: #eef0fd;
-        color: #4338ca;
-    }
-
-    .location-button.active {
-        background: #4338ca;
-        border-color: #4338ca;
-        color: white;
-        box-shadow: 0 2px 8px rgba(67, 56, 202, 0.3);
-    }
-
-    .location-button.active:hover {
-        background: #3730a3;
-        border-color: #3730a3;
-    }
-
-    .products-table-container {
-        background: white;
-        border-radius: 0 0 12px 12px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-        border: 1px solid #dde2ea;
-        border-top: none;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .products-table {
-        width: auto;
-        min-width: 800px; /* Mahsulotlar jadvali uchun minimal kenglik */
-        border-collapse: separate;
-        border-spacing: 0; /* Vertical chiziqsiz, faqat horizontal */
-        font-size: 0.95rem;
-        table-layout: fixed;
-    }
-
-    .products-table thead {
-        background: #546e7a;
-        color: white;
-    }
-
-    .products-table th {
-        padding: 12px 10px 12px 2.8rem;
-        text-align: left;
-        font-weight: 600;
-        font-size: 15px;
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        position: relative;
-    }
-
-    .products-table th:first-child { border-radius: 8px 0 0 0; }
-    .products-table th:last-child { border-radius: 0 8px 0 0; }
-
-    .products-table th .emoji {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1.5rem;
-        text-align: center;
-    }
-
-    .products-table tbody tr {
-        border-bottom: 1px solid #f0f2f5;
-        transition: background-color 0.2s ease;
-    }
-
-    .products-table tbody tr:hover {
-        background-color: #f8f9ff;
-    }
-
-    .products-table td {
-        padding: 10px 10px 10px 2.8rem;
-        border: none;
-        border-bottom: 1px solid #f0f2f5;
-        vertical-align: middle;
-        text-align: left;
-        font-size: 14px;
-    }
-
-    .location-cell {
-        vertical-align: middle;
-        text-align: left;
-        line-height: 0.9;
-        padding-top: 0.3rem !important;
-        padding-bottom: 0.3rem !important;
-    }
-
-    .product-name {
-        font-weight: 600;
-        color: #2c3e50;
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-    .location-cell {
-        font-weight: 500;
-        color: #6c757d;
-        text-align: center;
-    }
-
-    .price-cell {
-        font-weight: 600;
-        color: #28a745;
-        text-align: right;
-    }
-
-    .quantity-cell {
-        font-weight: 700;
-        text-align: left;
-        font-size: 0.9rem;
-        vertical-align: middle;
-    }
-
-    .quantity-value {
-        display: inline-block;
-        color: white;
-        background-color: #4da6ff;
-        border-radius: 3px;
-        padding: 0.2rem 0.4rem;
-        min-width: 1.5rem;
-        text-align: center;
-        font-size: 0.85rem;
-        vertical-align: baseline;
-        line-height: 1.2;
-    }
-
-    .quantity-value.quantity-zero {
-        background-color: #e74c3c;
-    }
-
-    .quantity-unit {
-        display: inline-block;
-        color: #666;
-        font-weight: 500;
-        margin-left: 0.3rem;
-        font-size: 0.85rem;
-        vertical-align: baseline;
-        line-height: 1.2;
-    }
-
-    .stock-badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 0;
-        font-size: 0.8rem;
-        font-weight: bold;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    /* Barcode ustuni (1) */
-    .products-table th:nth-child(1),
-    .products-table td:nth-child(1) {
-        min-width: 80px;
-        max-width: 80px;
-        width: 80px;
-        text-align: center;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    /* Mahsulot nomi ustuni (2) */
-    .products-table th:nth-child(2),
-    .products-table td:nth-child(2) {
-        max-width: 380px;
-        width: 380px;
-        padding-left: 1rem !important;
-        padding-right: 0.5rem !important;
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-    /* Narx ustuni (3) */
-    .products-table th:nth-child(3),
-    .products-table td:nth-child(3) {
-        min-width: 200px;
-        max-width: 200px;
-        width: 200px;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    /* Joylashuv ustuni (4) */
-    .products-table th:nth-child(4),
-    .products-table td:nth-child(4) {
-        max-width: 180px;
-        width: 180px;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    /* Miqdor ustuni (5) */
-    .products-table th:nth-child(5),
-    .products-table td:nth-child(5) {
-        max-width: 80px;
-        width: 80px;
-        text-align: left;
-        vertical-align: middle;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    /* Holat ustuni (6) */
-    .products-table th:nth-child(6),
-    .products-table td:nth-child(6) {
-        max-width: 100px;
-        width: 100px;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    .stock-high {
-        color: #27ae60;
-    }
-
-    .stock-medium {
-        color: #e74c3c;
-    }
-
-    /* ===== SECTION HEADER BAR ===== */
-    .sh-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: #546e7a;
-        color: white;
-        padding: 11px 20px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.9px;
-        border-radius: 12px 12px 0 0;
-        box-shadow: 0 2px 14px rgba(0,0,0,0.09);
-    }
-    .sh-chevron { margin-left: auto; opacity: 0.65; font-size: 12px; }
-
-    /* Search highlight styles */
-    .search-highlight {
-        background-color: #ffeb3b;
-        padding: 1px 2px;
-        border-radius: 0;
-        font-weight: bold;
-    }
-
-    .stock-out {
-        color: #000000;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #6c757d;
-    }
-
-    .empty-state .empty-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .empty-state h3 {
-        margin-bottom: 0.5rem;
-        color: #495057;
-    }
-
-    .empty-state p {
-        margin-bottom: 2rem;
-    }
-
-    .loading-state {
-        text-align: center;
-        padding: 3rem;
-        color: #6c757d;
-    }
-
-    .loading-spinner {
-        display: inline-block;
-        width: 2rem;
-        height: 2rem;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #4338ca;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 1rem;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .table-info {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        border-radius: 8px;
-        padding: 8px 14px;
-        margin-bottom: 16px;
-        font-size: 13px;
-        color: #1d4ed8;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-    }
-
-    /* Pagination styles */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1.5rem 1rem;
-        background: white;
-        border-top: 1px solid #e9ecef;
-        margin-top: 0;
-    }
-
-    #paginationButtons {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .pagination-btn {
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #dee2e6;
-        background: white;
-        color: #495057;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.9rem;
-        min-width: 40px;
-        text-align: center;
-    }
-
-    .pagination-btn:hover:not(.active) {
-        background: #f8f9fa;
-        border-color: #adb5bd;
-    }
-
-    .pagination-btn.active {
-        background: #4338ca;
-        color: white;
-        border-color: #4338ca;
-        font-weight: 600;
-    }
-
-    .pagination-dots {
-        padding: 0.5rem 0.25rem;
-        color: #9ca3af;
-        font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-        .products-container {
-            padding: 1rem;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-        }
-
-        .controls-section {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .search-box {
-            min-width: auto;
-        }
-
-        .location-buttons {
-            justify-content: flex-start;
-        }
-
-        .location-button {
-            font-size: 0.85rem;
-            padding: 0.5rem 1rem;
-            min-width: 70px;
-        }
-
-        .products-table {
-            font-size: 0.85rem;
-        }
-
-        .products-table thead {
-            background: #546e7a !important;
-        }
-
-        .products-table thead th {
-            background: #546e7a !important;
-            color: white !important;
-            position: relative;
-            z-index: 1;
-        }
-
-        .products-table th,
-        .products-table td {
-            padding: 0.75rem 0.5rem;
-        }
-
-        /* Sticky column - faqat Mahsulot nomi */
-        .products-table th:nth-child(2),
-        .products-table td:nth-child(2) {
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-
-        /* Sticky ustun uchun background */
-        .products-table thead th:nth-child(2) {
-            background: #546e7a !important;
-            z-index: 3;
-        }
-
-        .products-table tbody td:nth-child(2) {
-            background: white;
-        }
-
-        /* Mobile pagination */
-        .pagination {
-            padding: 1rem 0.5rem;
-        }
-
-        #paginationButtons {
-            gap: 0.25rem;
-        }
-
-        .pagination-btn {
-            padding: 0.4rem 0.6rem;
-            font-size: 0.8rem;
-            min-width: 35px;
-        }
-
-        .pagination-dots {
-            padding: 0.4rem 0.15rem;
-        }
-    }
-
-    /* Joylashuv taglari uchun stillar */
-    .location-tag {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.2rem 0.5rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        margin: 0.1rem 0.2rem 0.1rem 0;
-        height: 1.5rem;
-        width: 105px;
-        vertical-align: middle;
-        text-align: center;
-        box-sizing: border-box;
-    }
-
-    .location-name {
-        display: inline;
-    }
-
-    .location-quantity {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        padding: 0.3rem 0.5rem;
-        background-color: #ffffff;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        width: 55px;
-        text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        margin-left: 0.2rem;
-        vertical-align: middle;
-        height: 1.5rem;
-        box-sizing: border-box;
-    }
-
-    .warehouse-tag {
-        background-color: #fffaeb;
-        color: #333333;
-        border: 2px solid #ffc107;
-    }
-
-    .store-tag {
-        background-color: #e7f5ea;
-        color: #333333;
-        border: 2px solid #28a745;
-    }
-
-    .hist-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-        padding: 0 4px 0 0;
-        line-height: 1;
-        vertical-align: middle;
-        opacity: 0.65;
-        transition: opacity 0.15s, transform 0.15s;
-    }
-    .hist-btn:hover {
-        opacity: 1;
-        transform: scale(1.2);
-    }
+/* ====================================================
+   NESTDRAX CRM - MAHSULOTLAR SAHIFASI DIZAYNI
+   ==================================================== */
+
+/* Page wrapper */
+.ps-page {
+    padding: 28px 28px 40px;
+    background: #f5f6fa;
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Header ── */
+.ps-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+}
+.ps-title { font-size: 18px; font-weight: 700; color: #1e293b; margin: 0; }
+.ps-title i { color: #4338ca; margin-right: 8px; }
+.ps-header-right { display: flex; align-items: center; gap: 12px; }
+
+/* ── Filter Panel ── */
+.ps-filter-panel {
+    background: white; border-radius: 16px;
+    padding: 18px 22px; margin-bottom: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.ps-filter-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+
+.ps-search-box { position: relative; flex: 1 1 260px; max-width: 360px; }
+.ps-search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: #94a3b8; font-size: 14px; pointer-events: none;
+}
+.ps-search-input { padding-left: 40px !important; }
+
+.ps-filter-group { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+.ps-filter-group label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+.ps-filter-location { flex: 1 1 auto; }
+
+.ps-input {
+    padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+    font-size: 13px; background: #f8fafc; color: #1e293b;
+    transition: all 0.2s; outline: none; width: 100%; box-sizing: border-box;
+}
+.ps-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: white; }
+
+/* ── Location buttons ── */
+.location-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.location-button {
+    padding: 7px 16px; border: 1.5px solid #e2e8f0;
+    background: white; color: #374151; border-radius: 8px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+}
+.location-button:hover { border-color: #4338ca; background: #eef0fd; color: #4338ca; }
+.location-button.active { background: #4338ca; border-color: #4338ca; color: white; box-shadow: 0 2px 8px rgba(67,56,202,0.3); }
+
+/* ── Table Card ── */
+.ps-table-card {
+    background: white; border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden;
+}
+.ps-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── Table styles ── */
+.ps-table {
+    width: 100%; min-width: 900px;
+    border-collapse: collapse; font-size: 14px;
+}
+.ps-table thead tr { background: #1a6eff; }
+.ps-table th {
+    padding: 12px 14px !important; text-align: center;
+    font-size: 11px !important; font-weight: 700 !important;
+    color: #ffffff !important; background: #1a6eff !important;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border: none !important; border-bottom: 1px solid #1558d6 !important;
+    white-space: nowrap;
+}
+.ps-table td {
+    padding: 12px 14px !important; font-size: 13px !important;
+    color: #374151; border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle; text-align: center;
+}
+.ps-table tbody tr:hover { background: #f8faff; }
+.ps-table tbody tr:last-child td { border-bottom: none; }
+
+/* Column widths */
+.ps-table .col-barcode  { width: 9%; text-align: center; }
+.ps-table .col-name     { width: 38%; text-align: left; }
+.ps-table .col-price    { width: 18%; text-align: right; }
+.ps-table .col-location { width: 15%; text-align: left; }
+.ps-table .col-quantity { width: 8%; text-align: center; }
+.ps-table .col-status   { width: 8%; text-align: center; }
+.ps-table .col-actions  { width: 4%; text-align: center; }
+
+/* ── Product name ── */
+.product-name {
+    font-weight: 600; color: #1e293b; font-size: 13px !important;
+    white-space: normal; word-break: break-word; text-align: left;
+}
+.product-barcode {
+    font-family: monospace; font-size: 12px; color: #64748b;
+    background: #f1f5f9; padding: 2px 6px; border-radius: 4px;
+}
+
+/* ── Price cell ── */
+.price-cell { text-align: right !important; }
+.price-usd { font-weight: 700; font-size: 13px; color: #1e293b; }
+.price-uzs { font-size: 11px; color: #94a3b8; }
+
+/* ── Quantity ── */
+.quantity-value {
+    display: inline-block; color: white; background: #4da6ff;
+    border-radius: 5px; padding: 3px 8px; font-size: 12px;
+    font-weight: 700; min-width: 28px; text-align: center;
+}
+.quantity-value.quantity-zero { background: #ef4444; }
+.quantity-unit {
+    display: inline-block; color: #6c757d;
+    font-weight: 500; margin-left: 4px; font-size: 12px;
+}
+
+/* ── Location cell ── */
+.location-cell { text-align: left !important; }
+
+/* ── Stock status ── */
+.stock-high   { color: #059669; font-weight: 700; }
+.stock-medium { color: #ef4444; font-weight: 700; }
+.stock-out    { color: #1e293b; font-weight: 700; }
+
+/* ── Search highlight ── */
+.search-highlight {
+    background: #fef08a; padding: 1px 2px;
+    border-radius: 3px; font-weight: 700;
+}
+
+/* ── Pagination ── */
+.ps-pagination {
+    display: flex; justify-content: center; align-items: center;
+    padding: 18px 20px; border-top: 1px solid #f1f5f9;
+}
+#paginationButtons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.pagination-btn {
+    padding: 6px 12px; border: 1.5px solid #e2e8f0;
+    background: white; color: #374151; border-radius: 8px;
+    cursor: pointer; font-size: 13px; min-width: 36px; text-align: center;
+    font-weight: 500; transition: all 0.2s;
+}
+.pagination-btn:hover:not(.active) { background: #f1f5f9; border-color: #94a3b8; }
+.pagination-btn.active { background: #2563eb; color: white; border-color: #2563eb; font-weight: 700; }
+.pagination-dots { padding: 6px 4px; color: #94a3b8; font-weight: bold; }
+
+/* ── Loading / Empty states ── */
+.ps-loading-state,
+.ps-empty-state { text-align: center; padding: 3rem; color: #94a3b8; }
+.ps-loading-spinner {
+    display: inline-block; width: 2rem; height: 2rem;
+    border: 3px solid #f1f5f9; border-top: 3px solid #4338ca;
+    border-radius: 50%; animation: ps-spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+@keyframes ps-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.ps-empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; display: block; }
+.ps-empty-state h3 { color: #475569; font-size: 16px; margin-bottom: 8px; }
+.ps-empty-state p { margin: 0; font-size: 13px; }
+
+/* ── hist-btn (tarix) ── */
+.hist-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 1rem; padding: 0 4px 0 0; line-height: 1;
+    vertical-align: middle; opacity: 0.65;
+    transition: opacity 0.15s, transform 0.15s;
+}
+.hist-btn:hover { opacity: 1; transform: scale(1.2); }
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+    .ps-page { padding: 18px; }
+    .ps-filter-row { gap: 10px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    .ps-page { padding: 12px; }
+    .ps-header { flex-direction: column; gap: 10px; }
+    .ps-filter-panel { padding: 14px; }
+    .ps-filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ps-search-box { grid-column: 1 / -1; max-width: 100%; }
+    .ps-filter-location { grid-column: 1 / -1; }
+    .ps-table-card { border-radius: 12px; }
+    .ps-table-wrap { overflow-x: auto; }
+    .ps-pagination { padding: 12px; }
+    .pagination-btn { padding: 5px 8px; font-size: 12px; min-width: 30px; }
+    .ps-table .col-name { position: sticky; left: 0; z-index: 2; background: white; box-shadow: 2px 0 5px rgba(0,0,0,0.07); }
+    .ps-table thead th.col-name { background: #1a6eff !important; z-index: 3; }
+}
+
+@media (max-width: 480px) {
+    .ps-page { padding: 8px; }
+    .ps-filter-panel { padding: 10px; }
+    .ps-header { flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; }
+    .ps-title { font-size: 15px; }
+    .ps-filter-row { grid-template-columns: 1fr; }
+    .ps-search-box { max-width: 100%; }
+}
 
     #prodOpsBackdrop {
         display: none;
@@ -768,71 +293,77 @@
 {% block content %}
 <div id="prodOpsBackdrop" onclick="closeProductOps()"></div>
 <div id="prodOpsPopup"></div>
-<div class="products-container" 
+<div class="ps-page products-container"
      data-user-store-id="{% if session.store_id %}{{ session.store_id }}{% else %}null{% endif %}"
      data-user-role="{{ session.role }}">
-    <div class="page-header">
-        <h1><span>📦</span> {{ t('pr_page_title') }}</h1>
-    </div>
-    
-    <!-- Controls Section -->
-    <div class="controls-section">
-        <div class="search-box">
-            <input type="text" id="productSearch" placeholder="{{ t('placeholder_search') }}">
-        </div>
-        <div class="filter-section">
-            <select id="statusFilter" class="status-filter">
-                <option value="all">{{ t('status_all') }}</option>
-                <option value="high">{{ t('status_sufficient') }}</option>
-                <option value="medium">{{ t('status_low') }}</option>
-                <option value="out">{{ t('status_out') }}</option>
-            </select>
-        </div>
-        <div class="location-buttons" id="locationButtons">
-            <button class="location-button active" data-location="all">{{ t('location_all') }}</button>
-            <!-- Ombor va dokon tugmalari dinamik yuklanadi -->
+
+    <!-- Page Header -->
+    <div class="ps-header">
+        <div class="ps-header-left">
+            <h1 class="ps-title"><i class="fas fa-box-open"></i> {{ t('pr_page_title') }}</h1>
         </div>
     </div>
 
-    <!-- Products Table -->
-    <div class="table-responsive">
-        <div class="products-table-container" style="border-radius: 12px;">
-        
-        <div id="loadingState" class="loading-state">
-            <div class="loading-spinner"></div>
+    <!-- Filter Panel -->
+    <div class="ps-filter-panel">
+        <div class="ps-filter-row">
+            <div class="ps-search-box">
+                <i class="fas fa-search ps-search-icon"></i>
+                <input type="text" id="productSearch" placeholder="{{ t('placeholder_search') }}" class="ps-input ps-search-input">
+            </div>
+            <div class="ps-filter-group">
+                <label>{{ t('header_status') }}</label>
+                <select id="statusFilter" class="ps-input">
+                    <option value="all">{{ t('status_all') }}</option>
+                    <option value="high">{{ t('status_sufficient') }}</option>
+                    <option value="medium">{{ t('status_low') }}</option>
+                    <option value="out">{{ t('status_out') }}</option>
+                </select>
+            </div>
+            <div class="ps-filter-group ps-filter-location">
+                <label>{{ t('header_location') }}</label>
+                <div class="location-buttons" id="locationButtons">
+                    <button class="location-button active" data-location="all">{{ t('location_all') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="ps-table-card">
+        <div id="loadingState" class="ps-loading-state">
+            <div class="ps-loading-spinner"></div>
             <p>{{ t('loading_products') }}</p>
         </div>
 
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <div class="empty-icon">📦</div>
+        <div id="emptyState" class="ps-empty-state" style="display: none;">
+            <span class="ps-empty-icon">📦</span>
             <h3>{{ t('no_products_found') }}</h3>
             <p>{{ t('no_products_available') }}</p>
         </div>
 
-        <table class="products-table" id="productsTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>{{ t('header_barcode') }}</th>
-                    <th>{{ t('header_product_name') }}</th>
-                    <th>{{ t('header_price') }}</th>
-                    <th>{{ t('header_location') }}</th>
-                    <th><span id="quantityHeader">{{ t('header_total_quantity') }}</span></th>
-                    <th>{{ t('header_status') }}</th>
-                </tr>
-            </thead>
-            <tbody id="productsTableBody">
-                <!-- Mahsulotlar bu yerga yuklanadi -->
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <div class="pagination" id="pagination" style="display: none;">
-            <div id="paginationButtons">
-                <!-- Pagination tugmalari bu yerga yuklanadi -->
-            </div>
+        <div class="ps-table-wrap">
+            <table class="ps-table" id="productsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="col-barcode">{{ t('header_barcode') }}</th>
+                        <th class="col-name">{{ t('header_product_name') }}</th>
+                        <th class="col-price">{{ t('header_price') }}</th>
+                        <th class="col-location">{{ t('header_location') }}</th>
+                        <th class="col-quantity"><span id="quantityHeader">{{ t('header_total_quantity') }}</span></th>
+                        <th class="col-status">{{ t('header_status') }}</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                </tbody>
+            </table>
         </div>
+
+        <div class="ps-pagination" id="pagination" style="display: none;">
+            <div id="paginationButtons"></div>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
