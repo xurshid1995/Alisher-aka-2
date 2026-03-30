@@ -1552,7 +1552,7 @@ footer {
         width: 280px !important;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease !important;
         z-index: 1250 !important;
-        background: #1e293b !important;
+        background: #0f172a !important;
         box-shadow: none !important;
         border-radius: 0;
         overflow-y: scroll !important;
@@ -1615,41 +1615,41 @@ footer {
     }
     
     .sidebar::-webkit-scrollbar-track {
-        background: rgba(20, 184, 166, 0.05);
+        background: rgba(255,255,255,0.05);
     }
     
     .sidebar::-webkit-scrollbar-thumb {
-        background: rgba(20, 184, 166, 0.2);
+        background: rgba(255,255,255,0.2);
         border-radius: 10px;
     }
     
     .sidebar::-webkit-scrollbar-thumb:hover {
-        background: rgba(20, 184, 166, 0.5);
+        background: rgba(255,255,255,0.4);
     }
     
     .sidebar-menu li a {
         padding: 15px 20px;
         font-size: 1rem;
         font-weight: 500;
-        border-bottom: 1px solid rgba(20, 184, 166, 0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
         display: flex;
         align-items: center;
         min-height: 50px;
         transition: all 0.3s ease;
-        color: #4b5563;
+        color: rgba(255,255,255,0.75);
     }
     
     .sidebar-menu li a:hover {
-        background: rgba(20, 184, 166, 0.07);
-        color: #14b8a6;
+        background: rgba(255,255,255,0.15);
+        color: #ffffff;
         padding-left: 25px;
     }
     
     .sidebar-menu li a.active {
-        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-        color: #fff;
-        border-left: 4px solid transparent;
-        box-shadow: 0 4px 14px rgba(20, 184, 166, 0.2);
+        background: rgba(255,255,255,0.22);
+        color: #ffffff;
+        border-left: 4px solid rgba(255,255,255,0.6);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.15);
     }
     
     .sidebar-menu li a i {
@@ -1657,7 +1657,7 @@ footer {
         font-size: 1.2rem;
         width: 25px;
         text-align: center;
-        color: inherit;
+        color: rgba(255,255,255,0.75);
     }
     
     /* Main content adjustments */
