@@ -39,10 +39,16 @@
     color: #94a3b8; font-size: 14px; pointer-events: none;
 }
 .ps-search-input { padding-left: 40px !important; }
+.ps-clear-btn {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: #94a3b8; cursor: pointer;
+    padding: 4px; border-radius: 50%; transition: all 0.15s;
+}
+.ps-clear-btn:hover { background: #f1f5f9; color: #475569; }
 
 .ps-filter-group { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
 .ps-filter-group label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-.ps-filter-location { flex: 1 1 auto; }
+.ps-filter-location { flex: 1 1 200px; }
 
 .ps-input {
     padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
@@ -310,6 +316,7 @@
             <div class="ps-search-box">
                 <i class="fas fa-search ps-search-icon"></i>
                 <input type="text" id="productSearch" placeholder="{{ t('placeholder_search') }}" class="ps-input ps-search-input">
+                <button id="clearSearch" class="ps-clear-btn" style="display: none;"><i class="fas fa-times"></i></button>
             </div>
             <div class="ps-filter-group">
                 <label>{{ t('header_status') }}</label>
@@ -463,14 +470,23 @@
         
         // Qidiruv event listener with debounce
         let searchTimeout;
+        const clearSearchBtn = document.getElementById('clearSearch');
         document.getElementById('productSearch').addEventListener('input', function() {
             clearTimeout(searchTimeout);
             const searchValue = this.value.trim();
-            
+            clearSearchBtn.style.display = searchValue ? 'block' : 'none';
             searchTimeout = setTimeout(() => {
                 currentSearch = searchValue;
                 loadProducts(1, searchValue, currentLocation);
             }, 500); // 500ms debounce
+        });
+        clearSearchBtn.addEventListener('click', function() {
+            const input = document.getElementById('productSearch');
+            input.value = '';
+            this.style.display = 'none';
+            currentSearch = '';
+            loadProducts(1, '', currentLocation);
+            input.focus();
         });
         
         // Holat filtiri event listener
