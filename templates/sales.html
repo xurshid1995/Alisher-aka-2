@@ -594,14 +594,14 @@
         align-items: center;
         gap: 8px;
         padding: 8px 14px;
-        background: rgba(99, 102, 241, 0.06);
-        border: 1px solid rgba(99, 102, 241, 0.16);
+        background: rgba(26, 110, 255, 0.06);
+        border: 1px solid rgba(26, 110, 255, 0.16);
         border-radius: 10px 10px 0 0;
         cursor: pointer;
         transition: all 0.2s;
         font-size: 14px;
         font-weight: 500;
-        color: #4f46e5;
+        color: #1a6eff;
         white-space: nowrap;
         user-select: none;
         min-width: 120px;
@@ -609,14 +609,14 @@
     }
     
     .sales-tab:hover {
-        background: rgba(99, 102, 241, 0.12);
-        border-color: rgba(99, 102, 241, 0.28);
+        background: rgba(26, 110, 255, 0.12);
+        border-color: rgba(26, 110, 255, 0.28);
     }
     
     .sales-tab.active {
         background: white;
         border-bottom-color: white;
-        color: #4f46e5;
+        color: #1a6eff;
         font-weight: 600;
         box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05);
     }
@@ -656,7 +656,7 @@
     }
     
     .btn-new-sale {
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        background: linear-gradient(135deg, #1a6eff, #1558d6);
         color: white;
         border: none;
         padding: 9px 18px;
@@ -666,14 +666,14 @@
         font-weight: 600;
         white-space: nowrap;
         transition: all 0.2s;
-        box-shadow: 0 3px 12px rgba(99, 102, 241, 0.28);
+        box-shadow: 0 3px 12px rgba(26, 110, 255, 0.28);
         align-self: flex-end;
         margin-bottom: 2px;
     }
     
     .btn-new-sale:hover {
-        background: linear-gradient(135deg, #4f46e5, #4338ca);
-        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+        background: linear-gradient(135deg, #1558d6, #1246b5);
+        box-shadow: 0 6px 18px rgba(26, 110, 255, 0.4);
         transform: translateY(-1px);
     }
     
@@ -703,7 +703,7 @@
     
     /* Tab badge (mijoz/mahsulotlar soni) */
     .tab-badge {
-        background: #6366f1;
+        background: #1a6eff;
         color: white;
         font-size: 10px;
         padding: 2px 6px;
@@ -713,7 +713,7 @@
     }
     
     .sales-tab.active .tab-badge {
-        background: #4f46e5;
+        background: #1558d6;
     }
 </style>
 {% endblock %}
@@ -863,7 +863,7 @@
                 <!-- Tugmalar -->
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
                     <button onclick="savePending()" style="background: #ffc107; color: #333; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">{{ t('btn_save_pending') }}</button>
-                    <button onclick="completeSale()" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">{{ t('btn_complete_sale') }}</button>
+                    <button onclick="completeSale()" style="background: linear-gradient(135deg, #1a6eff, #1558d6); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(26, 110, 255, 0.3);">{{ t('btn_complete_sale') }}</button>
                 </div>
             </div>
         </div>
@@ -906,7 +906,7 @@
             </div>
             <div style="display: flex; gap: 10px;">
                 <button onclick="closeModal()" style="flex: 1; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">{{ t('btn_cancel') }}</button>
-                <button onclick="confirmAddToCart()" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.28);">{{ t('btn_add') }}</button>
+                <button onclick="confirmAddToCart()" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #1a6eff, #1558d6); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 14px rgba(26, 110, 255, 0.28);">{{ t('btn_add') }}</button>
             </div>
         </div>
     </div>
@@ -941,25 +941,25 @@
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_cash') }}</label>
                 <input type="number" id="paymentCashUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentCashUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentCashUSD')" style="padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentCashUSD')" style="padding: 8px 12px; background: #1a6eff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_click') }}</label>
                 <input type="number" id="paymentClickUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentClickUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentClickUSD')" style="padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentClickUSD')" style="padding: 8px 12px; background: #1a6eff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_terminal') }}</label>
                 <input type="number" id="paymentTerminalUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentTerminalUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentTerminalUSD')" style="padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentTerminalUSD')" style="padding: 8px 12px; background: #1a6eff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <label style="font-weight: 500; white-space: nowrap; min-width: 90px;">{{ t('label_debt') }}</label>
                 <input type="number" id="paymentDebtUSD" step="0.01" placeholder="$" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
                 <input type="number" id="paymentDebtUZS" step="1" placeholder="UZS" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;">
-                <button onclick="addRemainingToField('paymentDebtUSD')" style="padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
+                <button onclick="addRemainingToField('paymentDebtUSD')" style="padding: 8px 12px; background: #1a6eff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; white-space: nowrap;">{{ t('btn_add_remaining') }}</button>
             </div>
             
             <!-- Qarz to'lash muddati -->
@@ -981,7 +981,7 @@
         
         <div style="display: flex; gap: 10px;">
             <button onclick="closePaymentModal()" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">{{ t('btn_cancel') }}</button>
-            <button id="confirmPaymentBtn" onclick="confirmPayment()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">{{ t('btn_confirm') }}</button>
+            <button id="confirmPaymentBtn" onclick="confirmPayment()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #1a6eff, #1558d6); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; box-shadow: 0 4px 14px rgba(26, 110, 255, 0.3);">{{ t('btn_confirm') }}</button>
         </div>
     </div>
 </div>
