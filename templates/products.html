@@ -151,6 +151,7 @@
 .location-cell { text-align: left !important; }
 .loc-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
 .loc-row:last-child { margin-bottom: 0; }
+.loc-name { font-size: 12px; color: #1e293b; }
 .loc-qty-badge {
     display: inline-block; background: #4da6ff; color: white;
     font-size: 11px; font-weight: 700; padding: 1px 7px;
@@ -950,21 +951,21 @@
                 if (locationFilter === 'all') {
                     // Agar warehouse_id mavjud bo'lsa - ombor (sariq fon)
                     if (stock.warehouse_id && stock.warehouse_name) {
-                        locations.push(`<span class="loc-row"><span class="location-tag warehouse-tag"><span class="location-name">${stock.warehouse_name}</span></span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name">${stock.warehouse_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
                     }
                     // Agar store_id mavjud bo'lsa - do'kon (yashil fon)
                     if (stock.store_id && stock.store_name) {
-                        locations.push(`<span class="loc-row"><span class="location-tag store-tag"><span class="location-name">${stock.store_name}</span></span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name">${stock.store_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
                     }
                 } else {
                     // Aniq joylashuv tanlangan bo'lsa - faqat o'sha joylashuv ko'rsatilsin
                     const [locationType, locationId] = locationFilter.split('_');
                     
                     if (locationType === 'warehouse' && stock.warehouse_id == locationId && stock.warehouse_name) {
-                        locations.push(`<span class="loc-row"><span class="location-tag warehouse-tag"><span class="location-name">${stock.warehouse_name}</span></span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name">${stock.warehouse_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
                     }
                     if (locationType === 'store' && stock.store_id == locationId && stock.store_name) {
-                        locations.push(`<span class="loc-row"><span class="location-tag store-tag"><span class="location-name">${stock.store_name}</span></span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
+                        locations.push(`<span class="loc-row"><span class="loc-name">${stock.store_name}</span><span class="loc-qty-badge">${qtyDisplay}</span></span>`);
                     }
                 }
             });
