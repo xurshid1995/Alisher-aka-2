@@ -73,8 +73,10 @@
 <style>
 /* ==================== DASHBOARD PAGE ==================== */
 .db-page {
-    padding: 0;
-    min-height: calc(100vh - 130px);
+    padding: 28px 28px 40px;
+    min-height: 100vh;
+    background: #f5f6fa;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 /* Page header */
@@ -102,7 +104,7 @@
 .db-card {
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     overflow: hidden;
 }
 .db-card-head {
@@ -138,12 +140,12 @@
     transition: all 0.2s;
 }
 .db-tf-btn:hover:not(.active) {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: #1a6eff;
+    color: #1a6eff;
 }
 .db-tf-btn.active {
-    background: #6366f1;
-    border-color: #6366f1;
+    background: #1a6eff;
+    border-color: #1a6eff;
     color: #ffffff;
     font-weight: 600;
 }
@@ -171,12 +173,12 @@
     transition: all 0.2s;
 }
 .db-loc-btn:hover:not(.active) {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: #1a6eff;
+    color: #1a6eff;
 }
 .db-loc-btn.active {
-    background: #6366f1;
-    border-color: #6366f1;
+    background: #1a6eff;
+    border-color: #1a6eff;
     color: #ffffff;
     font-weight: 600;
 }
@@ -243,15 +245,15 @@
 /* Mini stat cards */
 .db-mini-card {
     background: #ffffff;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 18px 14px 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     border-left: 4px solid var(--mc, #14b8a6);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .db-mini-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
 }
 .db-mini-icon {
     display: inline-flex;
