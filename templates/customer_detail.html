@@ -958,8 +958,8 @@ function updateTableForCompactView() {
         }
         html += '</td>';
 
-        html += '<td class="group-cell">' + getLocationName(firstItem) + '</td>';
-        html += '<td class="group-cell">' + items.length + ' ta mahsulot</td>';
+        html += '<td class="group-cell col-location">' + getLocationName(firstItem) + '</td>';
+        html += '<td class="group-cell col-product">' + items.length + ' ta mahsulot</td>';
 
         html += '<td class="group-cell group-total col-total">' + formatPrice(totalAmount, sale.currency_rate) + '</td>';
 

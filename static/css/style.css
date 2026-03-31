@@ -1204,10 +1204,14 @@ footer {
 .sales-table tr.sale-group-item td:nth-child(4) { min-width: 90px; text-align: center; font-weight: 600; }   /* Yig'indi */
 
 /* Birinchi qator (group-start) — cols 5,6,7,8: joylashuv rowspan sababli nth-child 5-8 */
-.sales-table tr.sale-group-start td:nth-child(5) { min-width: 250px; text-align: left; font-weight: 600; }   /* Mahsulot */
-.sales-table tr.sale-group-start td:nth-child(6) { min-width: 70px; text-align: center; font-weight: 600; }  /* Miqdor */
-.sales-table tr.sale-group-start td:nth-child(7) { min-width: 80px; text-align: center; font-weight: 600; }   /* Narx */
-.sales-table tr.sale-group-start td:nth-child(8) { min-width: 90px; text-align: center; font-weight: 600; }   /* Yig'indi */
+.sales-table tr.sale-group-start:not(.compact-row) td:nth-child(5) { min-width: 250px; text-align: left; font-weight: 600; }   /* Mahsulot */
+.sales-table tr.sale-group-start:not(.compact-row) td:nth-child(6) { min-width: 70px; text-align: center; font-weight: 600; }  /* Miqdor */
+.sales-table tr.sale-group-start:not(.compact-row) td:nth-child(7) { min-width: 80px; text-align: center; font-weight: 600; }   /* Narx */
+.sales-table tr.sale-group-start:not(.compact-row) td:nth-child(8) { min-width: 90px; text-align: center; font-weight: 600; }   /* Yig'indi */
+
+/* Compact view — joylashuv va mahsulot ustunlari minimal kengligi */
+.compact-mode .col-location { min-width: 120px !important; }
+.compact-mode .col-product { min-width: 180px !important; }
 
 /* ==============================================
    PERFORMANCE OPTIMIZATIONS
