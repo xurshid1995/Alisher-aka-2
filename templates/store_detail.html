@@ -537,7 +537,8 @@
     let totalPages = 1;
     const itemsPerPage = 50;
     const storeId = {{ store.id }};
-    let currentSearchTerm = ''; // Qidiruv matnini saqlash
+    let currentSearchTerm = '';
+    const stockItemMap = {}; // productId -> item ma'lumotlari
 
     // Qidiruv matnini ajratib ko'rsatish funksiyasi (har bir so'zni alohida)
     function highlightSearchText(text, searchTerm) {
@@ -638,6 +639,16 @@
         }
 
         tbody.innerHTML = stockInfo.map(item => {
+            // Ma'lumotlarni map ga saqlash (quoting muammosiz)
+            stockItemMap[item.stock.product.id] = {
+                name: item.stock.product.name,
+                barcode: item.stock.product.barcode || '',
+                quantity: item.stock.quantity,
+                minStock: item.stock.product.min_stock || 0,
+                costPrice: item.stock.product.cost_price,
+                sellPrice: item.stock.product.sell_price
+            };
+
             // Mahsulot nomini highlight qilish
             const highlightedName = highlightSearchText(item.stock.product.name, currentSearchTerm);
             
@@ -664,7 +675,7 @@
                       `<span style="color: #27ae60; font-weight: bold;">✓ ${SDLANG.status_enough}</span>`}
                 </td>
                 <td class="actions" style="padding: 4px 6px; text-align: center; width: 160px;">
-                    <a href="#" onclick="openEditModal(${storeId}, ${item.stock.product.id}, ${JSON.stringify(item.stock.product.name)}, ${JSON.stringify(item.stock.product.barcode||'')}, ${item.stock.quantity}, ${item.stock.product.min_stock||0}, ${item.stock.product.cost_price}, ${item.stock.product.sell_price}); return false;"
+                    <a href="#" onclick="openEditModal(${storeId}, ${item.stock.product.id}); return false;"
                        class="btn-action btn-action-edit">✏️ ${SDLANG.edit}</a>
                     <button onclick="deleteStock(${storeId}, ${item.stock.product.id}, this)" 
                             data-product-name="${item.stock.product.name}"
@@ -784,15 +795,17 @@
     }
 
     // ── Edit Modal funksiyalari ──
-    function openEditModal(storeId, productId, name, barcode, qty, minStock, costPrice, sellPrice) {
+    function openEditModal(storeId, productId) {
+        const d = stockItemMap[productId];
+        if (!d) return;
         document.getElementById('em-store-id').value = storeId;
         document.getElementById('em-product-id').value = productId;
-        document.getElementById('em-productName').value = name;
-        document.getElementById('em-barcode').value = barcode;
-        document.getElementById('em-quantity').value = qty;
-        document.getElementById('em-minStock').value = minStock;
-        document.getElementById('em-costPrice').value = parseFloat(costPrice).toFixed(2);
-        document.getElementById('em-sellPrice').value = parseFloat(sellPrice).toFixed(2);
+        document.getElementById('em-productName').value = d.name;
+        document.getElementById('em-barcode').value = d.barcode;
+        document.getElementById('em-quantity').value = d.quantity;
+        document.getElementById('em-minStock').value = d.minStock;
+        document.getElementById('em-costPrice').value = parseFloat(d.costPrice).toFixed(2);
+        document.getElementById('em-sellPrice').value = parseFloat(d.sellPrice).toFixed(2);
         document.getElementById('em-error').style.display = 'none';
         emUpdateProfit();
         document.getElementById('editModalOverlay').classList.add('active');
