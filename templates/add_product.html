@@ -117,12 +117,12 @@ optgroup option { font-weight: normal; color: #1e293b; }
 }
 .ap-btn-barcode-auto:hover { background: #059669; color: white; }
 .ap-btn-barcode-print {
-    padding: 8px 12px; background: white; color: #2563eb;
+    padding: 6px 10px; background: white;
     border: 1.5px solid #2563eb; border-radius: 8px; cursor: pointer;
-    font-size: 16px; display: flex; align-items: center;
+    display: flex; align-items: center;
     transition: all 0.2s;
 }
-.ap-btn-barcode-print:hover { background: #2563eb; color: white; }
+.ap-btn-barcode-print:hover { background: #eff6ff; }
 
 /* Summary bar */
 .ap-summary {
@@ -306,7 +306,7 @@ optgroup option { font-weight: normal; color: #1e293b; }
                                         title="{{ t('ap_auto_barcode_title') }}"><i class="fas fa-sync-alt"></i> Auto</button>
                                 <button type="button" onclick="printBarcodeFromForm()" id="printBarcodeBtn"
                                         class="ap-btn-barcode-print"
-                                        title="{{ t('ap_print_barcode_title') }}"><i class="fas fa-print"></i></button>
+                                        title="{{ t('ap_print_barcode_title') }}"><img src="https://img.icons8.com/color/48/print.png" alt="Print" style="width:28px;height:28px;"></button>
                             </div>
                         </div>
                     </div>
