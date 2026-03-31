@@ -163,9 +163,20 @@
 }
 .ps-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .ps-table {
-    width: 100%; min-width: 900px;
-    border-collapse: collapse; font-size: 14px;
+    width: 100%; min-width: 1000px;
+    border-collapse: collapse; font-size: 14px; table-layout: auto;
 }
+.ps-table .col-datetime { width: 8%; }
+.ps-table .col-seller   { width: 9%; }
+.ps-table .col-location { width: 9%; text-align: left; }
+.ps-table .col-product  { width: 32%; text-align: left; }
+.ps-table .col-quantity { width: 5%; }
+.ps-table .col-price    { width: 6%; text-align: right; }
+.ps-table .col-subtotal { width: 7%; text-align: right; }
+.ps-table .col-total    { width: 7%; text-align: right; font-weight: 600; }
+.ps-table .col-profit   { width: 7%; text-align: right; font-weight: 600; }
+.ps-table thead th.col-profit { color: #ffffff !important; }
+.ps-table .col-actions  { width: 5%; }
 .ps-table thead tr { background: #1a6eff; }
 .ps-table th {
     padding: 12px 10px !important;
@@ -188,6 +199,7 @@
     border-bottom: 1px solid #f1f5f9 !important;
     vertical-align: middle;
     text-align: center;
+    white-space: normal !important; word-wrap: break-word; line-height: 1.4;
 }
 .ps-table tbody tr:hover { background: #f8faff; }
 .ps-table tbody tr:last-child td { border-bottom: none; }
@@ -664,18 +676,18 @@ tbody tr.sale-group-start:first-child { border-top: none; }
             <table class="ps-table sales-table">
                 <thead>
                     <tr>
-                        <th>Sana va vaqt</th>
-                        <th>Sotuvchi</th>
-                        <th>Joylashuv</th>
-                        <th>Mahsulot</th>
-                        <th class="compact-hide">Miqdor</th>
-                        <th class="compact-hide">Narx</th>
-                        <th class="compact-hide">Yig'indi</th>
-                        <th>Jami yig'indi</th>
+                        <th class="col-datetime">Sana va vaqt</th>
+                        <th class="col-seller">Sotuvchi</th>
+                        <th class="col-location">Joylashuv</th>
+                        <th class="col-product">Mahsulot</th>
+                        <th class="col-quantity compact-hide">Miqdor</th>
+                        <th class="col-price compact-hide">Narx</th>
+                        <th class="col-subtotal compact-hide">Yig'indi</th>
+                        <th class="col-total">Jami yig'indi</th>
                         {% if session.role in ['admin', 'manager'] %}
-                        <th>Jami foyda</th>
+                        <th class="col-profit">Jami foyda</th>
                         {% endif %}
-                        <th>Amal</th>
+                        <th class="col-actions">Amal</th>
                     </tr>
                 </thead>
                 <tbody id="salesTableBody"></tbody>
