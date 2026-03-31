@@ -710,29 +710,51 @@
 
     // Excel export funksiyasi
     function exportToExcel() {
-        // XLSX kutubxonasi yuklanganini tekshirish
         if (typeof XLSX === 'undefined') {
             alert('❌ ' + SDLANG.excel_not_loaded);
             return;
         }
 
-        try {
-            const table = document.getElementById('stock-table');
-            if (!table) {
-                alert('❌ ' + SDLANG.table_not_found);
-                return;
-            }
+        const search = document.querySelector('#search-input')?.value || '';
+        const status = document.querySelector('#status-filter')?.value || '';
 
-            const ws = XLSX.utils.table_to_sheet(table);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, SDLANG.store_info);
-            XLSX.writeFile(wb, "{{ store.name }}_mahsulotlar.xlsx");
-            
-            console.log('✅ Excel fayl muvaffaqiyatli eksport qilindi');
-        } catch (error) {
-            console.error('Excel eksport xatoligi:', error);
-            alert('❌ ' + SDLANG.excel_error + error.message);
-        }
+        const params = new URLSearchParams({ search, status });
+        const btn = document.querySelector('.ps-excel-btn');
+        if (btn) btn.disabled = true;
+
+        fetch(`/api/store/${storeId}/stock/export?${params}`)
+            .then(r => r.json())
+            .then(res => {
+                if (!res.success) throw new Error(res.error || 'Xatolik');
+
+                const rows = res.data.map(item => ({
+                    'Barcode':        item.barcode,
+                    'Mahsulot nomi':  item.name,
+                    'Miqdor':         item.quantity,
+                    'Tan narx (so\'nggi)': item.last_batch_cost,
+                    'Tan narx':       item.cost_price,
+                    'Sotish narx':    item.sell_price,
+                    'Birlik foyda':   item.unit_profit,
+                    'Foyda %':        item.profit_percentage,
+                    'Holat':          item.status === 'critical' ? 'Tugagan' :
+                                      item.status === 'low'      ? 'Kam qolgan' : 'Yetarli'
+                }));
+
+                const ws = XLSX.utils.json_to_sheet(rows);
+                // Ustun kengliklarini sozlash
+                ws['!cols'] = [10,30,10,18,12,14,14,10,12].map(w => ({wch: w}));
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, SDLANG.store_info);
+                XLSX.writeFile(wb, "{{ store.name }}_mahsulotlar.xlsx");
+                console.log(`✅ Excel: ${res.total} ta mahsulot eksport qilindi`);
+            })
+            .catch(error => {
+                console.error('Excel eksport xatoligi:', error);
+                alert('❌ ' + SDLANG.excel_error + error.message);
+            })
+            .finally(() => {
+                if (btn) btn.disabled = false;
+            });
     }
 
     // Mahsulotni o'chirish funksiyasi

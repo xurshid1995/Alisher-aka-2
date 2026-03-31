@@ -5263,6 +5263,69 @@ def api_store_stock(store_id):
         }), 500
 
 
+@app.route('/api/store/<int:store_id>/stock/export', methods=['GET'])
+def api_store_stock_export(store_id):
+    """Export ALL store stocks as JSON for Excel download (no pagination)"""
+    try:
+        Store.query.get_or_404(store_id)
+
+        search = request.args.get('search', '', type=str).strip()
+        status = request.args.get('status', '', type=str).strip()
+
+        query = StoreStock.query.filter_by(store_id=store_id)
+
+        if search:
+            query = query.join(Product)
+            for word in search.lower().split():
+                if word:
+                    query = query.filter(
+                        db.or_(
+                            Product.name.ilike(f'%{word}%'),
+                            Product.barcode.ilike(f'%{word}%')
+                        )
+                    )
+
+        stocks = query.all()
+        stock_info = []
+
+        for stock in stocks:
+            unit_profit = stock.product.sell_price - stock.product.cost_price
+            min_stock = stock.min_stock or 10
+
+            if stock.quantity == 0:
+                item_status = 'critical'
+            elif stock.quantity <= min_stock:
+                item_status = 'low'
+            else:
+                item_status = 'normal'
+
+            if status and item_status != status:
+                continue
+
+            profit_percentage = 0
+            if stock.product.cost_price > 0:
+                profit_percentage = (float(unit_profit) / float(stock.product.cost_price)) * 100
+
+            stock_info.append({
+                'barcode': stock.product.barcode or '',
+                'name': stock.product.name,
+                'quantity': float(stock.quantity),
+                'unit_type': stock.product.unit_type or 'dona',
+                'last_batch_cost': float(stock.product.last_batch_cost) if stock.product.last_batch_cost else 0.0,
+                'cost_price': float(stock.product.cost_price),
+                'sell_price': float(stock.product.sell_price),
+                'unit_profit': float(unit_profit),
+                'profit_percentage': round(profit_percentage, 1),
+                'status': item_status
+            })
+
+        return jsonify({'success': True, 'data': stock_info, 'total': len(stock_info)})
+
+    except Exception as e:
+        app.logger.error(f"Error exporting store stock: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/edit_store/<int:store_id>', methods=['GET', 'POST'])
 def edit_store(store_id):
     store = Store.query.get_or_404(store_id)
