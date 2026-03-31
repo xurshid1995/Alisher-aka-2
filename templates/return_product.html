@@ -44,12 +44,12 @@
 
     <!-- Mahsulot bor savdolar jadvali -->
     <div id="recentSalesSection" class="rp-section" style="display: none;">
-        <div class="rp-section-header">
-            <i class="fas fa-chart-bar" style="color:#1a6eff; font-size:15px;"></i>
-            <h3>{{ t('product_sales') }}</h3>
-        </div>
-        <div class="rp-section-body" style="padding-bottom:0;">
-            <div class="rp-filter-row" style="margin-bottom:16px;">
+        <div class="rp-section-header rp-header-with-filters">
+            <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                <i class="fas fa-chart-bar" style="color:#1a6eff; font-size:15px;"></i>
+                <h3>{{ t('product_sales') }}</h3>
+            </div>
+            <div class="rp-filter-row">
                 <div style="position:relative;">
                     <input type="text" id="saleCustomerFilter" oninput="onCustomerFilterInput(); updateClearFilterBtn()" onfocus="onCustomerFilterInput()"
                            placeholder="Mijoz ismi..." autocomplete="off" class="rp-filter-input" style="width:200px;">
@@ -235,6 +235,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+.rp-header-with-filters {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.rp-header-with-filters .rp-filter-row {
+    margin-bottom: 0;
+    flex-wrap: nowrap;
 }
 .rp-section-header h3 {
     margin: 0;
@@ -476,6 +485,9 @@
     .rp-section-body { padding: 12px; }
     .rp-section-header { padding: 12px 14px; }
     .rp-section-header h3 { font-size: 14px; }
+    /* Katta ekranda bir qator bo'lgan header+filter - mobilda ustma-ust */
+    .rp-header-with-filters { flex-direction: column; align-items: flex-start; gap: 8px; border-bottom: none; padding-bottom: 0; }
+    .rp-header-with-filters + * { border-top: 1px solid #f1f5f9; }
 
     /* Filter row - mijoz va savdo ID bir qatorda */
     .rp-filter-row { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 6px; }
