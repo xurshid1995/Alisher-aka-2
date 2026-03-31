@@ -872,7 +872,7 @@ function displayOrders(orders) {
         }
         html += '</div></td>';
         
-        html += '<td class="group-cell group-location col-location">' + getLocationName(firstItem) + '</td>';
+        html += '<td rowspan="' + items.length + '" class="group-cell group-location col-location">' + getLocationName(firstItem) + '</td>';
         html += '<td class="product-cell col-product">' + (firstItem.product_name || 'Noma\'lum') + '</td>';
         html += '<td class="col-quantity">' + firstItem.quantity + '</td>';
         html += '<td class="col-price">' + formatPrice(firstItem.unit_price || 0, sale.currency_rate) + '</td>';
@@ -908,7 +908,6 @@ function displayOrders(orders) {
             if (isLast) rowClasses.push('sale-group-end');
             
             html += '<tr class="' + rowClasses.join(' ') + '">';
-            html += '<td class="group-cell group-location col-location">' + getLocationName(item) + '</td>';
             html += '<td class="product-cell col-product">' + (item.product_name || 'Noma\'lum') + '</td>';
             html += '<td class="col-quantity">' + item.quantity + '</td>';
             html += '<td class="col-price">' + formatPrice(item.unit_price || 0, sale.currency_rate) + '</td>';
