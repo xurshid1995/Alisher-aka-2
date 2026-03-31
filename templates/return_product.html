@@ -200,7 +200,9 @@
 .rp-location-wrap {
     display: flex;
     flex-direction: column;
-    min-width: 260px;
+    flex: 1;
+    min-width: 220px;
+    width: auto;
 }
 .rp-location-wrap label {
     font-size: 11px;
@@ -453,25 +455,19 @@
 .rp-filter-row { flex-wrap: wrap; align-items: center; gap: 6px; }
 .rp-filter-row-top,
 .rp-filter-row-bottom { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 10px !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
-    margin-top: 4px !important;
-}
 
+/* Search + Location - bir qatorda (desktop) */
 .rp-search-row {
-    display: flex;
+    display: flex !important;
+    flex-direction: row !important;
     align-items: flex-end;
     gap: 16px;
     flex-wrap: nowrap;
 }
 .rp-search-col {
-    flex: 2;
+    flex: 2 1 0;
     min-width: 0;
-}
-.rp-location-wrap {
-    flex: 1;
-    min-width: 220px;
+    width: auto !important;
 }
 
 @media (max-width: 768px) {
