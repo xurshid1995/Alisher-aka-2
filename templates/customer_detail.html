@@ -786,6 +786,22 @@ function displayEmptyTable() {
     tbody.innerHTML = '<tr><td colspan="' + colspan + '" class="no-data-message">' + CDLANG.no_data + '</td></tr>';
 }
 
+// Dollar qiymatini so'mga konvert qilish (savdo kursidan foydalanish)
+function convertToUZS(usdAmount, saleRate = null) {
+    if (!saleRate) return null;
+    return (parseFloat(usdAmount) * saleRate).toFixed(0);
+}
+
+// Narxni formatlash (USD va som) - savdo-tarixi uslubida
+function formatPrice(usdAmount, saleRate = null) {
+    const usdFormatted = parseFloat(usdAmount).toFixed(2);
+    const uzsFormatted = convertToUZS(usdAmount, saleRate);
+    if (uzsFormatted) {
+        return `$${usdFormatted}<br><small style="color: #007bff; font-size: 13px;">${parseInt(uzsFormatted).toLocaleString('uz-UZ')}</small>`;
+    }
+    return `$${usdFormatted}`;
+}
+
 function displayOrders(orders) {
     // Global arraylarni yangilash
     allSalesOrders = orders;
@@ -842,50 +858,30 @@ function displayOrders(orders) {
         if (isOnlyItem) firstRowClasses.push('sale-group-end');
         
         html += '<tr class="' + firstRowClasses.join(' ') + '">';
-        html += '<td rowspan="' + items.length + '" class="group-cell group-datetime">';
+        html += '<td rowspan="' + items.length + '" class="group-cell group-datetime col-datetime">';
         html += '<div class="datetime-info">';
         html += '<div class="sale-id-badge">ID: ' + sale.id + '</div>';
         html += '<div class="sale-date">' + formattedDate + '</div>';
         html += '<div class="sale-time">' + formattedTime + '</div>';
         html += '</div></td>';
         
-        html += '<td rowspan="' + items.length + '" class="group-cell group-seller">';
-        html += '<div style="font-size: 14px; font-weight: 600; color: #495057;">' + (sale.seller_name || 'Admin') + '</div>';
+        html += '<td rowspan="' + items.length + '" class="group-cell group-seller col-seller">';
+        html += '<div style="line-height: 1.4;"><div style="font-size: 14px; font-weight: 600; color: #495057;">' + (sale.seller_name || 'Admin') + '</div>';
         if (sale.seller_phone) {
             html += '<div style="font-size: 12px; color: #6c757d; font-style: italic;">' + sale.seller_phone + '</div>';
         }
-        html += '</td>';
+        html += '</div></td>';
         
-        html += '<td class="group-cell group-location">' + getLocationName(firstItem) + '</td>';
-        html += '<td class="product-cell">' + (firstItem.product_name || 'Noma\'lum') + '</td>';
-        html += '<td style="text-align: center; font-weight: 600;">' + firstItem.quantity + '</td>';
-        html += '<td>';
-        html += '<div style="font-weight: 600; text-align: center;">$' + parseFloat(firstItem.unit_price || 0).toFixed(2) + '</div>';
-        if (sale.currency_rate) {
-            html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (parseFloat(firstItem.unit_price || 0) * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-        }
-        html += '</td>';
-        html += '<td>';
-        html += '<div style="font-weight: 600; text-align: center;">$' + parseFloat(firstItem.total_price || 0).toFixed(2) + '</div>';
-        if (sale.currency_rate) {
-            html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (parseFloat(firstItem.total_price || 0) * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-        }
-        html += '</td>';
+        html += '<td class="group-cell group-location col-location">' + getLocationName(firstItem) + '</td>';
+        html += '<td class="product-cell col-product">' + (firstItem.product_name || 'Noma\'lum') + '</td>';
+        html += '<td class="col-quantity">' + firstItem.quantity + '</td>';
+        html += '<td class="col-price">' + formatPrice(firstItem.unit_price || 0, sale.currency_rate) + '</td>';
+        html += '<td class="col-subtotal">' + formatPrice(firstItem.total_price || 0, sale.currency_rate) + '</td>';
         
-        html += '<td rowspan="' + items.length + '" class="group-cell group-total">';
-        html += '<div style="font-weight: 600; text-align: center;">$' + totalAmount.toFixed(2) + '</div>';
-        if (sale.currency_rate) {
-            html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalAmount * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-        }
-        html += '</td>';
+        html += '<td rowspan="' + items.length + '" class="group-cell group-total col-total">' + formatPrice(totalAmount, sale.currency_rate) + '</td>';
         
         if (userRole === 'admin' || userRole === 'manager') {
-            html += '<td rowspan="' + items.length + '" class="group-cell group-profit ' + profitClass + '">';
-            html += '<div style="font-weight: 600; text-align: center;">$' + totalProfit.toFixed(2) + '</div>';
-            if (sale.currency_rate) {
-                html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalProfit * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-            }
-            html += '</td>';
+            html += '<td rowspan="' + items.length + '" class="group-cell group-profit col-profit ' + profitClass + '">' + formatPrice(totalProfit, sale.currency_rate) + '</td>';
         }
         
         html += '<td rowspan="' + items.length + '" class="group-cell group-actions">';
@@ -912,21 +908,11 @@ function displayOrders(orders) {
             if (isLast) rowClasses.push('sale-group-end');
             
             html += '<tr class="' + rowClasses.join(' ') + '">';
-            html += '<td class="group-cell group-location">' + getLocationName(item) + '</td>';
-            html += '<td class="product-cell">' + (item.product_name || 'Noma\'lum') + '</td>';
-            html += '<td style="text-align: center; font-weight: 600;">' + item.quantity + '</td>';
-            html += '<td>';
-            html += '<div style="font-weight: 600; text-align: center;">$' + parseFloat(item.unit_price || 0).toFixed(2) + '</div>';
-            if (sale.currency_rate) {
-                html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (parseFloat(item.unit_price || 0) * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-            }
-            html += '</td>';
-            html += '<td>';
-            html += '<div style="font-weight: 600; text-align: center;">$' + parseFloat(item.total_price || 0).toFixed(2) + '</div>';
-            if (sale.currency_rate) {
-                html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (parseFloat(item.total_price || 0) * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-            }
-            html += '</td>';
+            html += '<td class="group-cell group-location col-location">' + getLocationName(item) + '</td>';
+            html += '<td class="product-cell col-product">' + (item.product_name || 'Noma\'lum') + '</td>';
+            html += '<td class="col-quantity">' + item.quantity + '</td>';
+            html += '<td class="col-price">' + formatPrice(item.unit_price || 0, sale.currency_rate) + '</td>';
+            html += '<td class="col-subtotal">' + formatPrice(item.total_price || 0, sale.currency_rate) + '</td>';
             html += '</tr>';
         }
     });
@@ -976,20 +962,10 @@ function updateTableForCompactView() {
         html += '<td class="group-cell">' + getLocationName(firstItem) + '</td>';
         html += '<td class="group-cell">' + items.length + ' ta mahsulot</td>';
 
-        html += '<td class="group-cell group-total">';
-        html += '<div style="font-weight: 600; text-align: center;">$' + totalAmount.toFixed(2) + '</div>';
-        if (sale.currency_rate) {
-            html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalAmount * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-        }
-        html += '</td>';
+        html += '<td class="group-cell group-total col-total">' + formatPrice(totalAmount, sale.currency_rate) + '</td>';
 
         if (userRole === 'admin' || userRole === 'manager') {
-            html += '<td class="group-cell group-profit ' + profitClass + '">';
-            html += '<div style="font-weight: 600; text-align: center;">$' + totalProfit.toFixed(2) + '</div>';
-            if (sale.currency_rate) {
-                html += '<div style="margin-top: 3px; text-align: center;"><span style="background-color: #5cb3fd; color: white; font-size: 11px; padding: 2px 6px; border-radius: 0; font-weight: 500;">' + (totalProfit * sale.currency_rate).toLocaleString('ru-RU', {maximumFractionDigits: 0}) + '</span></div>';
-            }
-            html += '</td>';
+            html += '<td class="group-cell group-profit col-profit ' + profitClass + '">' + formatPrice(totalProfit, sale.currency_rate) + '</td>';
         }
 
         html += '<td class="group-cell group-actions">';
