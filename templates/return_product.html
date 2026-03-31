@@ -887,10 +887,16 @@
             filtered = filtered.filter(s => String(s.id) === idFilter);
         }
         if (dateFrom) {
-            filtered = filtered.filter(s => s.sale_date && s.sale_date.slice(0, 10) >= dateFrom);
+            filtered = filtered.filter(s => {
+                const d = (s.sale_date || s.created_at || '').slice(0, 10);
+                return d >= dateFrom;
+            });
         }
         if (dateTo) {
-            filtered = filtered.filter(s => s.sale_date && s.sale_date.slice(0, 10) <= dateTo);
+            filtered = filtered.filter(s => {
+                const d = (s.sale_date || s.created_at || '').slice(0, 10);
+                return d <= dateTo;
+            });
         }
 
         renderProductSalesTable(filtered);
