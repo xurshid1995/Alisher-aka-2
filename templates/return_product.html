@@ -52,11 +52,13 @@
             <div class="rp-filter-row">
                 <div style="position:relative;">
                     <input type="text" id="saleCustomerFilter" oninput="onCustomerFilterInput(); updateClearFilterBtn()" onfocus="onCustomerFilterInput()"
-                           placeholder="Mijoz ismi..." autocomplete="off" class="rp-filter-input" style="width:200px;">
+                           placeholder="Mijoz ismi..." autocomplete="off" class="rp-filter-input" style="width:160px;">
                     <div id="customerFilterDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1.5px solid #e5e7eb; border-top:none; border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto; z-index:1500; box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
                 </div>
                 <input type="number" id="saleIdFilterReturn" oninput="filterProductSales(); updateClearFilterBtn()" placeholder="Savdo ID"
-                       class="rp-filter-input" style="width:120px;" min="1">
+                       class="rp-filter-input" style="width:100px;" min="1">
+                <input type="date" id="saleDateFrom" oninput="filterProductSales(); updateClearFilterBtn()" class="rp-filter-input" title="Dan" style="width:140px;">
+                <input type="date" id="saleDateTo" oninput="filterProductSales(); updateClearFilterBtn()" class="rp-filter-input" title="Gacha" style="width:140px;">
                 <button id="clearFilterBtn" onclick="clearProductSaleFilters()" class="rp-btn-clear" style="display:none;">✕ Tozalash</button>
             </div>
         </div>
@@ -493,7 +495,8 @@
     .rp-filter-row { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 6px; }
     .rp-filter-row > div { flex: 1; min-width: 0; }
     .rp-filter-row > div .rp-filter-input { width: 100% !important; }
-    #saleIdFilterReturn { width: 90px !important; flex: 0 0 90px; }
+    #saleIdFilterReturn { width: 80px !important; flex: 0 0 80px; }
+    #saleDateFrom, #saleDateTo { width: calc(50% - 43px) !important; flex: 1 1 100px; min-width: 100px; }
     .rp-filter-input { height: 30px; padding: 4px 8px; font-size: 12px; }
     .rp-btn-clear { height: 30px; padding: 4px 10px; font-size: 12px; flex-shrink: 0; }
 
@@ -873,6 +876,8 @@
 
     function filterProductSales() {
         const idFilter = document.getElementById('saleIdFilterReturn').value.trim();
+        const dateFrom = document.getElementById('saleDateFrom').value;
+        const dateTo = document.getElementById('saleDateTo').value;
         let filtered = allProductSalesData;
 
         if (selectedCustomerName) {
@@ -880,6 +885,12 @@
         }
         if (idFilter) {
             filtered = filtered.filter(s => String(s.id) === idFilter);
+        }
+        if (dateFrom) {
+            filtered = filtered.filter(s => s.sale_date && s.sale_date.slice(0, 10) >= dateFrom);
+        }
+        if (dateTo) {
+            filtered = filtered.filter(s => s.sale_date && s.sale_date.slice(0, 10) <= dateTo);
         }
 
         renderProductSalesTable(filtered);
@@ -893,6 +904,8 @@
         selectedCustomerName = '';
         document.getElementById('saleCustomerFilter').value = '';
         document.getElementById('saleIdFilterReturn').value = '';
+        document.getElementById('saleDateFrom').value = '';
+        document.getElementById('saleDateTo').value = '';
         document.getElementById('customerFilterDropdown').style.display = 'none';
         renderProductSalesTable(allProductSalesData);
         updateClearFilterBtn();
@@ -901,8 +914,10 @@
     function updateClearFilterBtn() {
         const customer = document.getElementById('saleCustomerFilter').value.trim();
         const saleId = document.getElementById('saleIdFilterReturn').value.trim();
+        const dateFrom = document.getElementById('saleDateFrom').value;
+        const dateTo = document.getElementById('saleDateTo').value;
         const btn = document.getElementById('clearFilterBtn');
-        if (btn) btn.style.display = (customer || saleId) ? 'inline-flex' : 'none';
+        if (btn) btn.style.display = (customer || saleId || dateFrom || dateTo) ? 'inline-flex' : 'none';
     }
 
     async function selectSaleForReturn(saleId, productId) {
