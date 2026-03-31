@@ -32,10 +32,10 @@
     color: #1e293b;
     margin: 0;
 }
-.ps-title i { color: #4338ca; margin-right: 8px; }
+.ps-title i { color: #1a6eff; margin-right: 8px; }
 .ps-header-right { display: flex; align-items: center; gap: 12px; }
 .ps-add-btn {
-    background: #4338ca;
+    background: #1a6eff;
     color: white;
     padding: 9px 18px;
     border-radius: 10px;
@@ -46,13 +46,13 @@
     align-items: center;
     gap: 6px;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(67,56,202,0.2);
+    box-shadow: 0 2px 8px rgba(26,110,255,0.2);
     white-space: nowrap;
 }
 .ps-add-btn:hover {
-    background: #3730a3;
+    background: #1557cc;
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(67,56,202,0.3);
+    box-shadow: 0 4px 15px rgba(26,110,255,0.3);
     text-decoration: none;
     color: white;
 }
@@ -82,7 +82,7 @@
     width: 100%;
     box-sizing: border-box;
 }
-.ps-input:focus { border-color: #4338ca; box-shadow: 0 0 0 3px rgba(67,56,202,0.1); background: white; }
+.ps-input:focus { border-color: #1a6eff; box-shadow: 0 0 0 3px rgba(26,110,255,0.1); background: white; }
 .ps-search-input { padding-left: 40px !important; padding-right: 36px !important; }
 .ps-clear-btn {
     position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
@@ -114,23 +114,23 @@
     transition: all 0.2s;
     white-space: nowrap;
 }
-.store-filter-btn:hover { border-color: #4338ca; color: #4338ca; background: #eef0fd; }
-.store-filter-btn.active { background: #4338ca; color: white; border-color: #4338ca; }
-.store-filter-btn.active:hover { background: #3730a3; border-color: #3730a3; }
+.store-filter-btn:hover { border-color: #1a6eff; color: #1a6eff; background: #edf4ff; }
+.store-filter-btn.active { background: #1a6eff; color: white; border-color: #1a6eff; }
+.store-filter-btn.active:hover { background: #1557cc; border-color: #1557cc; }
 .time-filter-btn {
     padding: 7px 14px;
     border: 1.5px solid #e2e8f0;
     border-radius: 10px;
     background: white;
-    color: #4338ca;
+    color: #1a6eff;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
 }
-.time-filter-btn:hover { background: #eef0fd; border-color: #4338ca; }
-.time-filter-btn.active { background: #4338ca; color: white; border-color: #4338ca; }
+.time-filter-btn:hover { background: #edf4ff; border-color: #1a6eff; }
+.time-filter-btn.active { background: #1a6eff; color: white; border-color: #1a6eff; }
 .analysis-filter-btn {
     padding: 7px 14px;
     border: 1.5px solid #fde68a;
@@ -183,7 +183,7 @@
 }
 .customers-table tbody tr:hover { background: #f8faff; }
 .customers-table tbody tr:last-child td { border-bottom: none; }
-.store-name { font-weight: 600; color: #4338ca; }
+.store-name { font-weight: 600; color: #1a6eff; }
 .customer-name { font-weight: 600; color: #1e293b; }
 .customer-phone { color: #495057; }
 .actions {
@@ -597,7 +597,7 @@
                         <td class="customer-phone">${customer.phone || '-'}</td>
                         <td class="customer-email">
                             <div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 4px; align-items: center;">
-                                <span style="font-size: 0.82rem; background: #eef0fd; color: #4338ca; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">ğŸ”¢ ${CSLANG.count}: <strong>${customer.total_sales || 0}</strong></span>
+                                <span style="font-size: 0.82rem; background: #edf4ff; color: #1a6eff; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">📢 ${CSLANG.count}: <strong>${customer.total_sales || 0}</strong></span>
                                 <span style="font-size: 0.82rem; background: #fff7ed; color: #d97706; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">ğŸ’° ${CSLANG.amount}: <strong>$${customer.total_amount ? parseFloat(customer.total_amount).toFixed(2) : '0.00'}</strong></span>
                                 ${userRole !== 'sotuvchi' ? `<span style="font-size: 0.82rem; background: #f0fdf4; color: #059669; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">ğŸ“Š ${CSLANG.profit}: <strong>$${customer.total_profit ? parseFloat(customer.total_profit).toFixed(2) : '0.00'}</strong></span>` : ''}
                             </div>
