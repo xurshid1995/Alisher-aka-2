@@ -425,7 +425,7 @@
                 </div>
                 <div class="em-group col-2">
                     <label class="em-label">{{ t('sd_th_barcode') }}</label>
-                    <input type="text" class="em-input" id="em-barcode">
+                    <input type="text" class="em-input" id="em-barcode" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)">
                 </div>
                 <div class="em-group col-1" style="justify-content:flex-end;">
                     <label class="em-label" style="visibility:hidden;">.</label>
