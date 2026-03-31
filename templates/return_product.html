@@ -484,8 +484,10 @@
 
     /* Qidiruv va joylashuv - ustma-ust, joylashuv tepada */
     .rp-search-row { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 12px; }
-    .rp-search-col { flex: none; width: 100%; flex-shrink: unset; order: 2; }
-    .rp-location-wrap { flex: none; min-width: 100%; width: 100%; flex-shrink: unset; order: 1; }
+    .rp-search-col { flex: none !important; width: 100% !important; min-width: 0; flex-shrink: unset; order: 2; }
+    .rp-search-col .rp-search-wrap { display: block; width: 100% !important; flex: none !important; }
+    .rp-search-col .rp-search-input { width: 100% !important; box-sizing: border-box; }
+    .rp-location-wrap { flex: none !important; min-width: 100% !important; width: 100% !important; flex-shrink: unset; order: 1; }
     .rp-location-select { width: 100%; }
 
     /* Section */
