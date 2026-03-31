@@ -218,6 +218,7 @@
 .em-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 .em-group { display: flex; flex-direction: column; gap: 5px; }
 .em-group.full { grid-column: 1 / -1; }
+.em-group.span2 { grid-column: span 2; }
 .em-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
 .em-input {
     padding: 8px 12px; border: 1.5px solid #e2e8f0;
@@ -413,7 +414,7 @@
             <input type="hidden" id="em-store-id">
             <input type="hidden" id="em-product-id">
             <div class="em-grid">
-                <div class="em-group full">
+                <div class="em-group span2">
                     <label class="em-label">{{ t('sd_th_product') }}</label>
                     <input type="text" class="em-input" id="em-productName" required>
                 </div>
