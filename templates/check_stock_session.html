@@ -5,29 +5,29 @@
 {% block extra_css %}
 <style>
     .cs-page {
-        padding: 24px 24px 40px;
+        padding: 16px 14px 40px;
         background: #f5f6fa;
         min-height: 100vh;
         font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     }
     .cs-header {
         display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
     }
-    .cs-title { font-size: 18px; font-weight: 700; color: #1e293b; margin: 0; }
-    .cs-title i { color: #4338ca; margin-right: 8px; }
+    .cs-title { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0; }
+    .cs-title i { color: #4338ca; margin-right: 6px; }
     .cs-header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .cs-grid {
         display: grid;
-        grid-template-columns: minmax(300px, 1fr) minmax(340px, 1.15fr);
-        gap: 20px;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 14px;
         align-items: start;
     }
     .cs-box {
         background: white;
-        border-radius: 16px;
-        padding: 20px;
+        border-radius: 14px;
+        padding: 14px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         box-sizing: border-box;
         min-width: 0;
@@ -120,16 +120,16 @@
     .cs-page-btn:hover:not(:disabled) { background: #4338ca; color: white; border-color: #4338ca; }
     .cs-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 900px) {
         .cs-grid { grid-template-columns: 1fr; max-width: 620px; margin: 0 auto; }
     }
     @media (max-width: 768px) {
-        .cs-page { padding: 12px; }
-        .cs-grid { gap: 14px; }
-        .cs-box { padding: 14px; }
+        .cs-page { padding: 10px; }
+        .cs-grid { gap: 10px; }
+        .cs-box { padding: 12px; }
     }
     @media (max-width: 480px) {
-        .cs-page { padding: 8px; }
+        .cs-page { padding: 6px; }
         .cs-header { flex-direction: column; align-items: stretch; }
         .cs-header-right { justify-content: flex-end; }
     }
