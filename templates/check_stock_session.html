@@ -46,20 +46,22 @@
     }
     .cs-table-wrap {
         border: 1px solid #e2e8f0; border-radius: 10px;
-        margin-top: 10px; overflow-x: auto; width: 100%;
+        margin-top: 10px; overflow-x: hidden; width: 100%;
     }
     .cs-table {
         width: 100%; border-collapse: collapse;
         table-layout: fixed; font-size: 13px;
     }
     .cs-table th {
-        padding: 9px 8px; font-size: 11px; font-weight: 700;
-        color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 7px 6px; font-size: 10px; font-weight: 700;
+        color: #64748b; text-transform: uppercase; letter-spacing: 0.3px;
         border-bottom: 1.5px solid #e2e8f0; background: #f8fafc;
-        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis; white-space: normal;
+        word-break: break-word; line-height: 1.2;
+        vertical-align: middle; text-align: center;
     }
     .cs-table td {
-        padding: 9px 8px; border-bottom: 1px solid #f1f5f9;
+        padding: 7px 6px; border-bottom: 1px solid #f1f5f9;
         color: #334155; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .cs-table td:first-child { white-space: normal; word-break: break-word; }
@@ -219,13 +221,13 @@
                 <table class="cs-table">
                     <thead>
                         <tr>
-                            <th style="width:27%;">{{ t('css_th_product_name') }}</th>
-                            <th style="width:12%; text-align:center;">{{ t('css_th_price2') }}</th>
-                            <th style="width:12%; text-align:center;">{{ t('css_th_system') }}</th>
-                            <th style="width:12%; text-align:center;">{{ t('css_th_actual') }}</th>
-                            <th style="width:12%; text-align:center;">{{ t('css_th_error') }}</th>
-                            <th style="width:13%; text-align:center;">{{ t('css_th_status') }}</th>
-                            <th style="width:12%; text-align:center;">{{ t('css_th_action') }}</th>
+                            <th style="width:28%;">{{ t('css_th_product_name') }}</th>
+                            <th style="width:11%; text-align:center;">{{ t('css_th_price2') }}</th>
+                            <th style="width:10%; text-align:center;">{{ t('css_th_system') }}</th>
+                            <th style="width:11%; text-align:center;">{{ t('css_th_actual') }}</th>
+                            <th style="width:10%; text-align:center;">{{ t('css_th_error') }}</th>
+                            <th style="width:16%; text-align:center;">{{ t('css_th_status') }}</th>
+                            <th style="width:14%; text-align:center;">{{ t('css_th_action') }}</th>
                         </tr>
                     </thead>
                     <tbody id="checkedTableBody">
@@ -872,7 +874,7 @@ function displayCheckedTable(products) {
             <td style="text-align:center;">
                 <input type="number" value="${product.actual_quantity}" 
                        onchange="updateActualQuantity(${product.id}, this.value)"
-                       style="width:60px;text-align:center;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;">
+                       style="width:100%;max-width:54px;text-align:center;padding:3px 4px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:12px;box-sizing:border-box;">
             </td>
             <td style="text-align:center;font-weight:700;color:${errorColor};">
                 ${product.difference > 0 ? '+' : ''}${product.difference}
