@@ -25,7 +25,7 @@
     flex-wrap: wrap;
     gap: 10px;
 }
-.ps-header-left { display: flex; flex-direction: column; gap: 6px; }
+.ps-header-left { display: flex; flex-direction: row; align-items: center; gap: 12px; flex-wrap: wrap; }
 .ps-title {
     font-size: 18px;
     font-weight: 700;
@@ -608,7 +608,7 @@ tbody tr.sale-group-start:first-child { border-top: none; }
     <!-- Page Header -->
     <div class="ps-header">
         <div class="ps-header-left">
-            <h1 class="ps-title"><i class="fas fa-user"></i> {{ customer.name }}</h1>
+            <h1 class="ps-title" style="white-space:nowrap;"><i class="fas fa-user"></i> {{ customer.name }}</h1>
             <div class="cd-quick-info">
                 {% if customer.phone %}<span class="cd-info-badge"><i class="fas fa-phone"></i> {{ customer.phone }}</span>{% endif %}
                 {% if customer.email %}<span class="cd-info-badge"><i class="fas fa-envelope"></i> {{ customer.email }}</span>{% endif %}
