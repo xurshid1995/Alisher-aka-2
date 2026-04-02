@@ -98,8 +98,14 @@
     cursor: pointer; transition: all 0.2s; white-space: nowrap;
     display: inline-flex; align-items: center; gap: 5px;
 }
+/* Default (inactive) subtle colors per tab */
+#filterAll     { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+#filterChecked { background: #f0fdf4; border-color: #bbf7d0; color: #16a34a; }
+#filterUnchecked { background: #f8fafc; border-color: #e2e8f0; color: #475569; }
+#filterError   { background: #fff1f2; border-color: #fecdd3; color: #dc2626; }
+
 .filter-tab .tab-count {
-    background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 700;
+    background: rgba(0,0,0,0.07); color: inherit; font-size: 11px; font-weight: 700;
     padding: 1px 6px; border-radius: 6px; min-width: 20px; text-align: center;
 }
 .filter-tab.active-all    { background: #1a6eff; color: white; border-color: #1a6eff; }
