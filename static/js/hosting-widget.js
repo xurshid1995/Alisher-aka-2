@@ -134,9 +134,10 @@
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             padding: 20px;
-            width: 300px;
+            width: 370px;
             max-height: calc(100vh - 100px);
             overflow-y: auto;
+            overflow-x: hidden;
             z-index: 99998;
             animation: hw-fadeIn 0.3s ease;
         }
