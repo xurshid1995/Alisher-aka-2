@@ -496,10 +496,10 @@
                 : (quantity % 1 === 0 ? `${Math.floor(quantity)} ${WDLANG.pcs}` : `${parseFloat(quantity).toFixed(1)} ${WDLANG.pcs}`);
             
             const statusBadge = item.status === 'critical'
-                ? `<span class="badge-out">🚫 ${WDLANG.status_out}</span>`
+                ? `<span style="color: #000000; font-weight: bold;">🚫 ${WDLANG.status_out}</span>`
                 : item.status === 'low'
-                ? `<span class="badge-low">⚠️ ${WDLANG.status_low}</span>`
-                : `<span class="badge-ok">✓ ${WDLANG.status_enough}</span>`;
+                ? `<span style="color: #e74c3c; font-weight: bold;">⚠️ ${WDLANG.status_low}</span>`
+                : `<span style="color: #27ae60; font-weight: bold;">✓ ${WDLANG.status_enough}</span>`;
 
             return `
             <tr class="stock-row" data-status="${item.status}">
