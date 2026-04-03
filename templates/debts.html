@@ -313,6 +313,8 @@
 @media (max-width: 480px) {
     .dbt-stat-number { font-size: 18px; }
     .dbt-search-box { flex: 0 0 100%; }
+    .dbt-header-actions { width: 100%; }
+    .dbt-btn-telegram, .dbt-btn-history { flex: 1 1 0; justify-content: center; }
 }
 </style>
 {% endblock %}
@@ -782,13 +784,15 @@
     // Qarzlarni qidirish
     function applyDebtFilters() {
         const searchTerm = document.getElementById('debtSearchInput').value.toLowerCase().trim();
+        const searchDigits = searchTerm.replace(/\D/g, '');
         const today = new Date(); today.setHours(0,0,0,0);
         const in3Days = new Date(today); in3Days.setDate(today.getDate() + 3);
 
         let filtered = allDebts.filter(debt => {
             const name = (debt.customer_name || '').toLowerCase();
             const phone = (debt.customer_phone || '').toLowerCase();
-            if (searchTerm && !name.includes(searchTerm) && !phone.includes(searchTerm)) return false;
+            const phoneDigits = phone.replace(/\D/g, '');
+            if (searchTerm && !name.includes(searchTerm) && !phone.includes(searchTerm) && !(searchDigits && phoneDigits.includes(searchDigits))) return false;
             if (debtDueFilter && debt.remaining_debt > 0) {
                 if (!debt.nearest_due_date) return false;
                 const due = new Date(debt.nearest_due_date); due.setHours(0,0,0,0);
