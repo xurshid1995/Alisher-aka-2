@@ -836,6 +836,37 @@ class PendingTransfer(db.Model):
         }
 
 
+# Tugallanmagan mahsulot qo'shish sessiyalari modeli
+class PendingProductBatch(db.Model):
+    __tablename__ = 'pending_product_batches'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    items = db.Column(db.JSON, nullable=False, default=list)  # tempProducts array
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+    user = db.relationship('User', backref='pending_product_batches')
+
+    def __repr__(self):
+        return f'<PendingProductBatch {self.id}: User {self.user_id}, {len(self.items) if self.items else 0} items>'
+
+    def to_dict(self):
+        items = self.items or []
+        # Birinchi mahsulotning joylashuv nomini olish (preview uchun)
+        first_location = items[0].get('location_name', '—') if items else '—'
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'user_name': self.user.username if self.user else 'N/A',
+            'items': items,
+            'items_count': len(items),
+            'first_location': first_location,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
+
 # Helper funksiya: Transfer boshqarish ruxsatini tekshirish
 def user_can_manage_transfer(user, pending_transfer):
     """
@@ -1854,9 +1885,10 @@ def add_product():
     return render_template('add_product.html')
 
 
-@app.route('/add_product_new')
-def add_product_new():
-    return render_template('add_product.html')
+@app.route('/add_product_session')
+@role_required('admin', 'kassir')
+def add_product_session():
+    return render_template('add_product_session.html')
 
 
 @app.route('/currency-rate')
@@ -8769,6 +8801,73 @@ def manage_pending_transfer(pending_id=None):
     except Exception as e:
         db.session.rollback()
         logger.error(f"Tasdiqlanmagan transferni boshqarishda xatolik: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/pending-product-batch', methods=['GET', 'POST'])
+@app.route('/api/pending-product-batch/<int:batch_id>', methods=['GET', 'PUT', 'DELETE'])
+@role_required('admin', 'kassir')
+def manage_pending_product_batch(batch_id=None):
+    """Tugallanmagan mahsulot qo'shish sessiyalarini boshqarish"""
+    try:
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({'error': 'Foydalanuvchi topilmadi'}), 401
+
+        if request.method == 'GET':
+            if batch_id:
+                batch = PendingProductBatch.query.get(batch_id)
+                if not batch:
+                    return jsonify({'error': 'Sessiya topilmadi'}), 404
+                if batch.user_id != current_user.id and current_user.role != 'admin':
+                    return jsonify({'error': 'Ruxsat yo\'q'}), 403
+                return jsonify({'success': True, 'batch': batch.to_dict()})
+            else:
+                # Foydalanuvchining barcha pending batchlarini qaytarish
+                if current_user.role == 'admin':
+                    batches = PendingProductBatch.query.order_by(PendingProductBatch.updated_at.desc()).all()
+                else:
+                    batches = PendingProductBatch.query.filter_by(user_id=current_user.id).order_by(PendingProductBatch.updated_at.desc()).all()
+                return jsonify({'success': True, 'batches': [b.to_dict() for b in batches]})
+
+        elif request.method == 'POST':
+            data = request.get_json()
+            batch = PendingProductBatch(
+                user_id=current_user.id,
+                items=data.get('items', [])
+            )
+            db.session.add(batch)
+            db.session.commit()
+            return jsonify({'success': True, 'batch': batch.to_dict()})
+
+        elif request.method == 'PUT':
+            if not batch_id:
+                return jsonify({'error': 'Batch ID talab qilinadi'}), 400
+            batch = PendingProductBatch.query.get(batch_id)
+            if not batch:
+                return jsonify({'error': 'Sessiya topilmadi'}), 404
+            if batch.user_id != current_user.id and current_user.role != 'admin':
+                return jsonify({'error': 'Ruxsat yo\'q'}), 403
+            data = request.get_json()
+            batch.items = data.get('items', batch.items)
+            db.session.commit()
+            return jsonify({'success': True, 'batch': batch.to_dict()})
+
+        elif request.method == 'DELETE':
+            if not batch_id:
+                return jsonify({'error': 'Batch ID talab qilinadi'}), 400
+            batch = PendingProductBatch.query.get(batch_id)
+            if not batch:
+                return jsonify({'error': 'Sessiya topilmadi'}), 404
+            if batch.user_id != current_user.id and current_user.role != 'admin':
+                return jsonify({'error': 'Ruxsat yo\'q'}), 403
+            db.session.delete(batch)
+            db.session.commit()
+            return jsonify({'success': True})
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"PendingProductBatch xatoligi: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 

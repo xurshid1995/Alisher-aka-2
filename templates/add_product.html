@@ -4,2433 +4,328 @@
 
 {% block extra_css %}
 <style>
-/* ── Add Product Page ── */
-.ap-page {
-    padding: 24px 24px 40px;
+/* ===== ADD PRODUCT LIST PAGE ===== */
+.addp-page {
+    padding: 28px 28px 40px;
     background: #f5f6fa;
     min-height: 100vh;
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-}
-.ap-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.ap-title { font-size: 18px; font-weight: 700; color: #1e293b; margin: 0; }
-.ap-title i { color: #2563eb; margin-right: 8px; }
-
-.ap-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 16px; margin-bottom: 16px; }
-
-.ap-card { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; }
-.ap-card-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; border-bottom: 1px solid #f1f5f9; background: #fafbfc;
-}
-.ap-card-title { font-size: 14px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px; }
-.ap-card-title i { color: #2563eb; }
-.ap-card-body { padding: 16px 20px; }
-
-.ap-form-group { margin-bottom: 11px; }
-.ap-label {
-    display: block; margin-bottom: 4px;
-    font-size: 11px; font-weight: 600; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 0.5px;
-}
-.ap-input {
-    width: 100%; padding: 8px 13px;
-    border: 1.5px solid #e2e8f0; border-radius: 10px;
-    font-size: 13px; background: #f8fafc; color: #1e293b;
-    transition: all 0.2s; outline: none; box-sizing: border-box;
-}
-.ap-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: white; }
-.ap-input[readonly] { background: #f1f5f9; color: #64748b; cursor: default; }
-.ap-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-.search-result {
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: white; border: 1.5px solid #e2e8f0; border-top: none;
-    border-radius: 0 0 10px 10px; max-height: 300px; overflow-y: auto;
-    z-index: 1000; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-}
-.product-dropdown-item {
-    padding: 10px 14px; cursor: pointer; font-size: 13px;
-    border-bottom: 1px solid #f1f5f9; transition: background 0.15s; background: white;
-}
-.product-dropdown-item:hover { background: #eff6ff; }
-.suggestion-item.selected { background: #2563eb !important; color: white !important; }
-.suggestion-item.selected strong,
-.suggestion-item.selected span { color: white !important; }
-.product-name-container { position: relative; }
-
-optgroup { font-weight: bold; color: #334155; background: #f8fafc; font-size: 0.9rem; }
-optgroup option { font-weight: normal; color: #1e293b; }
-
-.barcode-error-msg {
-    color: #ef4444; font-size: 12px; font-weight: 600;
-    padding: 6px 10px; background: #fee2e2; border: 1.5px solid #ef4444;
-    border-radius: 6px; display: inline-block;
+    width: 100%;
+    max-width: none;
 }
 
-.quantity-badge { color: white; font-weight: 600; padding: 2px 7px; border-radius: 5px; font-size: 11px; }
-
-/* Buttons */
-.ap-btn-primary {
-    width: 100%; padding: 10px;
-    background: #2563eb; color: white; border: none;
-    border-radius: 10px; font-size: 14px; font-weight: 600;
-    cursor: pointer; transition: background 0.2s;
+/* Page Header */
+.addp-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
-.ap-btn-primary:hover { background: #1d4ed8; }
-.ap-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.ap-btn-success {
-    width: 100%; padding: 10px;
-    background: #059669; color: white; border: none;
-    border-radius: 10px; font-size: 14px; font-weight: 600;
-    cursor: pointer; transition: background 0.2s;
+.addp-page .page-header h1 {
+    color: #1e293b;
+    font-size: 18px;
+    margin: 0;
+    font-weight: 700;
 }
-.ap-btn-success:hover { background: #047857; }
-.ap-btn-danger {
-    width: 100%; padding: 8px; margin-top: 8px;
-    background: #ef4444; color: white; border: none;
-    border-radius: 10px; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: background 0.2s;
+.addp-page .page-header h1 i {
+    color: #1a6eff;
+    margin-right: 8px;
 }
-.ap-btn-danger:hover { background: #dc2626; }
-.ap-btn-excel-import {
-    flex: 1; padding: 7px 10px;
-    background: transparent; border: none; color: #059669;
-    border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; gap: 7px; justify-content: center;
-}
-.ap-btn-excel-import:hover { background: #f0fff4; }
-.ap-btn-excel-template {
-    flex: 1; padding: 7px 10px;
-    background: transparent; border: none; color: #059669;
-    border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; gap: 7px; justify-content: center;
-}
-.ap-btn-excel-template:hover { background: #f0fff4; }
-.ap-btn-barcode-auto {
-    padding: 6px 10px; background: transparent;
-    border: none; border-radius: 8px; cursor: pointer;
-    display: flex; align-items: center; gap: 5px;
-    font-size: 13px; font-weight: 600; color: #059669;
-    white-space: nowrap; transition: all 0.2s;
-}
-.ap-btn-barcode-auto:hover { background: #f0fff4; }
-.ap-btn-barcode-print {
-    padding: 6px 10px; background: transparent;
-    border: none; border-radius: 8px; cursor: pointer;
-    display: flex; align-items: center;
+.btn-new-batch {
+    background: linear-gradient(135deg, #1a6eff, #1558d6);
+    color: white;
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(26,110,255,0.3);
 }
-.ap-btn-barcode-print:hover { background: #eff6ff; }
+.btn-new-batch:hover {
+    background: linear-gradient(135deg, #1558d6, #1246b5);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(26,110,255,0.4);
+}
 
-/* Summary bar */
-.ap-summary {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 9px 13px; background: #eff6ff; border-radius: 8px;
-    margin-bottom: 12px; font-size: 13px; font-weight: 500; color: #1e293b;
+/* Section cards */
+.addp-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    overflow: hidden;
 }
-.ap-summary strong { color: #2563eb; }
+.addp-section-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.addp-section-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
 
-/* Temp products table */
-.temp-products-container { overflow-x: auto; }
-.temp-products-table {
-    width: 100%; border-collapse: collapse; font-size: 13px;
-    min-width: auto !important; table-layout: auto;
+/* Table */
+.addp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.addp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
 }
-.temp-products-table thead tr { background: #1a6eff; }
-.temp-products-table th {
-    padding: 10px 8px; color: white;
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    text-align: center; white-space: nowrap;
+.addp-table thead tr { background: #1a6eff; }
+.addp-table th {
+    background: #1a6eff !important;
+    color: #fff !important;
+    padding: 11px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    white-space: nowrap;
 }
-.temp-products-table td {
-    padding: 9px 8px; border-bottom: 1px solid #f1f5f9;
-    color: #374151; font-size: 13px; vertical-align: middle;
+.addp-table .pending-thead th {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-bottom: 1px solid #f59e0b !important;
 }
-.temp-products-table tbody tr:hover td { background: #f8faff; }
-.temp-products-table tbody tr:last-child td { border-bottom: none; }
+.addp-table td {
+    padding: 10px;
+    border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    font-size: 13px;
+    vertical-align: middle;
+    text-align: center;
+    color: #374151;
+}
+.addp-table tbody tr:hover { background: #f8faff; }
+.addp-table tbody tr:last-child td { border-bottom: none !important; }
 
-/* Empty state */
-.ap-empty { text-align: center; padding: 28px 20px; color: #94a3b8; }
-.ap-empty .ap-empty-icon { font-size: 32px; margin-bottom: 8px; }
-.ap-empty p { margin: 4px 0; font-size: 13px; }
+/* Badges */
+.badge-count {
+    background: #1a6eff; color: white;
+    padding: 3px 12px; border-radius: 12px;
+    font-weight: 600; font-size: 13px;
+}
+.badge-pending {
+    background: #f59e0b; color: white;
+    padding: 2px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+}
 
-/* Final actions */
-.ap-final-actions { padding-top: 12px; border-top: 1px solid #f1f5f9; margin-top: 12px; }
+/* Action buttons */
+.btn-sm {
+    padding: 5px 12px; font-size: 12px; border-radius: 7px;
+    border: none; cursor: pointer; font-weight: 600;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
+}
+.btn-success-sm { background: rgba(16,185,129,0.1); color: #059669; }
+.btn-success-sm:hover { background: #10b981; color: white; }
+.btn-danger-sm { background: rgba(239,68,68,0.1); color: #ef4444; margin-left: 4px; }
+.btn-danger-sm:hover { background: #ef4444; color: white; }
 
-/* Price comparison */
-.price-comparison {
-    margin-top: 8px; border-radius: 8px;
-    border: 1.5px solid #fbbf24; background: #fffbeb; display: none;
-}
-.profit-display { display: none; }
-
-/* History */
-.ap-history {
-    background: white; border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden;
-}
-.ap-history-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; border-bottom: 1px solid #f1f5f9; background: #fafbfc;
-}
-.ap-history-title { font-size: 14px; font-weight: 700; color: #1e293b; }
-.ap-history-title i { color: #2563eb; margin-right: 8px; }
-.ap-btn-refresh {
-    padding: 7px 13px; background: #2563eb; color: white;
-    border: none; border-radius: 8px; font-size: 12px; font-weight: 600;
-    cursor: pointer; transition: background 0.2s;
-}
-.ap-btn-refresh:hover { background: #1d4ed8; }
-.ap-btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.history-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.history-table {
-    width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px;
-}
-.history-table thead tr { background: #1a6eff; }
-.history-table th {
-    padding: 11px 10px; color: white;
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    text-align: left; white-space: nowrap;
-}
-.history-table td {
-    padding: 9px 10px; border-bottom: 1px solid #f1f5f9;
-    color: #374151; font-size: 13px; vertical-align: middle;
-}
-.history-table tbody tr:hover td { background: #f8faff; }
-.history-table tbody tr:last-child td { border-bottom: none; }
-
-@media (max-width: 1100px) { .ap-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) {
-    .ap-page { padding: 12px; }
-    .ap-row { grid-template-columns: 1fr; }
-    .ap-card-body { padding: 12px 14px; }
+    .addp-page { padding: 12px; }
+    .addp-table { font-size: 12px; }
+    .addp-table th, .addp-table td { padding: 8px 6px; }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="ap-page">
+<div class="addp-page">
 
-    <!-- Header -->
-    <div class="ap-header">
-        <h1 class="ap-title"><i class="fas fa-box-open"></i> {{ t('heading_add_product') }}</h1>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-box-open"></i> {{ t('heading_add_product') }}</h1>
+        <a href="{{ url_for('add_product_session') }}" class="btn-new-batch">
+            <i class="fas fa-plus"></i> Yangi qo'shish boshlash
+        </a>
     </div>
 
-    <!-- Two panels -->
-    <div class="ap-grid">
-        <!-- Chap: Forma -->
-        <div class="ap-card">
-            <div class="ap-card-header">
-                <span class="ap-card-title"><i class="fas fa-edit"></i> {{ t('label_product_info') }}</span>
-            </div>
-            <div class="ap-card-body">
-                <!-- Excel fayl input (yashirin) -->
-                <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none;" onchange="handleExcelFile(event)">
-
-                <form id="productForm">
-                    <!-- Joylashuv va Excel Import -->
-                    <div class="ap-row" style="margin-bottom:11px;">
-                        <div class="ap-form-group" style="margin-bottom:0;">
-                            <label class="ap-label" for="location">{{ t('ap_location_label') }}</label>
-                            <select id="location" name="location" class="ap-input" onchange="onLocationChange()">
-                                <option value="">{{ t('ap_select_location') }}</option>
-                            </select>
-                        </div>
-                        <div class="ap-form-group" style="margin-bottom:0;">
-                            <div style="display:flex; gap:6px; height:100%; align-items:flex-end;">
-                                <button type="button" class="ap-btn-excel-import" onclick="openExcelImport()">
-                                    <img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" style="width: 36px; height: 36px;"> {{ t('ap_excel_import_btn') }}
-                                </button>
-                                <button type="button" class="ap-btn-excel-template" onclick="downloadExcelTemplate()">
-                                    <img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" style="width: 36px; height: 36px;"> {{ t('ap_excel_template_btn') }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mahsulot nomi -->
-                    <div class="ap-form-group">
-                        <label class="ap-label" for="product_name">{{ t('ap_product_name_label') }}</label>
-                        <div class="product-name-container">
-                            <input type="text" id="product_name" name="product_name" class="ap-input"
-                                   placeholder="{{ t('ap_product_name_placeholder') }}"
-                                   oninput="searchProduct(); calculateProfit();"
-                                   onfocus="showSearchResults()"
-                                   onkeydown="handleProductNameKeyDown(event)"
-                                   autocomplete="off">
-                            <div id="searchResult" class="search-result" style="display:none;"></div>
-                        </div>
-                    </div>
-
-                    <!-- Miqdor va O'lchov birligi -->
-                    <div class="ap-row">
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="quantity">{{ t('ap_quantity_label') }}</label>
-                            <input type="number" id="quantity" name="quantity" class="ap-input"
-                                   placeholder="0" min="0" step="any"
-                                   oninput="validateQuantityInput(); calculateProfit();">
-                        </div>
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="unit_type">{{ t('ap_unit_type_label') }}</label>
-                            <select id="unit_type" name="unit_type" class="ap-input"
-                                    onchange="updateQuantityStep(); validateQuantityInput();">
-                                <option value="dona" selected>{{ t('ap_unit_dona') }}</option>
-                                <option value="litr">{{ t('ap_unit_litr') }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Min qoldiq va Barcode -->
-                    <div class="ap-row">
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="min_stock">{{ t('ap_min_stock_label') }}</label>
-                            <input type="number" id="min_stock" name="min_stock" class="ap-input"
-                                   placeholder="0" min="0">
-                        </div>
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="barcode">{{ t('ap_barcode_label') }}</label>
-                            <div id="barcodeErrorContainer" style="margin-bottom:4px;"></div>
-                            <div style="display:flex; gap:5px;">
-                                <input type="text" id="barcode" name="barcode" class="ap-input"
-                                       placeholder="{{ t('ap_barcode_placeholder') }}"
-                                       autocomplete="off" maxlength="8" pattern="[0-9]{8}"
-                                       oninput="validateBarcodeInput(this)"
-                                       style="border-color:#059669; flex:1;">
-                                <button type="button" id="autoGenerateBtn" onclick="generateBarcode()"
-                                        class="ap-btn-barcode-auto"
-                                        title="{{ t('ap_auto_barcode_title') }}"><img src="https://img.icons8.com/color/48/synchronize.png" alt="Auto" style="width:28px;height:28px;"> Auto</button>
-                                <button type="button" onclick="printBarcodeFromForm()" id="printBarcodeBtn"
-                                        class="ap-btn-barcode-print"
-                                        title="{{ t('ap_print_barcode_title') }}"><img src="https://img.icons8.com/color/48/print.png" alt="Print" style="width:28px;height:28px;"></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Narx taqqoslash -->
-                    <div id="priceComparison" class="price-comparison">
-                        <div id="priceComparisonContent"></div>
-                    </div>
-
-                    <!-- Tan narx va Sotish narxi -->
-                    <div class="ap-row">
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="cost_price">{{ t('ap_cost_price_label') }}</label>
-                            <input type="number" id="cost_price" name="cost_price" class="ap-input"
-                                   placeholder="0.00" step="0.01" min="0"
-                                   oninput="calculateProfit();"
-                                   onfocus="saveCostPriceOnFocus(); cancelAutoUpdate();"
-                                   onblur="updateOriginalCostPreview(); enableAutoUpdate(); comparePrices();">
-                        </div>
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="sell_price">{{ t('ap_sell_price_label') }}</label>
-                            <input type="number" id="sell_price" name="sell_price" class="ap-input"
-                                   placeholder="0.00" step="0.01" min="0"
-                                   oninput="calculateProfit();">
-                        </div>
-                    </div>
-
-                    <!-- Asl tan narx va Foyda -->
-                    <div class="ap-row">
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="original_cost">{{ t('ap_original_cost_label') }}</label>
-                            <input type="text" id="original_cost" name="original_cost" class="ap-input"
-                                   placeholder="-" readonly>
-                        </div>
-                        <div class="ap-form-group">
-                            <label class="ap-label" for="profit_display">{{ t('ap_profit_label') }}</label>
-                            <input type="text" id="profit_display" name="profit_display" class="ap-input"
-                                   placeholder="$0.00 (0%)" readonly>
-                        </div>
-                    </div>
-
-                    <!-- Eski foyda (yashirin) -->
-                    <div id="profitDisplay" class="profit-display" style="display:none;">
-                        <div id="profitContent"></div>
-                    </div>
-
-                    <!-- Qo'shish tugmasi -->
-                    <div style="margin-top:14px;">
-                        <button type="button" id="addToListBtn" onclick="addToTempList()" class="ap-btn-primary">
-                            ➕ {{ t('ap_add_to_list') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <!-- Tugallanmagan sessiyalar -->
+    <div class="addp-section">
+        <div class="addp-section-header">
+            <h3>⏸️ Davom ettirilmagan qo'shishlar</h3>
+            <span class="badge-pending" id="pendingCountBadge" style="display:none;">0</span>
         </div>
-
-        <!-- O'ng: Vaqtinchalik ro'yxat -->
-        <div class="ap-card">
-            <div class="ap-card-header">
-                <span class="ap-card-title"><i class="fas fa-list-ul"></i> {{ t('ap_temp_list_title') }}</span>
-            </div>
-            <div class="ap-card-body">
-                <div class="ap-summary">
-                    <span>{{ t('ap_total_products') }} <strong id="totalProducts">0</strong> {{ t('ap_total_products_suffix') }}</span>
-                    <span>{{ t('ap_total_value') }} <strong id="totalValue">$0.00</strong></span>
-                </div>
-                <div id="tempProductsList">
-                    <div class="ap-empty">
-                        <div class="ap-empty-icon">📋</div>
-                        <p>{{ t('ap_empty_state') }}</p>
-                        <p>{{ t('ap_empty_state_hint') }}</p>
-                    </div>
-                </div>
-                <div class="ap-final-actions" id="finalActions" style="display:none;">
-                    <button onclick="submitAllProducts()" class="ap-btn-success">
-                        💾 {{ t('ap_save_all') }}
-                    </button>
-                    <button onclick="clearTempList()" class="ap-btn-danger">
-                        🗑️ {{ t('ap_delete_all') }}
-                    </button>
-                </div>
-            </div>
+        <div class="addp-table-wrap">
+            <table class="addp-table">
+                <thead class="pending-thead">
+                    <tr>
+                        <th>#</th>
+                        <th>Sana</th>
+                        <th>Kim boshlagan</th>
+                        <th>Mahsulotlar soni</th>
+                        <th>Birinchi joylashuv</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingBatchesBody">
+                    <tr><td colspan="6" style="padding:24px; color:#94a3b8;">
+                        <i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...
+                    </td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Mahsulotlar Tarixi -->
-    <div class="ap-history">
-        <div class="ap-history-header">
-            <span class="ap-history-title"><i class="fas fa-history"></i> {{ t('ap_history_title') }}</span>
-            <button type="button" onclick="refreshHistory()" class="ap-btn-refresh" id="refreshHistoryBtn">
+    <!-- Mahsulotlar tarixi -->
+    <div class="addp-section">
+        <div class="addp-section-header">
+            <h3><i class="fas fa-history" style="color:#1a6eff;"></i> {{ t('ap_history_title') }}</h3>
+            <button type="button" onclick="refreshHistory()" id="refreshHistoryBtn"
+                style="margin-left:auto; padding:5px 14px; background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:8px; font-size:12px; font-weight:600; color:#475569; cursor:pointer;">
                 🔄 {{ t('ap_refresh') }}
             </button>
         </div>
         <div id="historyLoading" style="text-align:center; padding:24px; color:#94a3b8;">
             <p>{{ t('ap_history_loading') }}</p>
         </div>
-        <div class="history-table-container" id="historyTableContainer" style="display:none;">
-            <table class="history-table" id="productHistoryTable">
+        <div class="addp-table-wrap" id="historyTableContainer" style="display:none;">
+            <table class="addp-table" id="productHistoryTable">
                 <thead>
                     <tr>
                         <th>{{ t('ap_th_date') }}</th>
                         <th>{{ t('ap_th_location') }}</th>
                         <th>{{ t('ap_th_product') }}</th>
-                        <th style="text-align:center;">{{ t('ap_th_quantity') }}</th>
+                        <th>{{ t('ap_th_quantity') }}</th>
                         <th style="text-align:right;">{{ t('ap_th_cost_price') }}</th>
                         <th style="text-align:right;">{{ t('ap_th_sell_price') }}</th>
                         <th style="text-align:right;">{{ t('ap_th_total_value') }}</th>
-                        <th style="text-align:center;">{{ t('ap_th_added_by') }}</th>
+                        <th>{{ t('ap_th_added_by') }}</th>
                     </tr>
                 </thead>
                 <tbody id="productHistoryBody"></tbody>
             </table>
         </div>
     </div>
+
 </div>
-    <!-- SheetJS kutubxonasi Excel fayllarni o'qish uchun -->
-    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js" 
-            onerror="console.error('XLSX kutubxonasi yuklanmadi, backup yuklash...'); loadXLSXBackup();"></script>
-    
-    <script>
-        // XLSX kutubxonasi yuklanish holati
-        let xlsxLoaded = false;
-        
-        // Kutubxona yuklanganini tekshirish
-        function checkXLSXLoaded() {
-            if (typeof XLSX !== 'undefined') {
-                xlsxLoaded = true;
-                console.log('✅ XLSX kutubxonasi muvaffaqiyatli yuklandi');
-                return true;
-            }
-            return false;
-        }
-        
-        // Backup kutubxona yuklash
-        function loadXLSXBackup() {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-            script.onload = function() {
-                xlsxLoaded = checkXLSXLoaded();
-            };
-            script.onerror = function() {
-                console.error('❌ Backup XLSX kutubxonasi ham yuklanmadi');
-            };
-            document.head.appendChild(script);
-        }
-        
-        // Sahifa yuklangandan keyin tekshirish
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                if (!checkXLSXLoaded()) {
-                    console.warn('⚠️ XLSX kutubxonasi yuklanmagan, backup yuklash...');
-                    loadXLSXBackup();
-                }
-            }, 1000);
-        });
-    </script>
 
-    <script>
-        const APLANG = {
-            select_location: {{ t('ap_select_location')|tojson }},
-            excel_lib_not_loaded: {{ t('ap_excel_lib_not_loaded')|tojson }},
-            select_location_first: {{ t('ap_select_location_first')|tojson }},
-            excel_select_location_hint: {{ t('ap_excel_select_location_hint')|tojson }},
-            excel_template_error: {{ t('ap_excel_template_error')|tojson }},
-            excel_lib_not_loaded2: {{ t('ap_excel_lib_not_loaded2')|tojson }},
-            excel_no_sheet: {{ t('ap_excel_no_sheet')|tojson }},
-            excel_no_data: {{ t('ap_excel_no_data')|tojson }},
-            excel_read_error: {{ t('ap_excel_read_error')|tojson }},
-            file_read_error: {{ t('ap_file_read_error')|tojson }},
-            enter_product_name: {{ t('ap_enter_product_name')|tojson }},
-            barcode_8_digits: {{ t('ap_barcode_8_digits')|tojson }},
-            barcode_exists: {{ t('ap_barcode_exists')|tojson }},
-            enter_cost_price: {{ t('ap_enter_cost_price')|tojson }},
-            enter_sell_price: {{ t('ap_enter_sell_price')|tojson }},
-            enter_quantity: {{ t('ap_enter_quantity')|tojson }},
-            select_location_error: {{ t('ap_select_location_error')|tojson }},
-            product_loaded_for_edit: {{ t('ap_product_loaded_for_edit')|tojson }},
-            barcode_generate_error: {{ t('ap_barcode_generate_error')|tojson }},
-            enter_barcode: {{ t('ap_enter_barcode')|tojson }},
-            clear_all_confirm: {{ t('ap_clear_all_confirm')|tojson }},
-            no_products_added: {{ t('ap_no_products_added')|tojson }},
-            all_products_saved: {{ t('ap_all_products_saved')|tojson }},
-            save_error: {{ t('ap_save_error')|tojson }},
-            barcode_exists_in: {{ t('ap_barcode_exists_in')|tojson }},
-            optgroup_warehouses: {{ t('ap_optgroup_warehouses')|tojson }},
-            optgroup_stores: {{ t('ap_optgroup_stores')|tojson }},
-            total_products_suffix: {{ t('ap_total_products_suffix')|tojson }},
-            total_products: {{ t('ap_total_products')|tojson }},
-            total_value: {{ t('ap_total_value')|tojson }},
-            empty_state: {{ t('ap_empty_state')|tojson }},
-            empty_state_hint: {{ t('ap_empty_state_hint')|tojson }}
-        };
+<script>
+// === Pending batches ===
+async function loadPendingBatches() {
+    try {
+        const res = await fetch('/api/pending-product-batch');
+        const data = await res.json();
+        const tbody = document.getElementById('pendingBatchesBody');
 
-        let tempProducts = [];
-        let priceComparisonTimeout;
-        let autoUpdateDisabled = false;
-        let storesData = [];
-        let warehousesData = [];
-
-        // Excel import funksiyalari
-        function openExcelImport() {
-            // XLSX kutubxonasi yuklanganini tekshirish
-            if (typeof XLSX === 'undefined' || !xlsxLoaded) {
-                alert(APLANG.excel_lib_not_loaded);
-                
-                // Backup yuklashga harakat qilish
-                if (typeof loadXLSXBackup === 'function') {
-                    loadXLSXBackup();
-                }
-                return;
-            }
-
-            const locationSelect = document.getElementById('location');
-            if (!locationSelect.value) {
-                alert(APLANG.select_location_first + '\n\n' + APLANG.excel_select_location_hint);
-                return;
-            }
-            
-            document.getElementById('excelFileInput').click();
-        }
-        
-        // Excel namuna faylini yuklash
-        function downloadExcelTemplate() {
-            // XLSX kutubxonasi yuklanganini tekshirish
-            if (typeof XLSX === 'undefined' || !xlsxLoaded) {
-                alert(APLANG.excel_lib_not_loaded);
-                return;
-            }
-            
-            try {
-                // Namuna ma'lumotlar bilan Excel yaratish
-                const templateData = [
-                    {
-                        'Mahsulot nomi': 'Misol: Samsung Galaxy A54',
-                        'Barcode': '8600000000001',
-                        'O\'lchov birligi': 'dona',
-                        'Miqdor': 10,
-                        'Tan narxi ($)': 250.00,
-                        'Sotish narxi ($)': 300.00,
-                        'Asl tan narx ($)': 250.00
-                    },
-                    {
-                        'Mahsulot nomi': 'Misol: Moy 5W-30',
-                        'Barcode': '8600000000002',
-                        'O\'lchov birligi': 'litr',
-                        'Miqdor': 25.5,
-                        'Tan narxi ($)': 8.50,
-                        'Sotish narxi ($)': 10.00,
-                        'Asl tan narx ($)': 8.50
-                    },
-                    {
-                        'Mahsulot nomi': 'Misol: iPhone 13 Pro',
-                        'Barcode': '8600000000003',
-                        'O\'lchov birligi': 'dona',
-                        'Miqdor': 0.5,
-                        'Tan narxi ($)': 800.00,
-                        'Sotish narxi ($)': 950.00,
-                        'Asl tan narx ($)': 800.00
-                    }
-                ];
-                
-                // Yangi workbook yaratish
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.json_to_sheet(templateData);
-                
-                // Ustunlar kengligini sozlash
-                ws['!cols'] = [
-                    { wch: 30 }, // Mahsulot nomi
-                    { wch: 15 }, // Barcode
-                    { wch: 10 }, // Miqdor
-                    { wch: 15 }, // Tan narxi
-                    { wch: 15 }, // Sotish narxi
-                    { wch: 15 }  // Asl tan narx
-                ];
-                
-                // Barcode ustunini text formatiga o'zgartirish (000001 kabi nollar saqlanadi)
-                const range = XLSX.utils.decode_range(ws['!ref']);
-                for (let row = range.s.r + 1; row <= range.e.r; row++) {
-                    const cellAddress = XLSX.utils.encode_cell({ r: row, c: 1 }); // Barcode 2-ustun (index 1)
-                    if (ws[cellAddress]) {
-                        ws[cellAddress].t = 's'; // String tipiga o'zgartirish
-                        ws[cellAddress].z = '@'; // Text format
-                    }
-                }
-                
-                XLSX.utils.book_append_sheet(wb, ws, 'Mahsulotlar');
-                
-                // Faylni yuklash
-                XLSX.writeFile(wb, 'mahsulot_import_namuna.xlsx');
-                
-                console.log('✅ Excel namuna fayl yuklandi');
-            } catch (error) {
-                console.error('Excel namuna yaratishda xatolik:', error);
-                alert(APLANG.excel_template_error + '\n\n' + error.message);
-            }
+        if (!data.success || !data.batches || data.batches.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="padding:24px; color:#94a3b8;">📭 Davom ettirilmagan qo\'shishlar yo\'q</td></tr>';
+            return;
         }
 
-        function handleExcelFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        const badge = document.getElementById('pendingCountBadge');
+        badge.textContent = data.batches.length;
+        badge.style.display = 'inline-block';
 
-            // XLSX kutubxonasi yuklanganini tekshirish
-            if (typeof XLSX === 'undefined') {
-                alert(APLANG.excel_lib_not_loaded2);
-                return;
-            }
-
-            console.log('📁 Excel fayl tanlandi:', file.name);
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    console.log('📖 Excel fayl o\'qilmoqda...');
-                    
-                    // SheetJS kutubxonasi orqali Excel faylni o'qish
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    
-                    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-                        alert(APLANG.excel_no_sheet);
-                        return;
-                    }
-
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-                    console.log('📊 O\'qilgan ma\'lumotlar:', jsonData);
-
-                    if (jsonData.length === 0) {
-                        alert(APLANG.excel_no_data);
-                        return;
-                    }
-
-                    processExcelData(jsonData);
-                } catch (error) {
-                    console.error('Excel fayl o\'qishda xatolik:', error);
-                    alert(APLANG.excel_read_error + '\n\n' + error.message);
-                }
-            };
-            
-            reader.onerror = function() {
-                alert(APLANG.file_read_error);
-            };
-            
-            reader.readAsArrayBuffer(file);
-        }
-
-        function processExcelData(data) {
-            let successCount = 0;
-            let errorCount = 0;
-            const errors = [];
-
-            console.log('📊 Excel ma\'lumotlari:', data);
-            console.log('📊 Jami qatorlar soni:', data.length);
-            
-            // Joylashuv tanlanganini tekshirish
-            const locationSelect = document.getElementById('location');
-            if (!locationSelect || !locationSelect.value) {
-                alert(APLANG.select_location_first + '\n\n' + APLANG.excel_select_location_hint);
-                return;
-            }
-            
-            console.log('📍 Tanlangan joylashuv:', locationSelect.options[locationSelect.selectedIndex].textContent);
-
-            data.forEach((row, index) => {
-                try {
-                    // Excel qatoridagi ustun nomlarini ko'rsatish
-                    console.log(`📋 Qator ${index + 1} ustunlari:`, Object.keys(row));
-                    console.log(`📋 Qator ${index + 1} ma'lumotlari:`, row);
-                    
-                    // Excel ustun nomlarini tekshirish - sizning fayl formatiga mos
-                    const name = row['Mahsulot nomi'] || row['mahsulot nomi'] || row['Nomi'] || row['nomi'];
-                    const barcode = row['Barcode'] || row['barcode'] || row['Barkod'] || row['barkod'] || '';
-                    const unitType = (row['O\'lchov birligi'] || row['o\'lchov birligi'] || row['Olchov birligi'] || row['olchov birligi'] || 'dona').toLowerCase().trim();
-                    const quantity = parseFloat(row['Miqdori'] || row['miqdori'] || row['Miqdor'] || row['miqdor'] || 0);
-                    const minStock = parseInt(row['Minimal qoldiq'] || row['minimal qoldiq'] || row['Min qoldiq'] || row['min qoldiq'] || 0);
-                    // Narxlarni to'g'ri formatga keltirish (vergul o'rniga nuqta)
-                    let costPriceRaw = row['Tan narxi ($)'] || row['Tan narx ($)'] || row['Tan narx'] || row['tan narx'] || row['Tan narxi'] || row['tan narxi'] || 0;
-                    let sellPriceRaw = row['Sotish narxi ($)'] || row['Sotish narx ($)'] || row['Sotish narxi'] || row['sotish narxi'] || row['Sotish narx'] || row['sotish narx'] || row['Sotuv narxi'] || row['sotuv narxi'] || 0;
-                    
-                    // Agar string bo'lsa, vergulni nuqtaga almashtirish
-                    if (typeof costPriceRaw === 'string') {
-                        costPriceRaw = costPriceRaw.replace(',', '.');
-                    }
-                    if (typeof sellPriceRaw === 'string') {
-                        sellPriceRaw = sellPriceRaw.replace(',', '.');
-                    }
-                    
-                    const costPrice = parseFloat(costPriceRaw) || 0;
-                    const sellPrice = parseFloat(sellPriceRaw) || 0;
-                    
-                    console.log(`� Qator ${index + 2} ustunlari:`, Object.keys(row));
-                    console.log(`📝 Olingan ma'lumotlar: Nomi="${name}", Barcode="${barcode}", Miqdor=${quantity}, MinStock=${minStock}, TanNarx=${costPrice}, SotishNarx=${sellPrice}`);
-                    console.log(`💰 Hisoblangan qiymatlar: Foyda=${sellPrice - costPrice}, UmumiyQiymat=${costPrice * quantity}`);
-
-                    // Majburiy maydonlarni tekshirish
-                    if (!name || name.trim() === '') {
-                        errors.push(`Qator ${index + 2}: Mahsulot nomi kiritilmagan`);
-                        errorCount++;
-                        return;
-                    }
-
-                    if (quantity < 0) {
-                        errors.push(`Qator ${index + 2}: Miqdor manfiy bo'lishi mumkin emas`);
-                        errorCount++;
-                        return;
-                    }
-
-                    if (sellPrice <= 0) {
-                        errors.push(`Qator ${index + 2}: Sotish narxi noldan katta bo'lishi kerak`);
-                        errorCount++;
-                        return;
-                    }
-
-                    if (costPrice < 0 || isNaN(costPrice)) {
-                        errors.push(`Qator ${index + 2}: Tan narx noto'g'ri yoki manfiy (${costPriceRaw})`);
-                        errorCount++;
-                        return;
-                    }
-                    
-                    if (isNaN(sellPrice)) {
-                        errors.push(`Qator ${index + 2}: Sotish narxi noto'g'ri (${sellPriceRaw})`);
-                        errorCount++;
-                        return;
-                    }
-
-                    // Tanlangan joylashuv ma'lumotlarini olish
-                    const locationSelect = document.getElementById('location');
-                    if (!locationSelect || !locationSelect.value) {
-                        errors.push(`Qator ${index + 2}: Joylashuv tanlanmagan`);
-                        errorCount++;
-                        return;
-                    }
-                    
-                    const selectedLocationOption = locationSelect.options[locationSelect.selectedIndex];
-                    const dataType = selectedLocationOption.getAttribute('data-type');
-                    const locationId = selectedLocationOption.getAttribute('data-location-id') || selectedLocationOption.value;
-                    const locationName = selectedLocationOption.textContent || 'Noma\'lum joylashuv';
-                    
-                    // Data-type ni API uchun inglizchaga o'zgartirish (warehouse yoki store)
-                    let locationType = '';
-                    if (dataType === 'ombor' || dataType === 'warehouse') {
-                        locationType = 'warehouse'; // API uchun inglizcha
-                    } else if (dataType === 'dokon' || dataType === 'store') {
-                        locationType = 'store'; // API uchun inglizcha
-                    } else {
-                        locationType = dataType || 'store'; // default: store
-                    }
-                    
-                    console.log(`📍 Joylashuv ma'lumotlari: ${locationName} (${locationType}) - ID: ${locationId}`);
-
-                    // Vaqtinchalik mahsulotlar ro'yxatiga qo'shish
-                    const tempProduct = {
-                        id: Date.now() + Math.random(),
-                        name: name.trim(),
-                        barcode: barcode ? String(barcode).trim() : '', // Barcode ni string sifatida saqlash
-                        sell_price: sellPrice,
-                        cost_price: costPrice,
-                        quantity: quantity,
-                        unit_type: unitType === 'litr' ? 'litr' : 'dona', // dona yoki litr
-                        min_stock: minStock,
-                        location_id: locationId,
-                        location_type: locationType,
-                        location_name: locationName,
-                        profit: sellPrice - costPrice, // Birlik foyda
-                        total_value: costPrice * quantity, // Umumiy qiymat (tan narx * miqdor)
-                        source: 'excel'
-                    };
-
-                    tempProducts.push(tempProduct);
-                    successCount++;
-                    
-                    console.log(`✅ Import qilindi: ${name} - ${quantity} ta`);
-
-                } catch (error) {
-                    console.error(`❌ Import xatoligi qator ${index + 2}:`, error);
-                    errors.push(`Qator ${index + 2}: ${error.message}`);
-                    errorCount++;
-                }
-            });
-
-            // Natijalarni ko'rsatish
-            const locationName = document.getElementById('location').options[document.getElementById('location').selectedIndex].textContent;
-            
-            let message = `📊 Excel import natijasi:\n\n`;
-            message += `📍 Joylashuv: ${locationName}\n`;
-            message += `📁 Jami qatorlar: ${data.length}\n`;
-            message += `✅ Muvaffaqiyatli import: ${successCount} ta mahsulot\n`;
-            
-            if (errorCount > 0) {
-                message += `❌ Xatoliklar: ${errorCount} ta\n\n`;
-                message += `📋 Talab qilinadigan ustunlar:\n`;
-                message += `1. Mahsulot nomi (majburiy)\n`;
-                message += `2. Barcode\n`;
-                message += `3. O'lchov birligi (dona/litr, default: dona)\n`;
-                message += `4. Miqdor\n`;
-                message += `5. Tan narx\n`;
-                message += `6. Sotish narxi (majburiy)\n\n`;
-                if (errors.length > 0) {
-                    message += `Xatoliklar ro'yxati:\n${errors.slice(0, 5).join('\n')}`;
-                    if (errors.length > 5) {
-                        message += `\n... va yana ${errors.length - 5} ta xatolik`;
-                    }
-                }
-            } else if (successCount === 0) {
-                message += `\n⚠️ Hech qanday mahsulot import qilinmadi.\n`;
-                message += `Excel fayldagi ustun nomlarini tekshiring:\n`;
-                message += `• Mahsulot nomi\n`;
-                message += `• Barcode\n`;
-                message += `• O'lchov birligi (dona/litr)\n`;
-                message += `• Miqdor\n`;
-                message += `• Tan narx\n`;
-                message += `• Sotish narxi`;
-            }
-
-            alert(message);
-
-            // Vaqtinchalik mahsulotlar ro'yxatini yangilash
-            updateTempList();
-
-            // Fayl inputni tozalash
-            document.getElementById('excelFileInput').value = '';
-        }
-
-        // Narx taqqoslash uchun uzoqroq debounce - foydalanuvchi yozayotganda xalaqit bermaslik uchun
-        function debouncePriceComparison() {
-            if (autoUpdateDisabled) return; // Agar foydalanuvchi yozayotgan bo'lsa, to'xtatish
-            
-            clearTimeout(priceComparisonTimeout);
-            priceComparisonTimeout = setTimeout(() => {
-                if (!autoUpdateDisabled) {
-                    comparePrices();
-                }
-            }, 1500); // 1.5 soniya kutish - yetarlicha vaqt narx yozish uchun
-        }
-
-        // Miqdor uchun tezroq debounce
-        function debounceComparePrices() {
-            clearTimeout(priceComparisonTimeout);
-            priceComparisonTimeout = setTimeout(() => {
-                comparePrices();
-            }, 300); // 300ms kutib, keyin chaqirish
-        }
-
-        // Foydalanuvchi tan narx maydoniga focus qilganda avtomatik yangilanishni to'xtatish
-        function cancelAutoUpdate() {
-            autoUpdateDisabled = true;
-        }
-
-        // Foydalanuvchi tan narx maydonidan chiqganda avtomatik yangilanishni qayta yoqish
-        function enableAutoUpdate() {
-            autoUpdateDisabled = false;
-        }
-
-        // Sahifa yuklanganda joylashuvlarni yuklash
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLocations();
-            
-            // Joylashuv select elementiga fokus berish
-            setTimeout(function() {
-                const locationSelect = document.getElementById('location');
-                if (locationSelect) {
-                    locationSelect.focus();
-                }
-            }, 500); // Joylashuvlar yuklanishini kutish uchun kechikish
-            
-            // Mahsulot nomi maydoniga input event - foydalanuvchi yozayotgan bo'lsa barcode'ni unlock qilish
-            const productNameField = document.getElementById('product_name');
-            productNameField.addEventListener('input', function() {
-                const barcodeInput = document.getElementById('barcode');
-                const autoGenerateBtn = document.getElementById('autoGenerateBtn');
-                
-                // Agar foydalanuvchi mahsulot nomini o'zgartirsa, barcode va Auto tugmasini unlock qilish
-                if (!selectedProductData || this.value.trim() !== selectedProductData.name) {
-                    barcodeInput.removeAttribute('readonly');
-                    barcodeInput.style.backgroundColor = '#fff';
-                    barcodeInput.style.cursor = 'text';
-                    
-                    autoGenerateBtn.disabled = false;
-                    autoGenerateBtn.style.opacity = '1';
-                    autoGenerateBtn.style.cursor = 'pointer';
-                    autoGenerateBtn.title = 'Avtomatik barcode yaratish';
-                }
-            });
-            
-            // Barcode real-time validation
-            const barcodeInput = document.getElementById('barcode');
-            let barcodeCheckTimeout;
-            
-            barcodeInput.addEventListener('input', function() {
-                const barcode = this.value.trim();
-                
-                // Clear previous timeout
-                clearTimeout(barcodeCheckTimeout);
-                
-                // Reset styling
-                this.style.borderColor = '#28a745';
-                
-                // Clear error container
-                const errorContainer = document.getElementById('barcodeErrorContainer');
-                if (errorContainer) {
-                    errorContainer.innerHTML = '';
-                }
-                
-                // Check if barcode is empty
-                if (!barcode) {
-                    return;
-                }
-                
-                // Debounce - wait 500ms after user stops typing
-                barcodeCheckTimeout = setTimeout(() => {
-                    // Check if barcode exists
-                    fetch('/api/check-barcode', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ barcode: barcode })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            // Barcode already exists
-                            barcodeInput.style.borderColor = '#dc3545';
-                            
-                            // Show error message in dedicated container
-                            const errorContainer = document.getElementById('barcodeErrorContainer');
-                            if (errorContainer) {
-                                errorContainer.innerHTML = `
-                                    <div class="barcode-error-msg" style="
-                                        color: #dc3545;
-                                        font-size: 13px;
-                                        font-weight: bold;
-                                        padding: 8px 12px;
-                                        background: #ffe6e6;
-                                        border: 2px solid #dc3545;
-                                        border-radius: 6px;
-                                        display: inline-block;
-                                    ">
-                                        ⚠️ ${data.product.name} - ${APLANG.barcode_exists_in}
-                                    </div>
-                                `;
-                            }
-                            
-                            // Disable add to list button
-                            const addToListBtn = document.getElementById('addToListBtn');
-                            if (addToListBtn) {
-                                addToListBtn.disabled = true;
-                                addToListBtn.style.opacity = '0.5';
-                                addToListBtn.style.cursor = 'not-allowed';
-                            }
-                        } else {
-                            // Barcode is unique - enable button
-                            const addToListBtn = document.getElementById('addToListBtn');
-                            if (addToListBtn) {
-                                addToListBtn.disabled = false;
-                                addToListBtn.style.opacity = '1';
-                                addToListBtn.style.cursor = 'pointer';
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Barcode tekshirish xatosi:', error);
-                    });
-                }, 500);
-            });
-            
-            // Mahsulot nomi maydoniga blur event qo'shish
-            productNameField.addEventListener('blur', function() {
-                // Kichik kechikish bilan yashirish - mahsulotni tanlash imkoniyatini berish uchun
-                setTimeout(function() {
-                    // "Mavjud emas" xabarini yo'qotish
-                    const notFoundMessage = document.getElementById('productNotFound');
-                    if (notFoundMessage) {
-                        notFoundMessage.style.display = 'none';
-                    }
-                    
-                    // "Yangi mahsulot" xabarini ham yo'qotish
-                    const searchResult = document.getElementById('searchResult');
-                    if (searchResult) {
-                        searchResult.style.display = 'none';
-                    }
-                    
-                    // Narx taqqoslash jadvalni ham yashirish
-                    const priceComparisonDiv = document.getElementById('priceComparison');
-                    if (priceComparisonDiv) {
-                        priceComparisonDiv.style.display = 'none';
-                    }
-                }, 200); // 200ms kechikish
-            });
-            
-            // Tan narx maydoniga blur event qo'shish
-            const costPriceField = document.getElementById('cost_price');
-            costPriceField.addEventListener('blur', function() {
-                // Narx taqqoslash mavjud bo'lsa va yangi miqdor kiritilgan bo'lsa
-                const priceComparisonDiv = document.getElementById('priceComparison');
-                const quantity = parseInt(document.getElementById('quantity').value) || 0;
-                
-                if (priceComparisonDiv.style.display === 'block' && quantity > 0) {
-                    // O'rtacha narxni hisoblash va qo'yish
-                    setTimeout(() => {
-                        applyAveragePrice();
-                    }, 100);
-                }
-            });
-        });
-
-        // Joylashuvlarni yuklash
-        function loadLocations() {
-            Promise.all([
-                fetch('/api/warehouses').then(r => r.json()),
-                fetch('/api/stores').then(r => r.json())
-            ])
-            .then(([warehouses, stores]) => {
-                // Global o'zgaruvchilarga saqlash
-                warehousesData = warehouses;
-                storesData = stores;
-                
-                const locationSelect = document.getElementById('location');
-                locationSelect.innerHTML = '<option value="">' + APLANG.select_location + '</option>';
-                
-                // Omborlar guruhi
-                if (warehouses.length > 0) {
-                    const warehouseGroup = document.createElement('optgroup');
-                    warehouseGroup.label = APLANG.optgroup_warehouses;
-                    
-                    warehouses.forEach(warehouse => {
-                        const option = document.createElement('option');
-                        option.value = `warehouse_${warehouse.id}`;  // warehouse_ prefixi bilan
-                        option.textContent = warehouse.name;
-                        option.setAttribute('data-type', 'ombor');
-                        option.setAttribute('data-location-id', warehouse.id);
-                        warehouseGroup.appendChild(option);
-                    });
-                    
-                    locationSelect.appendChild(warehouseGroup);
-                }
-                
-                // Do'konlar guruhi
-                if (stores.length > 0) {
-                    const storeGroup = document.createElement('optgroup');
-                    storeGroup.label = APLANG.optgroup_stores;
-                    
-                    stores.forEach(store => {
-                        const option = document.createElement('option');
-                        option.value = `store_${store.id}`;  // store_ prefixi bilan
-                        option.textContent = store.name;
-                        option.setAttribute('data-type', 'dokon');
-                        option.setAttribute('data-location-id', store.id);
-                        storeGroup.appendChild(option);
-                    });
-                    
-                    locationSelect.appendChild(storeGroup);
-                }
-            })
-            .catch(error => {
-                console.error('Joylashuvlarni yuklashda xatolik:', error);
-            });
-        }
-
-        // Location nomini olish funksiyasi
-        function getLocationName(locationValue) {
-            // Yangi format uchun - location select dan to'g'ridan-to'g'ri olish
-            const locationSelect = document.getElementById('location');
-            if (locationSelect && locationSelect.value === locationValue) {
-                const selectedOption = locationSelect.options[locationSelect.selectedIndex];
-                return selectedOption ? selectedOption.textContent : 'Noma\'lum joylashuv';
-            }
-            
-            // Eski format bilan moslik uchun
-            if (locationValue.startsWith('warehouse_')) {
-                const warehouseId = parseInt(locationValue.replace('warehouse_', ''));
-                const warehouse = warehousesData.find(w => w.id === warehouseId);
-                return warehouse ? warehouse.name : 'Ombor';
-            } else if (locationValue.startsWith('store_')) {
-                const storeId = parseInt(locationValue.replace('store_', ''));
-                const store = storesData.find(s => s.id === storeId);
-                return store ? store.name : 'Do\'kon';
-            }
-            
-            // Yangi format uchun ID bo'yicha qidirish
-            const locationId = parseInt(locationValue);
-            if (!isNaN(locationId)) {
-                const warehouse = warehousesData.find(w => w.id === locationId);
-                if (warehouse) return warehouse.name;
-                
-                const store = storesData.find(s => s.id === locationId);
-                if (store) return store.name;
-            }
-            
-            return locationValue;
-        }
-
-        // Location turi olish funksiyasi
-        function getLocationType(locationValue) {
-            // Yangi format uchun - location select dan to'g'ridan-to'g'ri olish
-            const locationSelect = document.getElementById('location');
-            if (locationSelect && locationSelect.value === locationValue) {
-                const selectedOption = locationSelect.options[locationSelect.selectedIndex];
-                const dataType = selectedOption ? selectedOption.getAttribute('data-type') : null;
-                if (dataType === 'ombor' || dataType === 'warehouse') return 'Ombor';
-                if (dataType === 'dokon' || dataType === 'store') return 'Do\'kon';
-            }
-            
-            // Eski format bilan moslik uchun
-            if (locationValue.startsWith('warehouse_')) {
-                return 'Ombor';
-            } else if (locationValue.startsWith('store_')) {
-                return 'Do\'kon';
-            }
-            
-            // Yangi format uchun ID bo'yicha qidirish
-            const locationId = parseInt(locationValue);
-            if (!isNaN(locationId)) {
-                const warehouse = warehousesData.find(w => w.id === locationId);
-                if (warehouse) return 'Ombor';
-                
-                const store = storesData.find(s => s.id === locationId);
-                if (store) return 'Do\'kon';
-            }
-            
-            return '';
-        }
-
-        // Mahsulot nomi maydonida klaviatura navigatsiyasi
-        let selectedProductIndex = -1;
-        let productSuggestions = [];
-
-        function handleProductNameKeyDown(event) {
-            const resultDiv = document.getElementById('searchResult');
-            const suggestionItems = resultDiv.querySelectorAll('.suggestion-item');
-            
-            switch(event.key) {
-                case 'ArrowDown':
-                    event.preventDefault();
-                    if (suggestionItems.length > 0) {
-                        // Agar hech narsa tanlanmagan bo'lsa, birinchisini tanlash
-                        if (selectedProductIndex === -1) {
-                            selectedProductIndex = 0;
-                        } else {
-                            selectedProductIndex = Math.min(selectedProductIndex + 1, suggestionItems.length - 1);
-                        }
-                        updateSelectedProduct(suggestionItems);
-                        // Qidiruv natijalarini ko'rsatish
-                        resultDiv.style.display = 'block';
-                    }
-                    break;
-                    
-                case 'ArrowUp':
-                    event.preventDefault();
-                    if (suggestionItems.length > 0) {
-                        selectedProductIndex = Math.max(selectedProductIndex - 1, 0);
-                        updateSelectedProduct(suggestionItems);
-                    }
-                    break;
-                    
-                case 'Enter':
-                    event.preventDefault();
-                    if (selectedProductIndex >= 0 && suggestionItems.length > selectedProductIndex) {
-                        // Tanlangan mahsulotni qo'llash
-                        suggestionItems[selectedProductIndex].click();
-                    } else {
-                        // Enter bosilganda keyingi maydoniga o'tish
-                        const quantityField = document.getElementById('quantity');
-                        if (quantityField) {
-                            quantityField.focus();
-                            quantityField.select();
-                        }
-                    }
-                    break;
-                    
-                case 'Escape':
-                    event.preventDefault();
-                    resultDiv.style.display = 'none';
-                    selectedProductIndex = -1;
-                    break;
-                    
-                case 'Tab':
-                    // Tab bosilganda tavsiyalarni yashirish
-                    setTimeout(() => {
-                        resultDiv.style.display = 'none';
-                        selectedProductIndex = -1;
-                    }, 100);
-                    break;
-            }
-        }
-
-        function updateSelectedProduct(suggestionItems) {
-            // Barcha elementlardan selected classini olib tashlash
-            suggestionItems.forEach((item, index) => {
-                item.classList.remove('selected');
-                if (index === selectedProductIndex) {
-                    item.classList.add('selected');
-                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                }
-            });
-        }
-        
-        // Mouse hover bilan klaviatura navigatsiyasini sinxronlash
-        function handleMouseEnterSuggestion(element) {
-            const resultDiv = document.getElementById('searchResult');
-            const suggestionItems = Array.from(resultDiv.querySelectorAll('.suggestion-item'));
-            const index = suggestionItems.indexOf(element);
-            
-            if (index !== -1) {
-                selectedProductIndex = index;
-                updateSelectedProduct(suggestionItems);
-            }
-        }
-
-        // Mahsulot qidirish - dropdown uslubida (maydon ostida)
-        let searchTimeout;  // Debounce uchun
-        
-        function searchProduct() {
-            // Avvalgi timeout'ni bekor qilish
-            if (searchTimeout) {
-                clearTimeout(searchTimeout);
-            }
-            
-            const productName = document.getElementById('product_name').value.trim();
-            const locationSelect = document.getElementById('location');
-            const selectedLocation = locationSelect.value;
-            const resultDiv = document.getElementById('searchResult');
-            
-            // Qidiruv yangilanganda selectedProductIndex ni qayta o'rnatish
-            selectedProductIndex = -1;
-            
-            // Minimum uzunlik tekshiruvi
-            if (productName.length < 2) {
-                resultDiv.style.display = 'none';
-                return;
-            }
-            
-            if (!selectedLocation) {
-                resultDiv.innerHTML = `
-                    <div style="padding: 15px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 1rem;">
-                        <strong>⚠️ Diqqat!</strong> Iltimos, avval joylashuvni tanlang
-                    </div>
-                `;
-                resultDiv.style.display = 'block';
-                return;
-            }
-            
-            // Loading ko'rsatish
-            resultDiv.innerHTML = `
-                <div style="padding: 15px; background: #e7f3ff; color: #0066cc; border-radius: 4px; font-size: 1rem; text-align: center;">
-                    <strong>🔍 Qidirilmoqda...</strong>
-                </div>
+        tbody.innerHTML = '';
+        data.batches.forEach((batch, idx) => {
+            const date = new Date(batch.updated_at).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' });
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${idx + 1}</td>
+                <td style="font-size:12px; color:#64748b;">${date}</td>
+                <td><strong>${batch.user_name}</strong></td>
+                <td><span class="badge-count">${batch.items_count} ta</span></td>
+                <td style="color:#64748b;">${batch.first_location}</td>
+                <td>
+                    <a href="/add_product_session?id=${batch.id}" class="btn-sm btn-success-sm">
+                        ▶️ Davom ettirish
+                    </a>
+                    <button class="btn-sm btn-danger-sm" onclick="deleteBatch(${batch.id})">
+                        🗑️ O'chirish
+                    </button>
+                </td>
             `;
-            resultDiv.style.display = 'block';
-            
-            // Debounce - 300ms kutish
-            searchTimeout = setTimeout(() => {
-                performSearch(productName, selectedLocation, locationSelect, resultDiv);
-            }, 300);
-        }
-        
-        // Asl qidiruv funksiyasi
-        function performSearch(productName, selectedLocation, locationSelect, resultDiv) {
-            console.log('=== QIDIRUV BOSHLANDI ===');
-            console.log('📝 Mahsulot nomi:', productName);
-            console.log('📍 Joylashuv select value:', selectedLocation);
-            console.log('=== QIDIRUV BOSHLANDI ===');
-            console.log('📝 Mahsulot nomi:', productName);
-            console.log('📍 Joylashuv select value:', selectedLocation);
-            
-            console.log(`🔍 "${productName}" qidirilmoqda...`);
-            console.log(`📍 Tanlangan joylashuv: "${selectedLocation}"`);
-            
-            fetch('/api/search-product/' + encodeURIComponent(productName))
-                .then(response => {
-                    console.log('📡 API response status:', response.status);
-                    console.log('📡 API response ok:', response.ok);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('📦 API javob:', data);
-                    console.log('📦 data.exists:', data.exists);
-                    console.log('📦 data.products:', data.products);
-                    
-                    if (data.exists && data.products) {
-                        console.log(`📦 ${data.products.length} ta mahsulot topildi`);
-                        
-                        let html = '';
-                        
-                        // Har bir topilgan mahsulot uchun
-                        data.products.forEach(productData => {
-                            console.log('📦 Product data:', productData);
-                            console.log('🏷️ Barcode:', productData.product.barcode);
-                            
-                            // Tanlangan joylashuvdagi miqdorni topish
-                            let quantityText = 'Miqdor: 0 ta';
-                            let quantityClass = 'quantity-badge';
-                            let quantityBgColor = '#6c757d';
-                            
-                            if (selectedLocation && productData.locations) {
-                                // location value'dan type va ID ni ajratish
-                                let locationType, locationId;
-                                
-                                if (selectedLocation.startsWith('warehouse_')) {
-                                    locationType = 'warehouse';
-                                    locationId = parseInt(selectedLocation.replace('warehouse_', ''));
-                                } else if (selectedLocation.startsWith('store_')) {
-                                    locationType = 'store';
-                                    locationId = parseInt(selectedLocation.replace('store_', ''));
-                                }
-                                
-                                console.log(`🔍 Qidiruv: type="${locationType}", id="${locationId}"`);
-                                console.log(`📍 Joylashuvlar:`, productData.locations);
-                                
-                                const locationData = productData.locations.find(loc => {
-                                    console.log(`🆚 Taqqoslash: loc.type="${loc.type}", loc.id="${loc.id}"`);
-                                    return loc.id == locationId && loc.type === locationType;
-                                });
-                                
-                                if (locationData) {
-                                    quantityText = `Mavjud (${locationData.quantity} ta)`;
-                                    quantityBgColor = '#28a745';
-                                    console.log(`✅ Topildi: ${locationData.quantity} ta`);
-                                } else {
-                                    quantityText = 'Yangi';
-                                    quantityBgColor = '#ffc107';
-                                    console.log(`❌ Topilmadi, yangi mahsulot`);
-                                }
-                            }
-                            
-                            let locationQuantity = `<span class="${quantityClass}" style="background-color: ${quantityBgColor};">${quantityText}</span>`;
-                            
-                            // Har bir mahsulot uchun dropdown item
-                            const lastBatchCost = productData.product.last_batch_cost || productData.product.cost_price;
-                            const lastBatchDate = productData.product.last_batch_date || '';
-                            
-                            html += `
-                                <div class="product-dropdown-item suggestion-item" 
-                                     onclick="selectProduct('${productData.product.name}', ${lastBatchCost}, ${productData.product.sell_price}, ${productData.product.min_stock}, ${lastBatchCost}, '${lastBatchDate}', '${productData.product.barcode || ''}')"
-                                     onmouseenter="handleMouseEnterSuggestion(this)">
-                                    <div class="product-dropdown-content">
-                                        <strong style="color: #2c3e50; font-size: 1.1rem;">${productData.product.name}</strong> | 
-                                        <span style="color: #dc3545; font-weight: 600;">Ortacha: $${productData.product.cost_price.toFixed(2)}</span> | 
-                                        <span style="color: #28a745; font-weight: 600;">Sotish: $${productData.product.sell_price.toFixed(2)}</span> | 
-                                        ${locationQuantity}
-                                        <span style="color: #007bff; float: right; font-size: 1.1rem;">→</span>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        
-                        resultDiv.innerHTML = html;
-                        resultDiv.style.display = 'block';
-                        console.log('✅ HTML yaratildi va ko\'rsatildi');
-                    } else {
-                        console.log('⚠️ Mahsulot topilmadi yoki data.exists false');
-                        resultDiv.innerHTML = `
-                            <div style="padding: 15px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 1rem;">
-                                <strong style="font-size: 1.1rem;">Yangi mahsulot</strong> - Bu mahsulot hali mavjud emas
-                            </div>
-                        `;
-                        resultDiv.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ Qidiruv xatoligi:', error);
-                    console.error('❌ Error stack:', error.stack);
-                    resultDiv.innerHTML = `
-                        <div style="padding: 15px; background: #f8d7da; color: #721c24; border-radius: 4px; font-size: 1rem;">
-                            <strong style="font-size: 1.1rem;">Xatolik</strong> - ${error.message || 'Qidiruv amalga oshmadi'}
-                        </div>
-                    `;
-                    resultDiv.style.display = 'block';
-                });
-        }
-
-        // Mahsulotni tanlash funksiyasi
-        // Global o'zgaruvchilar - tanlangan mahsulot ma'lumotlari
-        let selectedProductData = null;
-        let userEnteredCostPrice = null; // Foydalanuvchi kiritgan asl tan narx (backend uchun)
-        
-        // Foydalanuvchi tan narx maydoniga kirganida global o'zgaruvchini tozalash
-        function saveCostPriceOnFocus() {
-            // Focus qilganda eski qiymatni tozalash - yangi kiritish uchun tayyorgarlik
-            userEnteredCostPrice = null;
-            console.log(`🎯 Tan narx maydoniga kirildi - yangi qiymat kutilmoqda`);
-        }
-        
-        // Yangi kiritilgan tan narxni "Asl tan narx" maydoniga ko'rsatish
-        function updateOriginalCostPreview() {
-            const costPriceField = document.getElementById('cost_price');
-            const originalCostField = document.getElementById('original_cost');
-            const costPrice = parseFloat(costPriceField.value) || 0;
-            
-            if (costPrice > 0) {
-                // Faqat yangi mahsulot uchun - oddiy ko'rsatish
-                if (!selectedProductData || !selectedProductData.lastBatchCost) {
-                    originalCostField.value = `$${costPrice.toFixed(2)}`;
-                    console.log(`🏷️ Tan narx o'rnatildi: $${costPrice.toFixed(2)}`);
-                }
-                // Mavjud mahsulot uchun comparePrices() funksiyasi o'zgartirib beradi
-            }
-        }
-        
-        function selectProduct(name, costPrice, sellPrice, minStock, lastBatchCost, lastBatchDate, barcode) {
-            console.log('✅ selectProduct chaqirildi:');
-            console.log('   name:', name);
-            console.log('   barcode:', barcode);
-            
-            document.getElementById('product_name').value = name;
-            document.getElementById('cost_price').value = costPrice || ''; // Tan narxni to'ldirish
-            document.getElementById('sell_price').value = sellPrice;
-            document.getElementById('min_stock').value = minStock;
-            
-            const barcodeInput = document.getElementById('barcode');
-            const autoGenerateBtn = document.getElementById('autoGenerateBtn');
-            barcodeInput.value = barcode || ''; // Barcode to'ldirish
-            
-            // Agar barcode mavjud bo'lsa - readonly va Auto tugmasini disabled qilish
-            if (barcode && barcode.trim() !== '') {
-                barcodeInput.setAttribute('readonly', 'readonly');
-                barcodeInput.style.backgroundColor = '#e9ecef'; // Kulrang fon
-                barcodeInput.style.cursor = 'not-allowed';
-                
-                autoGenerateBtn.disabled = true;
-                autoGenerateBtn.style.opacity = '0.5';
-                autoGenerateBtn.style.cursor = 'not-allowed';
-                autoGenerateBtn.title = 'Barcode mavjud - generatsiya mumkin emas';
-                
-                console.log('🔒 Barcode mavjud - readonly, Auto disabled');
-            } else {
-                barcodeInput.removeAttribute('readonly');
-                barcodeInput.style.backgroundColor = '#fff'; // Oq fon
-                barcodeInput.style.cursor = 'text';
-                
-                autoGenerateBtn.disabled = false;
-                autoGenerateBtn.style.opacity = '1';
-                autoGenerateBtn.style.cursor = 'pointer';
-                autoGenerateBtn.title = 'Avtomatik barcode yaratish';
-                
-                console.log('✏️ Barcode yo\'q - yozish mumkin, Auto enabled');
-            }
-            
-            console.log('📝 Barcode maydoniga yozildi:', barcodeInput.value);
-            
-            // Asl tan narxni ko'rsatish (oxirgi partiya narxi)
-            const originalCostField = document.getElementById('original_cost');
-            if (lastBatchCost && lastBatchCost > 0) {
-                let displayText = `$${parseFloat(lastBatchCost).toFixed(2)}`;
-                if (lastBatchDate) {
-                    const date = new Date(lastBatchDate);
-                    const formattedDate = date.toLocaleDateString('uz-UZ');
-                    displayText += ` (${formattedDate})`;
-                }
-                originalCostField.value = displayText;
-            } else {
-                originalCostField.value = '-';
-            }
-            
-            // Tanlangan mahsulot ma'lumotlarini saqlash
-            selectedProductData = {
-                name: name,
-                currentAvgCost: costPrice,
-                lastBatchCost: lastBatchCost || costPrice,
-                lastBatchDate: lastBatchDate
-            };
-            
-            // Qidiruv natijasini yashirish
-            document.getElementById('searchResult').style.display = 'none';
-            
-            // Fokusni miqdor maydoniga o'tkazish
-            setTimeout(() => {
-                const quantityField = document.getElementById('quantity');
-                if (quantityField) {
-                    quantityField.focus();
-                    quantityField.select(); // Mavjud qiymatni tanlash (agar bo'lsa)
-                }
-            }, 100);
-            
-            // Foyda hisoblash
-            calculateProfit();
-        }
-        
-        // Joriy stock miqdorini olish va hisob-kitobni ko'rsatish
-        // Tashqarida bosganda dropdownni yashirish
-        document.addEventListener('click', function(event) {
-            const container = document.querySelector('.product-name-container');
-            const searchResult = document.getElementById('searchResult');
-            
-            if (container && searchResult && !container.contains(event.target)) {
-                searchResult.style.display = 'none';
-            }
+            tbody.appendChild(row);
         });
+    } catch (e) {
+        document.getElementById('pendingBatchesBody').innerHTML =
+            '<tr><td colspan="6" style="padding:24px; color:#ef4444;">❌ Yuklashda xatolik</td></tr>';
+    }
+}
 
-        // Input maydoniga qaytib focuslanganda dropdownni ko'rsatish
-        function showSearchResults() {
-            const productName = document.getElementById('product_name').value.trim();
-            if (productName.length >= 2) {
-                searchProduct();
-            }
+async function deleteBatch(id) {
+    if (!confirm('Bu sessiyani o\'chirishni tasdiqlaysizmi?')) return;
+    try {
+        const res = await fetch(`/api/pending-product-batch/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) loadPendingBatches();
+    } catch (e) {
+        alert('O\'chirishda xatolik yuz berdi');
+    }
+}
+
+// === Product history ===
+async function loadProductHistory() {
+    try {
+        const res = await fetch('/api/products/history?limit=50');
+        const data = await res.json();
+        if (data.success && data.history) {
+            displayProductHistory(data.history);
+            document.getElementById('historyLoading').style.display = 'none';
+            document.getElementById('historyTableContainer').style.display = 'block';
+        } else {
+            document.getElementById('historyLoading').innerHTML = '<p style="color:#64748b;">📝 Hech qanday tarix mavjud emas</p>';
         }
+    } catch (e) {
+        document.getElementById('historyLoading').innerHTML = '<p style="color:#ef4444;">❌ Tarix yuklashda xatolik</p>';
+    }
+}
 
-        // Joylashuv o'zgarganda qidiruvni yangilash
-        function onLocationChange() {
-            const productName = document.getElementById('product_name').value.trim();
-            if (productName.length >= 2) {
-                searchProduct(); // Qidiruvni qayta ishga tushirish
-            }
-            
-            // Joylashuv tanlangandan keyin mahsulot nomi maydoniga fokus berish
-            const locationSelect = document.getElementById('location');
-            if (locationSelect.value) { // Agar joylashuv tanlangan bo'lsa
-                setTimeout(function() {
-                    const productNameField = document.getElementById('product_name');
-                    if (productNameField) {
-                        productNameField.focus();
-                    }
-                }, 100); // Kichik kechikish bilan
-            }
-        }
+function displayProductHistory(history) {
+    const tbody = document.getElementById('productHistoryBody');
+    tbody.innerHTML = '';
+    if (!history || history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#64748b; padding:2rem;">📝 Hech qanday mahsulot qo\'shilmagan</td></tr>';
+        return;
+    }
+    history.forEach(product => {
+        const date = product.created_date ? new Date(product.created_date).toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' }) : '—';
+        const locations = product.locations.map(l => `${l.name} (${l.quantity} ta)`).join(', ') || '—';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-size:12px;">${date}</td>
+            <td style="font-size:12px; color:#64748b;">${locations}</td>
+            <td style="font-weight:600;">${product.name}</td>
+            <td>${product.total_quantity} ta</td>
+            <td style="text-align:right; color:#dc2626;">$${product.cost_price.toLocaleString('uz-UZ')}</td>
+            <td style="text-align:right; color:#059669;">$${product.sell_price.toLocaleString('uz-UZ')}</td>
+            <td style="text-align:right; font-weight:600;">$${product.total_value.toLocaleString('uz-UZ')}</td>
+            <td style="font-size:12px; color:#64748b;">👤 ${product.added_by || 'Noma\'lum'}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
 
-        // Foyda hisoblash
-        function calculateProfit() {
-            const costPrice = parseFloat(document.getElementById('cost_price').value) || 0;
-            const sellPrice = parseFloat(document.getElementById('sell_price').value) || 0;
-            const originalCostText = document.getElementById('original_cost').value;
-            
-            // Yangi birlashtrilgan foyda maydoni
-            const profitDisplayField = document.getElementById('profit_display');
-            
-            if (costPrice > 0 && sellPrice > 0) {
-                const unitProfit = sellPrice - costPrice;
-                const profitPercent = ((unitProfit / costPrice) * 100).toFixed(1);
-                
-                // Birlashtrilgan format: $75.00 (8.6%)
-                profitDisplayField.value = `$${unitProfit.toFixed(2)} (${profitPercent}%)`;
-                
-                // Rangni sozlash - foyda musbat yoki manfiy
-                if (unitProfit >= 0) {
-                    profitDisplayField.style.color = '#28a745'; // Yashil
-                } else {
-                    profitDisplayField.style.color = '#dc3545'; // Qizil
-                }
-            } else {
-                profitDisplayField.value = '$0.00 (0%)';
-                profitDisplayField.style.color = '#6c757d'; // Kulrang
-            }
-            
-            // Agar yangi mahsulot bo'lsa (asl tan narx bo'sh yoki $0.00), tan narxni avtomatik ko'chirish
-            // MUHIM: Faqat selectedProductData bo'lmasa (yangi mahsulot)
-            if (costPrice > 0 && !selectedProductData && (!originalCostText || originalCostText === '-' || originalCostText === '$0.00')) {
-                document.getElementById('original_cost').value = `$${costPrice.toFixed(2)}`;
-            }
-        }
+async function refreshHistory() {
+    const btn = document.getElementById('refreshHistoryBtn');
+    btn.disabled = true; btn.textContent = '⏳...';
+    document.getElementById('historyLoading').style.display = 'block';
+    document.getElementById('historyTableContainer').style.display = 'none';
+    document.getElementById('historyLoading').innerHTML = '<p style="color:#64748b;">🔄 Yangilanmoqda...</p>';
+    await loadProductHistory();
+    btn.disabled = false; btn.textContent = '🔄 Yangilash';
+}
 
-        // O'lchov birligiga qarab miqdor inputini yangilash
-        function updateQuantityStep() {
-            const unitType = document.getElementById('unit_type').value;
-            const quantityInput = document.getElementById('quantity');
-            
-            if (unitType === 'litr') {
-                quantityInput.step = '0.1';  // Litr uchun 0.1 qadam
-                quantityInput.placeholder = '0.0';
-            } else {
-                quantityInput.step = '1';    // Dona uchun 1 qadam
-                quantityInput.placeholder = '0';
-            }
-        }
-
-        // Miqdor inputni validatsiya qilish
-        function validateQuantityInput() {
-            const unitType = document.getElementById('unit_type').value;
-            const quantityInput = document.getElementById('quantity');
-            let value = parseFloat(quantityInput.value);
-            
-            if (isNaN(value) || value < 0) {
-                return;
-            }
-            
-            // Dona uchun faqat butun sonlar
-            if (unitType === 'dona') {
-                value = Math.floor(value);
-                quantityInput.value = value;
-            }
-            // Litr uchun 2 raqamgacha decimal
-            else if (unitType === 'litr') {
-                quantityInput.value = value.toFixed(2);
-            }
-        }
-
-        // Barcode input validatsiyasi - faqat 8 xonali raqamlar
-        function validateBarcodeInput(input) {
-            // Faqat raqamlarni qoldirish
-            let value = input.value.replace(/[^0-9]/g, '');
-            
-            // Maksimum 8 ta raqam
-            if (value.length > 8) {
-                value = value.substring(0, 8);
-            }
-            
-            input.value = value;
-            
-            // Vizual feedback
-            if (value.length > 0 && value.length < 8) {
-                input.style.borderColor = '#ffc107'; // Sariq - to'liq emas
-            } else if (value.length === 8) {
-                input.style.borderColor = '#28a745'; // Yashil - to'g'ri
-            } else {
-                input.style.borderColor = '#28a745'; // Yashil - bo'sh (Auto uchun)
-            }
-        }
-
-        // Vaqtinchalik ro'yxatga qo'shish
-        function addToTempList() {
-            const productName = document.getElementById('product_name').value.trim();
-            const barcode = document.getElementById('barcode').value.trim();
-            const unitType = document.getElementById('unit_type').value;
-            // Tan narx maydonidagi qiymatni olish (bu ortacha narx bo'lishi mumkin)
-            const costPriceFromField = parseFloat(document.getElementById('cost_price').value);
-            const sellPrice = parseFloat(document.getElementById('sell_price').value);
-            let quantity = parseFloat(document.getElementById('quantity').value);
-            const minStock = parseInt(document.getElementById('min_stock').value) || 0;
-            const location = document.getElementById('location').value;
-            
-            // MUHIM: To'g'ri ajratish
-            // - cost_price = tan narx maydonidagi ortacha narx
-            // - last_batch_cost = foydalanuvchi kiritgan asl qiymat
-            const finalCostPrice = costPriceFromField; // Tan narx maydonidagi qiymat (ortacha)
-            const finalLastBatchCost = userEnteredCostPrice || costPriceFromField; // Foydalanuvchi kiritgan qiymat
-            
-            console.log(`📊 To'g'ri ajratish:`);
-            console.log(`   Tan narx (cost_price - ortacha): $${finalCostPrice}`);
-            console.log(`   Asl tan narx (last_batch_cost - kiritilgan): $${finalLastBatchCost}`);
-            
-            // Validatsiya
-            if (!productName) {
-                alert(APLANG.enter_product_name);
-                return;
-            }
-            
-            // Barcode tekshiruvi - agar kiritilgan bo'lsa
-            if (barcode) {
-                // 8 xonali raqam emasligini tekshirish
-                if (barcode.length !== 8 || !/^[0-9]{8}$/.test(barcode)) {
-                    alert(APLANG.barcode_8_digits);
-                    document.getElementById('barcode').focus();
-                    return;
-                }
-                
-                // Duplicate tekshiruvi
-                const barcodeError = document.querySelector('.barcode-error-msg');
-                if (barcodeError) {
-                    alert(APLANG.barcode_exists);
-                    return;
-                }
-            }
-            
-            if (!finalCostPrice || finalCostPrice <= 0) {
-                alert(APLANG.enter_cost_price);
-                return;
-            }
-            
-            if (!sellPrice || sellPrice <= 0) {
-                alert(APLANG.enter_sell_price);
-                return;
-            }
-            
-            // Miqdor validatsiyasi - unitType ga qarab
-            if (!quantity || quantity <= 0) {
-                alert(APLANG.enter_quantity);
-                return;
-            }
-            
-            if (unitType === 'dona') {
-                quantity = Math.floor(quantity); // Dona uchun butun son
-            } else if (unitType === 'litr') {
-                quantity = parseFloat(quantity.toFixed(2)); // Litr uchun 2 raqam
-            }
-            
-            if (!location) {
-                alert(APLANG.select_location_error);
-                return;
-            }
-            
-            // Mahsulotni ro'yxatga qo'shish
-            const locationName = getLocationName(location);
-            const locationType = getLocationType(location);
-            
-            console.log('📍 addToTempList joylashuv ma\'lumotlari:');
-            console.log('  Location value:', location);
-            console.log('  Location name:', locationName);
-            console.log('  Location type:', locationType);
-            
-            const product = {
-                id: Date.now(),
-                name: productName,
-                barcode: barcode || null, // Barcode qo'shish
-                cost_price: finalCostPrice, // Tan narx maydonidagi ortacha narx
-                last_batch_cost: finalLastBatchCost, // Foydalanuvchi kiritgan asl qiymat
-                sell_price: sellPrice,
-                quantity: quantity,
-                unit_type: unitType, // O'lchov birligi
-                min_stock: minStock,
-                location: location,
-                location_id: location, // Yangi format uchun
-                location_name: locationName,
-                location_type: locationType,
-                profit: sellPrice - finalCostPrice,
-                total_value: finalCostPrice * quantity
-            };
-            
-            console.log('📦 Yaratilgan mahsulot:', product);
-            console.log(`   cost_price (ortacha): $${product.cost_price}`);
-            console.log(`   last_batch_cost (kiritilgan): $${product.last_batch_cost}`);
-            
-            tempProducts.push(product);
-            updateTempList();
-            clearForm();
-        }
-
-        // Vaqtinchalik ro'yxatni yangilash
-        function updateTempList() {
-            const listContainer = document.getElementById('tempProductsList');
-            const finalActions = document.getElementById('finalActions');
-            
-            if (tempProducts.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <p>🎯 Hozircha hech qanday mahsulot qo'shilmagan</p>
-                        <p>Chap paneldagi formani to'ldiring va "Ro'yxatga qo'shish" tugmasini bosing</p>
-                    </div>
-                `;
-                finalActions.style.display = 'none';
-            } else {
-                let html = `
-                    <div class="temp-products-container">
-                        <table class="temp-products-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;">Joylashuv</th>
-                                    <th style="text-align: left;">Mahsulot nomi</th>
-                                    <th style="text-align: center;">Miqdori</th>
-                                    <th style="text-align: center;">Tan narxi</th>
-                                    <th style="text-align: center;">Sotish narxi</th>
-                                    <th style="text-align: center;">Amallar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-                
-                tempProducts.forEach((product, index) => {
-                    html += `
-                        <tr>
-                            <td style="text-align: center; color: #666;">
-                                <div style="font-weight: 600; color: #333;">${product.location_name || 'Noma\'lum'}</div>
-                                <div style="font-size: 0.8rem; color: #6c757d; margin-top: 2px;">${product.location_type || 'unknown'}</div>
-                            </td>
-                            <td style="font-weight: 600; color: #333;">${product.name}</td>
-                            <td style="text-align: center; color: #666;">${product.quantity} ta</td>
-                            <td style="text-align: center; color: #28a745; font-weight: 600;">$${product.cost_price.toFixed(2)}</td>
-                            <td style="text-align: center; color: #007bff; font-weight: 600;">$${product.sell_price.toFixed(2)}</td>
-                            <td style="text-align: center;">
-                                <button onclick="editTempProduct(${product.id})" 
-                                        style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: bold; margin-right: 3px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;"
-                                        onmouseover="this.style.background='#218838'" 
-                                        onmouseout="this.style.background='#28a745'" 
-                                        title="Tahrirlash">✏️</button>
-                                <button onclick="removeFromTempList(${product.id})" 
-                                        style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: bold; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;"
-                                        onmouseover="this.style.background='#c82333'" 
-                                        onmouseout="this.style.background='#dc3545'" 
-                                        title="O'chirish">🗑️</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                html += `
-                        </tbody>
-                    </table>
-                    </div>
-                `;
-                
-                listContainer.innerHTML = html;
-                finalActions.style.display = 'block';
-            }
-            
-            updateTotals();
-        }
-
-        // Jami ma'lumotlarni yangilash
-        function updateTotals() {
-            const totalProducts = tempProducts.length;
-            const totalValue = tempProducts.reduce((sum, product) => sum + product.total_value, 0);
-            
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalValue').textContent = '$' + totalValue.toFixed(2);
-        }
-
-        // Vaqtinchalik ro'yxatdan tahrirlash
-        function editTempProduct(productId) {
-            const product = tempProducts.find(p => p.id === productId);
-            if (product) {
-                // Formaga ma'lumotlarni yuklash
-                document.getElementById('product_name').value = product.name;
-                document.getElementById('cost_price').value = product.cost_price;
-                document.getElementById('sell_price').value = product.sell_price;
-                document.getElementById('min_stock').value = product.min_stock;
-                document.getElementById('quantity').value = product.quantity;
-                
-                // Joylashuvni tanlash
-                const locationSelect = document.getElementById('location');
-                locationSelect.value = product.location;
-                
-                // Foyda hisoblash
-                calculateProfit();
-                
-                // Mahsulotni vaqtinchalik ro'yxatdan o'chirish (qayta qo'shish uchun)
-                removeFromTempList(productId);
-                
-                // Formaga e'tiborni qaratish
-                document.getElementById('product_name').focus();
-                
-                // Xabar berish
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: #17a2b8;
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 5px;
-                    z-index: 1000;
-                    font-weight: bold;
-                `;
-                notification.textContent = APLANG.product_loaded_for_edit;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 3000);
-            }
-        }
-
-        // Vaqtinchalik ro'yxatdan o'chirish
-        function removeFromTempList(productId) {
-            tempProducts = tempProducts.filter(product => product.id !== productId);
-            updateTempList();
-        }
-
-        // Formani tozalash
-        function clearForm() {
-            // Joylashuvni saqlab qolish
-            const savedLocation = document.getElementById('location').value;
-            
-            document.getElementById('productForm').reset();
-            
-            // Joylashuvni qayta o'rnatish
-            document.getElementById('location').value = savedLocation;
-            
-            document.getElementById('searchResult').style.display = 'none';
-            document.getElementById('priceComparison').style.display = 'none';
-            document.getElementById('profitDisplay').style.display = 'none';
-            
-            // Global o'zgaruvchilarni tozalash
-            selectedProductData = null;
-            userEnteredCostPrice = null;
-            console.log('🧹 Forma tozalandi (joylashuv saqlab qolindi)');
-            
-            // Fokusni mahsulot nomi maydoniga qaytarish
-            setTimeout(() => {
-                const productNameField = document.getElementById('product_name');
-                if (productNameField) {
-                    productNameField.focus();
-                }
-            }, 100);
-        }
-
-        // Avtomatik barcode generatsiya qilish
-        function generateBarcode() {
-            // O'rtada qolgan yoki keyingi barcode'ni topish (vaqtinchalik ro'yxatni ham hisobga olib)
-            const barcodeInput = document.getElementById('barcode');
-            const autoGenerateBtn = document.getElementById('autoGenerateBtn');
-            
-            // Loading ko'rsatish
-            barcodeInput.value = 'Yuklanmoqda...';
-            barcodeInput.disabled = true;
-            autoGenerateBtn.disabled = true;
-            
-            // Vaqtinchalik ro'yxatdagi barcode'larni to'plash
-            const tempBarcodes = tempProducts
-                .filter(p => p.barcode && p.barcode.trim() !== '')
-                .map(p => p.barcode.trim());
-            
-            console.log('📋 Vaqtinchalik ro\'yxatdagi barcode\'lar:', tempBarcodes);
-            
-            // API ga vaqtinchalik barcode'larni ham yuborish
-            fetch('/api/next-barcode', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    temp_barcodes: tempBarcodes
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // 8 xonali barcode
-                        const barcode = data.barcode;
-                        
-                        // Input ga qo'yish
-                        barcodeInput.value = barcode;
-                        barcodeInput.disabled = false;
-                        autoGenerateBtn.disabled = false;
-                        
-                        // Visual feedback
-                        barcodeInput.style.background = '#d4edda';
-                        setTimeout(() => {
-                            barcodeInput.style.background = 'white';
-                        }, 500);
-                        
-                        console.log('✅ Avtomatik barcode yaratildi:', barcode);
-                        if (data.is_gap_filled) {
-                            console.log('🔍 O\'rtada qolgan barcode to\'ldirildi');
-                        }
-                        if (data.max_barcode) {
-                            console.log('📊 Eng katta barcode:', data.max_barcode);
-                        }
-                        console.log('📈 Jami ishlatilgan barcode:', data.total_used);
-                        if (data.temp_barcodes_count > 0) {
-                            console.log('📦 Vaqtinchalik ro\'yxatda:', data.temp_barcodes_count, 'ta barcode');
-                        }
-                    } else {
-                        alert(APLANG.barcode_generate_error + ' ' + data.error);
-                        barcodeInput.value = '';
-                        barcodeInput.disabled = false;
-                        autoGenerateBtn.disabled = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ API xatolik:', error);
-                    alert(APLANG.barcode_generate_error);
-                    barcodeInput.value = '';
-                    barcodeInput.disabled = false;
-                    autoGenerateBtn.disabled = false;
-                });
-        }
-
-        // Barcode chop etish (formadan)
-        function printBarcodeFromForm() {
-            const productName = document.getElementById('product_name').value.trim();
-            const barcode = document.getElementById('barcode').value.trim();
-            
-            if (!productName) {
-                alert(APLANG.enter_product_name);
-                return;
-            }
-            
-            if (!barcode) {
-                alert(APLANG.enter_barcode);
-                return;
-            }
-            
-            const printUrl = `/print-barcode?name=${encodeURIComponent(productName)}&barcode=${encodeURIComponent(barcode)}`;
-            window.open(printUrl, '_blank', 'width=600,height=400');
-        }
-
-        // Barchasini o'chirish
-        function clearTempList() {
-            if (confirm(APLANG.clear_all_confirm)) {
-                tempProducts = [];
-                updateTempList();
-            }
-        }
-
-        // Barchasini saqlash
-        function submitAllProducts() {
-            if (tempProducts.length === 0) {
-                alert(APLANG.no_products_added);
-                return;
-            }
-            
-            const requestBody = {
-                products: tempProducts.map(product => {
-                    // Location formatini parsing qilish
-                    let locationType, locationId;
-                    
-                    console.log('🔍 Product location ma\'lumotlari:', {
-                        location: product.location,
-                        location_id: product.location_id,
-                        location_type: product.location_type
-                    });
-                    
-                    // Excel import qilganda location_id va location_type to'g'ridan-to'g'ri kiritilgan
-                    if (product.location_id && product.location_type) {
-                        locationId = product.location_id;
-                        // location_type "Ombor" yoki "Do'kon" formatida bo'lishi mumkin
-                        if (product.location_type === 'Ombor' || product.location_type === 'warehouse') {
-                            locationType = 'warehouse';
-                        } else if (product.location_type === 'Do\'kon' || product.location_type === 'store') {
-                            locationType = 'store';
-                        } else {
-                            locationType = product.location_type; // to'g'ridan-to'g'ri
-                        }
-                        console.log('✅ Excel location parsed:', {locationType, locationId});
-                    }
-                    // Qo'lda qo'shish: product.location "warehouse_1" yoki "store_2" formatida
-                    else if (product.location && product.location.includes('_')) {
-                        const locationParts = product.location.split('_');
-                        locationType = locationParts[0]; // "warehouse" yoki "store"
-                        locationId = parseInt(locationParts[1]); // ID raqami
-                        
-                        console.log('✅ Manual location parsed:', {locationType, locationId});
-                    } else {
-                        console.error('❌ Location format noto\'g\'ri:', product);
-                        // Fallback
-                        locationType = 'store';
-                        locationId = parseInt(product.location) || 0;
-                    }
-                    
-                    const productData = {
-                        name: product.name,
-                        barcode: product.barcode || null,
-                        cost_price: product.cost_price,
-                        lastBatchCost: product.last_batch_cost,
-                        sell_price: product.sell_price,
-                        quantity: product.quantity,
-                        unitType: product.unit_type || 'dona', // O'lchov birligi
-                        min_stock: product.min_stock,
-                        location_type: locationType,
-                        location_id: locationId
-                    };
-                    
-                    console.log('📦 API ga yuborilayotgan mahsulot:', productData);
-                    
-                    return productData;
-                })
-            };
-            
-            console.log('📡 API ga yuborilayotgan request:', requestBody);
-            
-            fetch('/api/batch-products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(APLANG.all_products_saved);
-                    tempProducts = [];
-                    updateTempList();
-                    // Tarixni avtomatik yangilash
-                    refreshHistory();
-                } else {
-                    alert(data.error || APLANG.save_error);
-                }
-            })
-            .catch(error => {
-                console.error('Saqlashda xatolik:', error);
-                alert(APLANG.save_error);
-            });
-        }
-
-        // Narx taqqoslash funksiyasi
-        function comparePrices() {
-            const productName = document.getElementById('product_name').value.trim();
-            const newCostPrice = parseFloat(document.getElementById('cost_price').value);
-            const priceComparisonDiv = document.getElementById('priceComparison');
-            
-            if (!productName || isNaN(newCostPrice)) {
-                priceComparisonDiv.style.display = 'none';
-                return;
-            }
-            
-            // Foydalanuvchi kiritgan qiymatni saqlash (blur qilishdan oldin)
-            if (!userEnteredCostPrice || userEnteredCostPrice === 0) {
-                userEnteredCostPrice = newCostPrice;
-                console.log(`💾 Foydalanuvchi kiritgan qiymat saqlandi: $${userEnteredCostPrice}`);
-            }
-            
-            fetch('/api/search-product/' + encodeURIComponent(productName))
-                .then(response => response.json())
-                .then(data => {
-                    // Ko'p mahsulot bo'lsa, birinchisini tanlaymiz yoki aniq nom mos kelganini topamiz
-                    let selectedProductData = null;
-                    
-                    if (data.exists && data.products && data.products.length > 0) {
-                        // Aniq nom mos kelganini topishga harakat qilamiz
-                        selectedProductData = data.products.find(p => 
-                            p.product.name.toLowerCase() === productName.toLowerCase()
-                        );
-                        
-                        // Agar aniq mos kelmasa, birinchisini olamiz
-                        if (!selectedProductData) {
-                            selectedProductData = data.products[0];
-                        }
-                    }
-                    
-                    if (selectedProductData && selectedProductData.product.cost_price !== newCostPrice) {
-                        const oldCostPrice = selectedProductData.product.cost_price;
-                        const costDifference = newCostPrice - oldCostPrice;
-                        const percentChange = ((costDifference / oldCostPrice) * 100).toFixed(2);
-                        
-                        // O'rtacha narxni oldindan hisoblash
-                        const newQuantity = parseInt(document.getElementById('quantity').value) || 0;
-                        const existingTotalQuantity = selectedProductData.locations.reduce((sum, loc) => sum + loc.quantity, 0);
-                        const existingTotalValue = selectedProductData.locations.reduce((sum, loc) => sum + (loc.quantity * oldCostPrice), 0);
-                        const newAddedValue = newQuantity * newCostPrice;
-                        const finalTotalQuantity = existingTotalQuantity + newQuantity;
-                        const finalTotalValue = existingTotalValue + newAddedValue;
-                        const averagePrice = finalTotalQuantity > 0 ? finalTotalValue / finalTotalQuantity : 0;
-                        
-                        let comparisonHTML = '';
-                        
-                        if (selectedProductData.locations && selectedProductData.locations.length > 0) {
-                            
-                            // Joylashuvlar jadvali
-                            comparisonHTML += '<div style="margin-top: 6px; background: #f8f9fa; border-radius: 3px; font-size: 0.8rem; overflow: hidden;">';
-                            comparisonHTML += '<table style="width: 100%; border-collapse: collapse;">';
-                            
-                            // Jadval boshi
-                            comparisonHTML += '<thead style="background: #e9ecef;">';
-                            comparisonHTML += '<tr>';
-                            comparisonHTML += '<th style="padding: 4px 6px; text-align: center; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6; width: 60px;">Tur</th>';
-                            comparisonHTML += '<th style="padding: 4px 6px; text-align: left; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6;">📍 Joylashuv</th>';
-                            comparisonHTML += '<th style="padding: 4px 6px; text-align: center; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6;">Miqdor</th>';
-                            comparisonHTML += '<th style="padding: 4px 6px; text-align: center; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6;">Tan narx</th>';
-                            comparisonHTML += '<th style="padding: 4px 6px; text-align: right; font-weight: 600; color: #495057; border-bottom: 1px solid #dee2e6;">Jami qiymat</th>';
-                            comparisonHTML += '</tr>';
-                            comparisonHTML += '</thead>';
-                            
-                            // Jadval tanasi
-                            comparisonHTML += '<tbody>';
-                            let totalQuantityCheck = 0;
-                            let totalOldValueCheck = 0;  // Eski qiymatlar uchun
-                            
-                            selectedProductData.locations.forEach(location => {
-                                const locationOldValue = location.quantity * oldCostPrice;  // Eski tan narxida hisoblash
-                                totalQuantityCheck += location.quantity;
-                                totalOldValueCheck += locationOldValue;
-                                
-                                // Tur belgilash
-                                const locationType = location.type === 'warehouse' ? 'Ombor' : 'Dokon';
-                                
-                                comparisonHTML += '<tr>';
-                                comparisonHTML += '<td style="padding: 3px 6px; text-align: center; color: #6c757d; border-bottom: 1px solid #f1f3f4; font-size: 0.75rem;">' + locationType + '</td>';
-                                comparisonHTML += '<td style="padding: 3px 6px; color: #6c757d; border-bottom: 1px solid #f1f3f4;">' + location.name + '</td>';
-                                comparisonHTML += '<td style="padding: 3px 6px; text-align: center; color: #6c757d; border-bottom: 1px solid #f1f3f4;"><strong>' + location.quantity + '</strong> ta</td>';
-                                comparisonHTML += '<td style="padding: 3px 6px; text-align: center; color: #6c757d; border-bottom: 1px solid #f1f3f4;">$' + oldCostPrice.toFixed(2) + '</td>';
-                                comparisonHTML += '<td style="padding: 3px 6px; text-align: right; color: #6c757d; border-bottom: 1px solid #f1f3f4;">$' + locationOldValue.toFixed(2) + '</td>';
-                                comparisonHTML += '</tr>';
-                            });
-                            
-                            // Jami qator (eski qiymatlar bilan)
-                            const currentAveragePrice = totalOldValueCheck / totalQuantityCheck;
-                            comparisonHTML += '<tr style="background: #e3f2fd; font-weight: 600;">';
-                            comparisonHTML += '<td style="padding: 4px 6px; color: #1976d2;"></td>';
-                            comparisonHTML += '<td style="padding: 4px 6px; color: #1976d2;">JAMI (hozirgi)</td>';
-                            comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #1976d2;">' + totalQuantityCheck + ' ta</td>';
-                            comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #1976d2;">$' + currentAveragePrice.toFixed(2) + '</td>';
-                            comparisonHTML += '<td style="padding: 4px 6px; text-align: right; color: #1976d2;">$' + totalOldValueCheck.toFixed(2) + '</td>';
-                            comparisonHTML += '</tr>';
-                            
-                            // Yangi qo'shilayotgan mahsulot qatori
-                            if (newQuantity > 0) {
-                                const newValue = newQuantity * newCostPrice;
-                                const locationSelect = document.getElementById('location');
-                                const selectedLocationName = locationSelect.selectedOptions[0] ? locationSelect.selectedOptions[0].textContent : 'Tanlangan joy';
-                                const selectedValue = locationSelect.value;
-                                const selectedType = selectedValue.startsWith('warehouse_') ? 'Ombor' : 'Dokon';
-                                
-                                comparisonHTML += '<tr style="background: #e8f5e8; font-weight: 600; border-top: 2px solid #4caf50;">';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #2e7d32; font-size: 0.75rem;">' + selectedType + '</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; color: #2e7d32;">+ YANGI (' + selectedLocationName + ')</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #2e7d32;">+' + newQuantity + ' ta</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #2e7d32;">$' + newCostPrice.toFixed(2) + '</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: right; color: #2e7d32;">+$' + newValue.toFixed(2) + '</td>';
-                                comparisonHTML += '</tr>';
-                                
-                                // Yakuniy jami (eski + yangi)
-                                const finalQuantity = totalQuantityCheck + newQuantity;
-                                const finalValue = totalOldValueCheck + newValue;
-                                const finalAveragePrice = finalValue / finalQuantity;
-                                
-                                comparisonHTML += '<tr style="background: #fff3e0; font-weight: 700; border-top: 2px solid #ff9800;">';
-                                comparisonHTML += '<td style="padding: 4px 6px; color: #e65100;"></td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; color: #e65100;">YAKUNIY JAMI</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #e65100;">' + finalQuantity + ' ta</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: center; color: #e65100;">$' + finalAveragePrice.toFixed(2) + '</td>';
-                                comparisonHTML += '<td style="padding: 4px 6px; text-align: right; color: #e65100;">$' + finalValue.toFixed(2) + '</td>';
-                                comparisonHTML += '</tr>';
-                            }
-                            
-                            comparisonHTML += '</tbody>';
-                            comparisonHTML += '</table>';
-                            
-                            // Matematik ko'rsatma
-                            comparisonHTML += '<div style="padding: 10px 12px; background: #fff3cd; border-top: 2px solid #ffeaa7; font-size: 1rem; font-weight: 700; color: #856404; text-align: center; border-radius: 0 0 3px 3px;">';
-                            if (newQuantity > 0) {
-                                const finalQuantity = totalQuantityCheck + newQuantity;
-                                const finalValue = totalOldValueCheck + (newQuantity * newCostPrice);
-                                const finalAveragePrice = finalValue / finalQuantity;
-                                comparisonHTML += ' Hozirgi: <span style="background: #ffd700; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;">$' + currentAveragePrice.toFixed(2) + '</span>  Yangi: <span style="background: #28a745; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;">$' + finalAveragePrice.toFixed(2) + '</span>';
-                            } else {
-                                comparisonHTML += '💡 Hozirgi o\'rtacha: <span style="background: #ffd700; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;">$' + currentAveragePrice.toFixed(2) + '</span>';
-                            }
-                            comparisonHTML += '</div>';
-                            
-                            comparisonHTML += '</div>';
-                            
-                            comparisonHTML += '</div>';
-                        }
-                        
-                        document.getElementById('priceComparisonContent').innerHTML = comparisonHTML;
-                        priceComparisonDiv.style.display = 'block';
-                        
-                        // Ortacha tan narxni tan narx maydoniga yozish
-                        if (newQuantity > 0 && Math.abs(averagePrice - newCostPrice) > 0.01) {
-                            // Agar foydalanuvchi hali kiritgan bo'lmasa, hozirgi qiymatni saqlash
-                            if (!userEnteredCostPrice) {
-                                userEnteredCostPrice = newCostPrice;
-                            }
-                            
-                            // 1. Foydalanuvchi kiritgan qiymatni "Asl tan narx" ga saqlash
-                            const originalCostField = document.getElementById('original_cost');
-                            originalCostField.value = `$${userEnteredCostPrice.toFixed(2)} (siz kiritgan)`;
-                            
-                            // 2. Ortacha narxni "Tan narx" maydoniga yozish
-                            document.getElementById('cost_price').value = averagePrice.toFixed(2);
-                            
-                            // 3. Foyda qayta hisoblash
-                            calculateProfit();
-                            
-                            console.log(`📊 Siz kiritgan: $${userEnteredCostPrice.toFixed(2)}, Ortacha: $${averagePrice.toFixed(2)} → Tan narx maydoniga yozildi`);
-                        }
-                    } else {
-                        priceComparisonDiv.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Narx taqqoslashda xatolik:', error);
-                    priceComparisonDiv.style.display = 'none';
-                });
-        }
-
-        // Tan narxni o'rtacha narx bilan yangilash
-        function updateCostPrice(averagePrice) {
-            document.getElementById('cost_price').value = averagePrice;
-            
-            // Foyda va narx taqqoslashni qayta hisoblash
-            calculateProfit();
-            comparePrices();
-            
-            // Foydalanuvchiga xabar berish
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #4caf50;
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                z-index: 10000;
-                font-weight: 600;
-                font-size: 1rem;
-            `;
-            notification.innerHTML = '✅ Tan narx o\'rtacha narx bilan yangilandi!';
-            document.body.appendChild(notification);
-            
-            // 3 soniyadan keyin xabarni o'chirish
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 3000);
-        }
-
-        // Avtomatik o'rtacha narxni qo'llash
-        function applyAveragePrice() {
-            const productNameField = document.getElementById('product_name');
-            const quantityField = document.getElementById('quantity');
-            const costPriceField = document.getElementById('cost_price');
-            
-            const productName = productNameField.value.trim();
-            const quantity = parseInt(quantityField.value) || 0;
-            const currentCostPrice = parseFloat(costPriceField.value) || 0;
-            
-            if (!productName || quantity <= 0 || currentCostPrice <= 0) {
-                return;
-            }
-            
-            // Mahsulot ma'lumotlarini olish
-            fetch(`/api/search-product/${encodeURIComponent(productName)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists && data.locations && data.locations.length > 0) {
-                        const oldCostPrice = data.product.cost_price;
-                        
-                        // O'rtacha narxni hisoblash
-                        const existingTotalQuantity = data.locations.reduce((sum, loc) => sum + loc.quantity, 0);
-                        const existingTotalValue = data.locations.reduce((sum, loc) => sum + (loc.quantity * oldCostPrice), 0);
-                        const newAddedValue = quantity * currentCostPrice;
-                        const finalTotalQuantity = existingTotalQuantity + quantity;
-                        const finalTotalValue = existingTotalValue + newAddedValue;
-                        const averagePrice = finalTotalQuantity > 0 ? finalTotalValue / finalTotalQuantity : 0;
-                        
-                        // Agar o'rtacha narx hozirgi narxdan farq qilsa, uni qo'yish
-                        if (Math.abs(averagePrice - currentCostPrice) > 0.01) {
-                            costPriceField.value = averagePrice.toFixed(2);
-                            
-                            // Foyda qayta hisoblash
-                            calculateProfit();
-                            
-                            // Narx taqqoslashni yangilash
-                            setTimeout(() => comparePrices(), 100);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('O\'rtacha narx qo\'llashda xatolik:', error);
-                });
-        }
-
-        // Mahsulot tarixini yuklash
-        async function loadProductHistory() {
-            try {
-                const response = await fetch('/api/products/history?limit=50');
-                const data = await response.json();
-                
-                if (data.success && data.history) {
-                    displayProductHistory(data.history);
-                    document.getElementById('historyLoading').style.display = 'none';
-                    document.getElementById('historyTableContainer').style.display = 'block';
-                } else {
-                    document.getElementById('historyLoading').innerHTML = '<p style="color: #6c757d;">📝 Hech qanday tarix mavjud emas</p>';
-                }
-            } catch (error) {
-                console.error('Tarix yuklashda xatolik:', error);
-                document.getElementById('historyLoading').innerHTML = '<p style="color: #dc3545;">❌ Tarix yuklashda xatolik yuz berdi</p>';
-            }
-        }
-
-        // Tarixni ko'rsatish
-        function displayProductHistory(history) {
-            const tbody = document.getElementById('productHistoryBody');
-            tbody.innerHTML = '';
-            
-            if (!history || history.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #6c757d; padding: 2rem;">📝 Hech qanday mahsulot qo\'shilmagan</td></tr>';
-                return;
-            }
-            
-            history.forEach(product => {
-                const row = document.createElement('tr');
-                
-                // Sanani formatlash
-                const date = product.created_date ? new Date(product.created_date) : new Date();
-                const formattedDate = date.toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' });
-                
-                // Joylashuvlarni formatlash
-                const locations = product.locations.map(loc => 
-                    `${loc.name} (${loc.quantity} ta)`
-                ).join(', ') || 'Hech qayerda';
-                
-                // Narxlarni formatlash
-                const formattedCostPrice = product.cost_price.toLocaleString('uz-UZ');
-                const formattedSellPrice = product.sell_price.toLocaleString('uz-UZ');
-                const formattedTotalValue = product.total_value.toLocaleString('uz-UZ');
-                
-                // Kim qo'shdi
-                const addedBy = product.added_by || 'Noma\'lum';
-                
-                row.innerHTML = `
-                    <td style="font-size: 0.85rem;">${formattedDate}</td>
-                    <td style="font-size: 0.85rem; color: #6c757d;">${locations}</td>
-                    <td style="font-weight: 600; color: #2c3e50;">${product.name}</td>
-                    <td style="text-align: center; font-weight: 600;">${product.total_quantity} ta</td>
-                    <td style="text-align: right; color: #dc3545;">$${formattedCostPrice}</td>
-                    <td style="text-align: right; color: #28a745;">$${formattedSellPrice}</td>
-                    <td style="text-align: right; font-weight: 600; color: #007bff;">$${formattedTotalValue}</td>
-                    <td style="text-align: center; color: #6c757d; font-size: 0.85rem;">👤 ${addedBy}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Tarixni yangilash
-        async function refreshHistory() {
-            const refreshBtn = document.getElementById('refreshHistoryBtn');
-            const originalText = refreshBtn.innerHTML;
-            
-            try {
-                refreshBtn.innerHTML = '⏳ Yangilanmoqda...';
-                refreshBtn.disabled = true;
-                
-                document.getElementById('historyLoading').style.display = 'block';
-                document.getElementById('historyTableContainer').style.display = 'none';
-                document.getElementById('historyLoading').innerHTML = '<p style="color: #6c757d;">🔄 Yangilanmoqda...</p>';
-                
-                await loadProductHistory();
-                
-            } catch (error) {
-                console.error('Tarix yangilashda xatolik:', error);
-            } finally {
-                refreshBtn.innerHTML = originalText;
-                refreshBtn.disabled = false;
-            }
-        }
-
-        // Sahifa yuklanganda tarixni yuklash
-        document.addEventListener('DOMContentLoaded', function() {
-            // Biroz kechiktirib tarixni yuklash (asosiy content yuklangandan keyin)
-            setTimeout(() => {
-                loadProductHistory();
-            }, 1000);
-        });
-    </script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadPendingBatches();
+    setTimeout(loadProductHistory, 800);
+});
+</script>
 {% endblock %}
