@@ -171,6 +171,7 @@ optgroup option { font-weight: normal; color: #1e293b; }
 @media (max-width: 768px) {
     .ap-page { padding: 12px; }
     .ap-row { grid-template-columns: 1fr; }
+    .ap-row-2col { grid-template-columns: 1fr 1fr !important; }
     .ap-card-body { padding: 12px 14px; }
 }
 </style>
@@ -198,7 +199,7 @@ optgroup option { font-weight: normal; color: #1e293b; }
 
                 <form id="productForm">
                     <!-- Joylashuv va Excel Import -->
-                    <div class="ap-row" style="margin-bottom:11px;">
+                    <div class="ap-row ap-row-2col" style="margin-bottom:11px;">
                         <div class="ap-form-group" style="margin-bottom:0;">
                             <label class="ap-label" for="location">{{ t('ap_location_label') }}</label>
                             <select id="location" name="location" class="ap-input" onchange="onLocationChange()">
