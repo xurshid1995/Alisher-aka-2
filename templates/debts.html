@@ -41,18 +41,25 @@
 .dbt-stat-label { font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
 /* Location buttons */
+.dbt-location-row {
+    background: white; border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 10px 16px; margin-bottom: 14px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
 #locationButtons {
-    display: flex; flex-wrap: wrap; gap: 6px;
+    display: flex; flex-wrap: nowrap; gap: 6px;
     background: none; padding: 0; margin: 0;
+    min-width: max-content;
 }
 .location-btn {
-    padding: 6px 14px; border-radius: 20px;
-    border: 1.5px solid #e2e8f0; background: white;
-    color: #64748b; font-size: 12px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
+    padding: 5px 14px; border-radius: 20px;
+    border: 1.5px solid #cbd5e1; background: transparent;
+    color: #475569; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
 }
-.location-btn.active { background: #2563eb; border-color: #2563eb; color: white; }
-.location-btn:hover:not(.active) { background: #f1f5f9; }
+.location-btn.active { background: #1a6eff; border-color: #1a6eff; color: white; font-weight: 600; }
+.location-btn:hover:not(.active) { border-color: #1a6eff; color: #1a6eff; }
 
 /* Header action buttons */
 .dbt-btn-telegram {
@@ -318,20 +325,23 @@
     <div class="dbt-header">
         <h1 class="dbt-title"><i class="fas fa-credit-card"></i> {{ t('debts') }}</h1>
         <div class="dbt-header-actions">
-            <!-- Joylashuv tugmalari -->
-            <div id="locationButtons">
-                {% if current_user.role in ['admin', 'kassir'] %}
-                <button class="location-btn active" data-location="" onclick="selectLocation(this, '')">
-                    🏢 {{ t('filter_all') }}
-                </button>
-                {% endif %}
-            </div>
             <button onclick="sendBulkDebtTelegram()" class="dbt-btn-telegram">
                 <img src="https://img.icons8.com/fluency/150/telegram-app.png" alt="Telegram" style="width:18px; height:18px;"> {{ t('send_telegram_all') }}
             </button>
             <a href="/paid-debts-history" class="dbt-btn-history">
                 <i class="fas fa-history"></i> {{ t('debt_payment_history_link') }}
             </a>
+        </div>
+    </div>
+
+    <!-- Joylashuv tugmalari -->
+    <div class="dbt-location-row">
+        <div id="locationButtons">
+            {% if current_user.role in ['admin', 'kassir'] %}
+            <button class="location-btn active" data-location="" onclick="selectLocation(this, '')">
+                🏢 {{ t('filter_all') }}
+            </button>
+            {% endif %}
         </div>
     </div>
 
