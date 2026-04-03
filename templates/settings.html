@@ -188,6 +188,52 @@
     }
     .lang-select:focus { border-color: #1a6eff; background: #fff; }
 
+    /* Input fields inside cards */
+    .card-input-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .card-input {
+        flex: 1;
+        padding: 10px 14px;
+        font-size: 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: #1e293b;
+        outline: none;
+        transition: border-color 0.18s;
+        min-width: 120px;
+    }
+    .card-input:focus { border-color: #1a6eff; background: #fff; }
+    .card-input-btn {
+        background: #1a6eff;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.18s;
+    }
+    .card-input-btn:hover { background: #1557d6; }
+    .rate-display {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+    .rate-display span { color: #f59e0b; }
+    .rate-updated {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 8px;
+    }
+
     /* Warning note */
     .note-box {
         background: #fffbeb;
@@ -312,6 +358,48 @@
             </div>
         </div>
 
+        <!-- Valyuta kursi -->
+        <div class="setting-card">
+            <div class="setting-card-header">
+                <div class="setting-icon amber"><i class="fas fa-coins"></i></div>
+                <div class="setting-card-meta">
+                    <p class="card-title">💵 1 USD = UZS kursi</p>
+                    <p class="card-desc">Joriy valyuta kursini ko'rish va yangilash</p>
+                </div>
+            </div>
+            <div class="setting-card-body">
+                <div class="rate-display">1 USD = <span id="currentRateDisplay">...</span> UZS</div>
+                <div class="card-input-row">
+                    <input type="number" id="newRateInput" class="card-input" placeholder="Yangi kurs (masalan: 12800)" min="1" step="1">
+                    <button class="card-input-btn" onclick="updateCurrencyRateCard()">
+                        <i class="fas fa-sync-alt"></i> Yangilash
+                    </button>
+                </div>
+                <p class="rate-updated" id="rateUpdatedAt"></p>
+            </div>
+        </div>
+
+        <!-- Qarz eslatma default vaqti -->
+        <div class="setting-card">
+            <div class="setting-card-header">
+                <div class="setting-icon blue"><i class="fas fa-bell"></i></div>
+                <div class="setting-card-meta">
+                    <p class="card-title">Qarz eslatma vaqti</p>
+                    <p class="card-desc">Yangi qarz eslatma yaratilganda ishlatiluvchi standart vaqt (Telegram bot shu vaqtda yuboradi)</p>
+                </div>
+            </div>
+            <div class="setting-card-body">
+                <div class="card-input-row">
+                    <input type="time" id="defaultReminderTime" class="card-input" value="10:00">
+                    <div style="font-size:13px; color:#64748b;">Hozir: <strong id="reminderTimeCurrent">10:00</strong></div>
+                </div>
+                <div class="note-box" style="margin-top:12px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Bu vaqt yangi eslatma qo'shilganda avtomatik to'ldiriladi. Har bir eslatmada alohida o'zgartirish mumkin.</span>
+                </div>
+            </div>
+        </div>
+
     </div><!-- /settings-grid -->
 </div><!-- /ps-page -->
 
@@ -374,17 +462,71 @@
             }
         }
 
-        // Sahifa yuklanganda valyuta kursini yuklash
+        // Sahifa yuklanganda
         window.addEventListener('load', function() {
             loadCurrencyRate();
-            loadSettings(); // Sozlamalarni ham yuklash
+            loadSettings();
+            loadCurrencyRateCard();
         });
+
+        // Valyuta kursini karta uchun yuklash
+        async function loadCurrencyRateCard() {
+            try {
+                const response = await fetch('/api/currency-rate');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.rate) {
+                        const rate = data.rate;
+                        document.getElementById('currentRateDisplay').textContent =
+                            parseFloat(rate.rate).toLocaleString('uz-UZ');
+                        if (rate.updated_date) {
+                            const d = new Date(rate.updated_date);
+                            document.getElementById('rateUpdatedAt').textContent =
+                                'Oxirgi yangilash: ' + d.toLocaleString('uz-UZ');
+                        }
+                        document.getElementById('newRateInput').value = parseFloat(rate.rate).toFixed(0);
+                    } else {
+                        document.getElementById('currentRateDisplay').textContent = 'Belgilanmagan';
+                    }
+                }
+            } catch (e) {
+                console.error('Kursni yuklashda xato:', e);
+            }
+        }
+
+        // Valyuta kursini yangilash (karta ichidan)
+        async function updateCurrencyRateCard() {
+            const input = document.getElementById('newRateInput');
+            const newRate = parseFloat(input.value);
+            if (!newRate || newRate <= 0) {
+                alert('Iltimos, to\'g\'ri kurs kiriting!');
+                return;
+            }
+            try {
+                const response = await fetch('/api/currency-rate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rate: newRate, updated_by: '{{ session.user_name }}' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    await loadCurrencyRateCard();
+                    await loadCurrencyRate(); // header'dagi kursni ham yangilash
+                    alert(SLANG.alert_currency_updated);
+                } else {
+                    alert('Xatolik: ' + (data.error || 'Noma\'lum xato'));
+                }
+            } catch (e) {
+                console.error('Kursni yangilashda xato:', e);
+            }
+        }
 
         // Sozlamalar obyekti
         let settings = {
             stock_check_visible: false,
             auto_currency_update: false,
-            auto_backup: false
+            auto_backup: false,
+            default_reminder_time: '10:00'
         };
 
         // Sozlamalarni serverdan olish
@@ -453,6 +595,13 @@
                 backupToggle.classList.remove('active');
                 backupLabel.textContent = SLANG.status_off;
             }
+
+            // Default reminder time
+            const reminderTime = settings.default_reminder_time || '10:00';
+            const reminderInput = document.getElementById('defaultReminderTime');
+            const reminderCurrent = document.getElementById('reminderTimeCurrent');
+            if (reminderInput) reminderInput.value = reminderTime;
+            if (reminderCurrent) reminderCurrent.textContent = reminderTime;
         }
 
         // Toggle funksiyasi
@@ -485,6 +634,12 @@
                     return;
                 }
                 
+                // default_reminder_time ni time input'dan olish
+                const reminderInput = document.getElementById('defaultReminderTime');
+                if (reminderInput && reminderInput.value) {
+                    settings.default_reminder_time = reminderInput.value;
+                }
+
                 // Keyin boshqa sozlamalarni saqlash (language kalitisiz!)
                 const settingsToSave = { ...settings };
                 delete settingsToSave.language;

@@ -13414,7 +13414,8 @@ def get_settings():
         default_settings = {
             'stock_check_visible': True,  # Sotuvchi uchun qoldiq tekshirish sahifasi ko'rinadimi
             'auto_currency_update': False,
-            'auto_backup': False
+            'auto_backup': False,
+            'default_reminder_time': '10:00'  # Qarz eslatma default vaqti
         }
 
         # Bazadan sozlamalarni olish
@@ -14123,7 +14124,10 @@ def api_create_debt_reminder():
         data = request.get_json()
         customer_id = data.get('customer_id')
         reminder_date = data.get('reminder_date')  # YYYY-MM-DD
-        reminder_time = data.get('reminder_time', '10:00')  # HH:MM
+        # Agar vaqt berilmagan bo'lsa Settings'dan default vaqtni olish
+        default_time_setting = Settings.query.filter_by(key='default_reminder_time').first()
+        default_time = default_time_setting.value if default_time_setting else '10:00'
+        reminder_time = data.get('reminder_time', default_time)  # HH:MM
         message = data.get('message', '')
 
         if not customer_id or not reminder_date:
