@@ -384,7 +384,7 @@
                 <div class="setting-icon" style="background:#e8f4fd;"><i class="fab fa-telegram" style="color:#0088cc;"></i></div>
                 <div class="setting-card-meta">
                     <p class="card-title">Telegram havolalari</p>
-                    <p class="card-desc">Header da ko'rinadigan Telegram guruh va bot nom va linkini tahrirlash</p>
+                    <p class="card-desc">Header da ko'rinadigan Telegram guruh nom va linkini tahrirlash</p>
                 </div>
             </div>
             <div class="setting-card-body">
@@ -396,14 +396,6 @@
                     <div>
                         <label class="em-label" style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:4px;">Guruh linki</label>
                         <input type="text" id="tg-group-link" class="card-input" placeholder="https://t.me/..." style="width:100%; box-sizing:border-box;">
-                    </div>
-                    <div>
-                        <label class="em-label" style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:4px;">Bot nomi</label>
-                        <input type="text" id="tg-bot-name" class="card-input" placeholder="@bot_name" style="width:100%; box-sizing:border-box;">
-                    </div>
-                    <div>
-                        <label class="em-label" style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:4px;">Bot linki</label>
-                        <input type="text" id="tg-bot-link" class="card-input" placeholder="https://t.me/..." style="width:100%; box-sizing:border-box;">
                     </div>
                 </div>
             </div>
@@ -603,12 +595,8 @@
             // Telegram havolalari
             const tgGN = document.getElementById('tg-group-name');
             const tgGL = document.getElementById('tg-group-link');
-            const tgBN = document.getElementById('tg-bot-name');
-            const tgBL = document.getElementById('tg-bot-link');
             if (tgGN) tgGN.value = settings.telegram_group_name || 'DiamondCarAccesories';
             if (tgGL) tgGL.value = settings.telegram_group_link || 'https://t.me/DiamondCarAccesories';
-            if (tgBN) tgBN.value = settings.telegram_bot_name || '@Sergeli143_bot';
-            if (tgBL) tgBL.value = settings.telegram_bot_link || 'https://t.me/Sergeli143_bot';
         }
 
         // Toggle funksiyasi
@@ -650,12 +638,8 @@
                 // Telegram havolalarini olish
                 const tgGN = document.getElementById('tg-group-name');
                 const tgGL = document.getElementById('tg-group-link');
-                const tgBN = document.getElementById('tg-bot-name');
-                const tgBL = document.getElementById('tg-bot-link');
                 if (tgGN && tgGN.value.trim()) settings.telegram_group_name = tgGN.value.trim();
                 if (tgGL && tgGL.value.trim()) settings.telegram_group_link = tgGL.value.trim();
-                if (tgBN && tgBN.value.trim()) settings.telegram_bot_name = tgBN.value.trim();
-                if (tgBL && tgBL.value.trim()) settings.telegram_bot_link = tgBL.value.trim();
 
                 // Keyin boshqa sozlamalarni saqlash (language kalitisiz!)
                 const settingsToSave = { ...settings };
