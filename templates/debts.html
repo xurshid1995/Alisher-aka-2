@@ -86,7 +86,8 @@
 .dbt-card-body { padding: 16px 20px; }
 
 /* Search */
-.dbt-search-box { position: relative; margin-bottom: 14px; }
+.dbt-filter-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.dbt-search-box { position: relative; flex: 0 0 45%; min-width: 180px; }
 .dbt-search-icon {
     position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
     color: #94a3b8; font-size: 14px; pointer-events: none;
@@ -98,6 +99,13 @@
     transition: all 0.2s; outline: none;
 }
 .dbt-search-input:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.dbt-sort-btn {
+    padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+    font-size: 13px; background: #f8fafc; color: #475569; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+}
+.dbt-sort-btn:hover { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
+.dbt-sort-btn.active { border-color: #2563eb; color: #2563eb; background: #eff6ff; font-weight: 600; }
 
 /* Table */
 .dbt-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -351,10 +359,14 @@
             <span class="dbt-card-title"><i class="fas fa-credit-card"></i> {{ t('debt_customer') }}</span>
         </div>
         <div class="dbt-card-body">
-            <div class="dbt-search-box">
-                <i class="fas fa-search dbt-search-icon"></i>
-                <input type="text" id="debtSearchInput" class="dbt-search-input"
-                       placeholder="{{ t('search_debt_placeholder') }}" oninput="searchDebts()">
+            <div class="dbt-filter-row">
+                <div class="dbt-search-box">
+                    <i class="fas fa-search dbt-search-icon"></i>
+                    <input type="text" id="debtSearchInput" class="dbt-search-input"
+                           placeholder="{{ t('search_debt_placeholder') }}" oninput="searchDebts()">
+                </div>
+                <button class="dbt-sort-btn" id="sortHighDebt" onclick="sortDebtsByAmount('desc')">📈 Ko'p qarzli</button>
+                <button class="dbt-sort-btn" id="sortLowDebt" onclick="sortDebtsByAmount('asc')">📉 Kam qarzli</button>
             </div>
             <div class="dbt-table-container">
                 <table class="debts-table">
@@ -667,6 +679,7 @@
 
     let debts = [];
     let allDebts = [];
+    let debtSortOrder = null;
     let allPaidDebts = [];
     let currentCustomerId = null;
     let exchangeRate = 13000;
@@ -755,42 +768,37 @@
     }
 
     // Qarzlarni qidirish
-    function searchDebts() {
+    function applyDebtFilters() {
         const searchTerm = document.getElementById('debtSearchInput').value.toLowerCase().trim();
-        const rows = document.querySelectorAll('#debtsTableBody tr');
-        
-        let visibleCount = 0;
-        rows.forEach(row => {
-            const nameCell = row.querySelector('td:nth-child(2)');
-            const phoneCell = row.querySelector('td:nth-child(3)');
-            
-            if (nameCell && phoneCell) {
-                const name = nameCell.textContent.toLowerCase();
-                const phone = phoneCell.textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || phone.includes(searchTerm)) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            }
+        let filtered = allDebts.filter(debt => {
+            const name = (debt.customer_name || '').toLowerCase();
+            const phone = (debt.customer_phone || '').toLowerCase();
+            return name.includes(searchTerm) || phone.includes(searchTerm);
         });
-        
-        // Agar hech narsa topilmasa
-        if (visibleCount === 0 && searchTerm !== '') {
-            const noResultRow = document.querySelector('#debtsTableBody .no-result');
-            if (!noResultRow) {
-                const tbody = document.getElementById('debtsTableBody');
-                const tr = document.createElement('tr');
-                tr.className = 'no-result';
-                tr.innerHTML = '<td colspan="8" class="no-data">🔍 Hech narsa topilmadi</td>';
-                tbody.appendChild(tr);
-            }
-        } else {
-            const noResultRow = document.querySelector('#debtsTableBody .no-result');
-            if (noResultRow) noResultRow.remove();
+        if (debtSortOrder === 'desc') {
+            filtered.sort((a, b) => (b.remaining_debt || 0) - (a.remaining_debt || 0));
+        } else if (debtSortOrder === 'asc') {
+            filtered.sort((a, b) => (a.remaining_debt || 0) - (b.remaining_debt || 0));
         }
+        debts = filtered;
+        renderDebtsTable();
+    }
+
+    function searchDebts() {
+        applyDebtFilters();
+    }
+
+    function sortDebtsByAmount(order) {
+        if (debtSortOrder === order) {
+            debtSortOrder = null;
+            document.getElementById('sortHighDebt').classList.remove('active');
+            document.getElementById('sortLowDebt').classList.remove('active');
+        } else {
+            debtSortOrder = order;
+            document.getElementById('sortHighDebt').classList.toggle('active', order === 'desc');
+            document.getElementById('sortLowDebt').classList.toggle('active', order === 'asc');
+        }
+        applyDebtFilters();
     }
 
     // To'langan qarzlarni qidirish
