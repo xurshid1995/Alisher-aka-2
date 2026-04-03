@@ -13118,7 +13118,7 @@ def api_sales_statistics():
 
         if location_id:
             conditions.append("s.location_id = :location_id")
-            params['location_id'] = location_id
+            params['location_id'] = int(location_id)
 
         if date_from:
             conditions.append("s.sale_date >= :date_from")
@@ -13474,7 +13474,7 @@ def api_recent_sales():
 
         if location_id:
             conditions.append("s.location_id = :location_id")
-            params['location_id'] = location_id
+            params['location_id'] = int(location_id)
 
         if date_from:
             conditions.append("s.sale_date >= :date_from")
@@ -13488,7 +13488,7 @@ def api_recent_sales():
             query += " WHERE " + " AND ".join(conditions)
 
         query += " ORDER BY s.sale_date DESC, s.id DESC LIMIT :limit"
-        params['limit'] = limit
+        params['limit'] = int(limit)
 
         result = db.session.execute(text(query), params)
         results = result.fetchall()
