@@ -448,9 +448,9 @@
             <a href="/store/{{ store.id }}" class="btn-small btn-view">
                 <i class="fas fa-eye"></i> {{ t('btn_view') }}
             </a>
-            <a href="/edit_store/{{ store.id }}" class="btn-small btn-edit">
+            <button onclick="openEditStoreModal({{ store.id }}, {{ store.name|tojson }}, {{ store.address|tojson }}, {{ store.manager_name|tojson }}, {{ (store.phone or '')|tojson }})" class="btn-small btn-edit">
                 <i class="fas fa-pen"></i> {{ t('btn_edit') }}
-            </a>
+            </button>
             <button data-store-id="{{ store.id }}" 
                     data-store-name="{{ store.name }}"
                     onclick="deleteStore('{{ store.id }}', '{{ store.name }}')" 
@@ -472,6 +472,52 @@
 </div>
 
 </div><!-- /.ps-page -->
+
+<!-- Edit Store Modal -->
+<div id="editStoreModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:16px; padding:28px; width:480px; max-width:92vw; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+            <h4 style="margin:0; color:#1e293b; font-weight:700; font-size:17px;"><i class="fas fa-pen" style="color:#f59e0b; margin-right:8px;"></i>Do'konni tahrirlash</h4>
+            <button onclick="closeEditStoreModal()" style="background:#f1f5f9; border:none; font-size:20px; cursor:pointer; color:#64748b; width:34px; height:34px; border-radius:8px;">&times;</button>
+        </div>
+        <input type="hidden" id="esId">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:5px;">🏬 Do'kon nomi <span style="color:#ef4444;">*</span></label>
+                <input type="text" id="esName"
+                       style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:9px; font-size:14px; box-sizing:border-box; outline:none;"
+                       oninput="validateEditStore()">
+            </div>
+            <div>
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:5px;">📍 Manzil <span style="color:#ef4444;">*</span></label>
+                <textarea id="esAddress" rows="2"
+                          style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:9px; font-size:14px; box-sizing:border-box; outline:none; resize:none;"
+                          oninput="validateEditStore()"></textarea>
+            </div>
+            <div>
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:5px;">👤 Menejer ismi <span style="color:#ef4444;">*</span></label>
+                <input type="text" id="esManager"
+                       style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:9px; font-size:14px; box-sizing:border-box; outline:none;"
+                       oninput="validateEditStore()">
+            </div>
+            <div>
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:5px;">📞 Telefon</label>
+                <input type="text" id="esPhone"
+                       style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:9px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+        </div>
+        <div id="esError" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; color:#dc2626; font-size:13px; margin-top:14px;"></div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button id="esSaveBtn" onclick="saveEditStore()"
+                    style="flex:1; background:#f59e0b; color:white; border:none; padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                <i class="fas fa-save"></i> Saqlash
+            </button>
+            <button onclick="closeEditStoreModal()" style="flex:1; background:#f1f5f9; color:#475569; border:none; padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;">
+                ✕ Bekor qilish
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Add Store Modal -->
 <div id="addStoreModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
@@ -747,7 +793,77 @@
         document.getElementById('asName').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') document.getElementById('asAddress').focus();
         });
+        document.getElementById('editStoreModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditStoreModal();
+        });
     });
+
+    // ── Do'kon tahrirlash modal ──
+    function openEditStoreModal(id, name, address, manager, phone) {
+        document.getElementById('esId').value = id;
+        document.getElementById('esName').value = name;
+        document.getElementById('esAddress').value = address;
+        document.getElementById('esManager').value = manager;
+        document.getElementById('esPhone').value = phone || '';
+        document.getElementById('esError').style.display = 'none';
+        document.getElementById('editStoreModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('esName').focus(), 100);
+    }
+
+    function closeEditStoreModal() {
+        document.getElementById('editStoreModal').style.display = 'none';
+    }
+
+    function validateEditStore() {
+        const ok = document.getElementById('esName').value.trim() &&
+                   document.getElementById('esAddress').value.trim() &&
+                   document.getElementById('esManager').value.trim();
+        const btn = document.getElementById('esSaveBtn');
+        btn.disabled = !ok;
+        btn.style.opacity = ok ? '1' : '0.6';
+        btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+    }
+
+    async function saveEditStore() {
+        const btn = document.getElementById('esSaveBtn');
+        if (btn.disabled) return;
+
+        const id = document.getElementById('esId').value;
+        const name = document.getElementById('esName').value.trim();
+        const address = document.getElementById('esAddress').value.trim();
+        const manager = document.getElementById('esManager').value.trim();
+        const phone = document.getElementById('esPhone').value.trim();
+
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Saqlanmoqda...';
+
+        try {
+            const resp = await fetch(`/api/stores/${id}/edit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, manager_name: manager, phone })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                closeEditStoreModal();
+                window.location.reload();
+            } else {
+                const errEl = document.getElementById('esError');
+                errEl.textContent = '❌ ' + (data.error || 'Xatolik yuz berdi');
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Saqlash';
+                btn.style.opacity = '1';
+            }
+        } catch (e) {
+            const errEl = document.getElementById('esError');
+            errEl.textContent = '❌ Server bilan ulanishda xatolik';
+            errEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Saqlash';
+            btn.style.opacity = '1';
+        }
+    }
 
     function toggleStore(storeId, isActive) {
         // API ga so'rov yuborish

@@ -5413,6 +5413,58 @@ def api_store_stock_export(store_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/api/stores/<int:store_id>/edit', methods=['POST'])
+@role_required('admin')
+def api_edit_store(store_id):
+    """Do'kon tahrirlash (JSON API - modal uchun)"""
+    try:
+        store = Store.query.get_or_404(store_id)
+        data = request.get_json()
+
+        name = (data.get('name') or '').strip()
+        address = (data.get('address') or '').strip()
+        manager_name = (data.get('manager_name') or '').strip()
+        phone = (data.get('phone') or '').strip()
+
+        if not name or not address or not manager_name:
+            return jsonify({'success': False, 'error': 'Nom, manzil va menejer ismi majburiy'}), 400
+
+        old_data = {'name': store.name, 'address': store.address, 'manager': store.manager_name, 'phone': store.phone}
+        store.name = name
+        store.address = address
+        store.manager_name = manager_name
+        store.phone = phone
+        db.session.commit()
+
+        try:
+            history = OperationHistory(
+                operation_type='edit_store',
+                table_name='stores',
+                record_id=store.id,
+                user_id=session.get('user_id'),
+                username=session.get('username', 'Unknown'),
+                description=f"Dokon tahrirlandi: {store.name}",
+                old_data=old_data,
+                new_data={'name': store.name, 'address': store.address, 'manager': store.manager_name, 'phone': store.phone},
+                ip_address=request.remote_addr,
+                location_id=store.id,
+                location_type='store',
+                location_name=store.name,
+                amount=None
+            )
+            db.session.add(history)
+            db.session.commit()
+        except Exception as log_error:
+            logger.error(f"OperationHistory log xatoligi: {log_error}")
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Do'kon tahrirlash xatosi: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/edit_store/<int:store_id>', methods=['GET', 'POST'])
 def edit_store(store_id):
     store = Store.query.get_or_404(store_id)
@@ -5461,7 +5513,7 @@ def edit_store(store_id):
             db.session.rollback()
             return f"Xatolik: {str(e)}", 400
 
-    return render_template('edit_store.html', store=store)
+    return redirect(url_for('stores'))
 
 
 @app.route('/api/store/<int:store_id>', methods=['DELETE'])
