@@ -657,7 +657,7 @@ TRANSLATIONS = {
 
         # ==================== ADD STORE PAGE ====================
         'heading_add_store': 'Yangi do\'kon qo\'shish',
-        'label_store_name': '🏬 Do\'kon nomi:',
+        'label_store_name': 'Do\'kon nomi:',
         'placeholder_store_name': 'Masalan: Markaziy do\'kon',
         'label_manager': '👤 Mudiri:',
         'placeholder_manager_name': 'Ism va familiya',
@@ -1403,7 +1403,7 @@ TRANSLATIONS = {
         'nav_settings': 'Sozlanmalar',
 
         # ==================== STORES PAGE ====================
-        'heading_stores': '🏬 Do\'konlar boshqaruvi',
+        'heading_stores': 'Do\'konlar boshqaruvi',
         'breadcrumb_stores': 'Dokon boshqaruvi / Do\'konlar',
         'btn_add_store': 'Do\'kon qo\'shish',
         'empty_stores': 'Do\'konlar topilmadi',
@@ -1523,7 +1523,7 @@ TRANSLATIONS = {
         'operation_create_customer': '➕ Mijoz qo\'shish',
         'operation_delete_customer': '🗑️ Mijoz o\'chirish',
         'operation_edit_customer': '✏️ Mijoz tahrirlash',
-        'operation_create_store': '🏬 Do\'kon qo\'shish',
+        'operation_create_store': 'Do\'kon qo\'shish',
         'operation_create_warehouse': '🏭 Ombor qo\'shish',
         'operation_create_user': '👤 Foydalanuvchi qo\'shish',
         'operation_delete_stock': '🗑️ Zaxira o\'chirish',
@@ -2641,7 +2641,7 @@ TRANSLATIONS = {
 
         # ==================== ADD STORE PAGE ====================
         'heading_add_store': 'Янги дўкон қўшиш',
-        'label_store_name': '🏬 Дўкон номи:',
+        'label_store_name': 'Дўкон номи:',
         'placeholder_store_name': 'Масалан: Марказий дўкон',
         'label_manager': '👤 Мудири:',
         'placeholder_manager_name': 'Исм ва фамилия',
@@ -3387,7 +3387,7 @@ TRANSLATIONS = {
         'nav_settings': 'Созланмалар',
 
         # ==================== STORES PAGE ====================
-        'heading_stores': '🏬 Дўконлар бошқаруви',
+        'heading_stores': 'Дўконлар бошқаруви',
         'breadcrumb_stores': 'Дўкон бошқаруви / Дўконлар',
         'btn_add_store': 'Дўкон қўшиш',
         'empty_stores': 'Дўконлар топилмади',
@@ -3507,7 +3507,7 @@ TRANSLATIONS = {
         'operation_create_customer': '➕ Мижоз қўшиш',
         'operation_delete_customer': '🗑️ Мижоз ўчириш',
         'operation_edit_customer': '✏️ Мижоз таҳрирлаш',
-        'operation_create_store': '🏬 Дўкон қўшиш',
+        'operation_create_store': 'Дўкон қўшиш',
         'operation_create_warehouse': '🏭 Омбор қўшиш',
         'operation_create_user': '👤 Фойдаланувчи қўшиш',
         'operation_delete_stock': '🗑️ Заҳира ўчириш',
@@ -4625,7 +4625,7 @@ TRANSLATIONS = {
 
         # ==================== ADD STORE PAGE ====================
         'heading_add_store': 'Добавить новый магазин',
-        'label_store_name': '🏬 Название магазина:',
+        'label_store_name': 'Название магазина:',
         'placeholder_store_name': 'Например: Центральный магазин',
         'label_manager': '👤 Менеджер:',
         'placeholder_manager_name': 'Имя и фамилия',
@@ -5371,7 +5371,7 @@ TRANSLATIONS = {
         'nav_settings': 'Настройки',
 
         # ==================== STORES PAGE ====================
-        'heading_stores': '🏬 Управление магазинами',
+        'heading_stores': 'Управление магазинами',
         'breadcrumb_stores': 'Управление магазинами / Магазины',
         'btn_add_store': 'Добавить магазин',
         'empty_stores': 'Магазины не найдены',
@@ -5491,7 +5491,7 @@ TRANSLATIONS = {
         'operation_create_customer': '➕ Добавление клиента',
         'operation_delete_customer': '🗑️ Удаление клиента',
         'operation_edit_customer': '✏️ Редактирование клиента',
-        'operation_create_store': '🏬 Добавление магазина',
+        'operation_create_store': 'Добавление магазина',
         'operation_create_warehouse': '🏭 Добавление склада',
         'operation_create_user': '👤 Добавление пользователя',
         'operation_delete_stock': '🗑️ Удаление запаса',
