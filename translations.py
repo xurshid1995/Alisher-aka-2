@@ -664,7 +664,7 @@ TRANSLATIONS = {
         'btn_save_store': '✅ Do\'konni saqlash',
 
         # ==================== ADD WAREHOUSE PAGE ====================
-        'heading_add_warehouse': '🏭 Yangi ombor qo\'shish',
+        'heading_add_warehouse': 'Yangi ombor qo\'shish',
         'label_warehouse_info': '🏭 Ombor ma\'lumotlari',
         'label_warehouse_name_required': '🏭 Ombor nomi *',
         'placeholder_warehouse_name': 'Markaziy ombor',
@@ -1427,7 +1427,7 @@ TRANSLATIONS = {
         'st_connection_error': 'Aloqa xatosi!',
 
         # ==================== WAREHOUSES PAGE ====================
-        'heading_warehouses': '🏭 Omborlar boshqaruvi',
+        'heading_warehouses': 'Omborlar boshqaruvi',
         'breadcrumb_warehouses': 'Ombor boshqaruvi / Omborlar',
         'btn_add_warehouse': 'Ombor qo\'shish',
         'empty_warehouses': 'Omborlar topilmadi',
@@ -2648,7 +2648,7 @@ TRANSLATIONS = {
         'btn_save_store': '✅ Дўконни сақлаш',
 
         # ==================== ADD WAREHOUSE PAGE ====================
-        'heading_add_warehouse': '🏭 Янги омбор қўшиш',
+        'heading_add_warehouse': 'Янги омбор қўшиш',
         'label_warehouse_info': '🏭 Омбор маълумотлари',
         'label_warehouse_name_required': '🏭 Омбор номи *',
         'placeholder_warehouse_name': 'Марказий омбор',
@@ -3411,7 +3411,7 @@ TRANSLATIONS = {
         'st_connection_error': 'Алоқа хатоси!',
 
         # ==================== WAREHOUSES PAGE ====================
-        'heading_warehouses': '🏭 Омборлар бошқаруви',
+        'heading_warehouses': 'Омборлар бошқаруви',
         'breadcrumb_warehouses': 'Омбор бошқаруви / Омборлар',
         'btn_add_warehouse': 'Омбор қўшиш',
         'empty_warehouses': 'Омборлар топилмади',
@@ -4632,7 +4632,7 @@ TRANSLATIONS = {
         'btn_save_store': '✅ Сохранить магазин',
 
         # ==================== ADD WAREHOUSE PAGE ====================
-        'heading_add_warehouse': '🏭 Добавить новый склад',
+        'heading_add_warehouse': 'Добавить новый склад',
         'label_warehouse_info': '🏭 Информация о складе',
         'label_warehouse_name_required': '🏭 Название склада *',
         'placeholder_warehouse_name': 'Центральный склад',
@@ -5395,7 +5395,7 @@ TRANSLATIONS = {
         'st_connection_error': 'Ошибка связи!',
 
         # ==================== WAREHOUSES PAGE ====================
-        'heading_warehouses': '🏭 Управление складами',
+        'heading_warehouses': 'Управление складами',
         'breadcrumb_warehouses': 'Управление складами / Склады',
         'btn_add_warehouse': 'Добавить склад',
         'empty_warehouses': 'Склады не найдены',
