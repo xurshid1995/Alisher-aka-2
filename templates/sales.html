@@ -937,6 +937,22 @@
                 <span style="font-weight: 500;">{{ t('label_print_receipt_uzs') }}</span>
             </label>
         </div>
+
+        <!-- Mijoz balansi info banneri (faqat balans > 0 bo'lsa ko'rinadi) -->
+        <div id="paymentBalanceSection" style="display:none; margin-bottom: 12px; padding: 10px 14px; background: #d1fae5; border: 1px solid #34d399; border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 22px;">💳</span>
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; color: #065f46; font-size: 14px;">Mijoz balansi mavjud</div>
+                    <div style="font-size: 13px; color: #047857;">Balansdan foydalanish: <strong id="paymentBalanceAvailable">$0.00</strong></div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="number" id="paymentBalanceUSD" step="0.01" min="0" placeholder="$0.00"
+                        style="width: 110px; padding: 8px; border: 2px solid #34d399; border-radius: 6px; font-size: 14px; font-weight: 700; background: #ecfdf5; color: #065f46; text-align: right;">
+                    <span style="color: #065f46; font-size: 13px; font-weight: 600;">USD</span>
+                </div>
+            </div>
+        </div>
         
         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -2022,6 +2038,9 @@
             // Mijozlar ro'yxatini yangilash
             await loadCustomers();
             
+            // Yangi mijoz - balans 0
+            currentCustomerBalance = 0;
+            
             // Mijozni avtomatik tanlash (selectCustomer funksiyasidan foydalanish)
             const customerName = result.customer.name;
             const customerPhone = result.customer.phone || '';
@@ -2630,6 +2649,7 @@
     // Mijoz qidiruv klaviatura navigatsiyasi uchun
     let filteredCustomers = [];
     let selectedCustomerIndex = -1;
+    let currentCustomerBalance = 0; // Tanlangan mijozning balansi
     
     async function loadCustomers() {
         try {
@@ -2726,7 +2746,7 @@
             const phoneColor = isSelected ? 'white' : '#6c757d';
             const safeName = escapeHtml(customer.name);
             const safePhone = escapeHtml(customer.phone);
-            return `<div class="customer-item" data-customer-id="${customer.id}" data-customer-name="${safeName}" data-customer-phone="${safePhone}" data-index="${index}"
+            return `<div class="customer-item" data-customer-id="${customer.id}" data-customer-name="${safeName}" data-customer-phone="${safePhone}" data-customer-balance="${customer.balance || 0}" data-index="${index}"
                     style="padding: 10px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: all 0.2s; background: ${bgColor};"
                     onmouseover="this.style.background='${hoverBg}'"
                     onmouseout="this.style.background='${bgColor}'">
@@ -2741,7 +2761,8 @@
                 const customerId = parseInt(this.dataset.customerId);
                 const customerName = this.dataset.customerName;
                 const customerPhone = this.dataset.customerPhone;
-                selectCustomer(customerId, customerName, customerPhone);
+                const customerBalance = parseFloat(this.dataset.customerBalance) || 0;
+                selectCustomer(customerId, customerName, customerPhone, customerBalance);
             });
         });
     }
@@ -2772,11 +2793,14 @@
     function selectCurrentCustomer() {
         if (selectedCustomerIndex >= 0 && selectedCustomerIndex < filteredCustomers.length) {
             const customer = filteredCustomers[selectedCustomerIndex];
-            selectCustomer(customer.id, customer.name, customer.phone || '');
+            selectCustomer(customer.id, customer.name, customer.phone || '', customer.balance || 0);
         }
     }
     
-    function selectCustomer(id, name, phone) {
+    function selectCustomer(id, name, phone, balance = 0) {
+        // Tanlangan mijozning balansini saqlash
+        currentCustomerBalance = parseFloat(balance) || 0;
+        
         // Faol tabdagi elementlarni topish
         const activeTab = document.querySelector('.sales-tab.active');
         if (!activeTab) return;
@@ -5572,8 +5596,29 @@
         
         if (paymentModalTotalUSD) paymentModalTotalUSD.textContent = `$${totalUSD.toFixed(2)}`;
         if (paymentModalTotalUZS) paymentModalTotalUZS.textContent = `${Math.round(totalUZS).toLocaleString('uz-UZ')} so'm`;
-        if (paymentCashUSD) paymentCashUSD.value = totalUSD.toFixed(4);
-        if (paymentCashUZS) paymentCashUZS.value = Math.round(totalUZS);
+        
+        // Mijoz balansi - boshlang'ich to'ldirish
+        const balanceSection = document.getElementById('paymentBalanceSection');
+        const balanceAvailableEl = document.getElementById('paymentBalanceAvailable');
+        const balanceInput = document.getElementById('paymentBalanceUSD');
+        
+        if (currentCustomerBalance > 0 && balanceSection && balanceAvailableEl && balanceInput) {
+            balanceSection.style.display = 'block';
+            balanceAvailableEl.textContent = `$${currentCustomerBalance.toFixed(2)}`;
+            const balanceToUse = Math.min(currentCustomerBalance, totalUSD);
+            balanceInput.value = balanceToUse.toFixed(2);
+            balanceInput.max = currentCustomerBalance.toFixed(2);
+            // Cash ni kamaytirish (balans qoplagandan qolganini naqd qilish)
+            const remainAfterBalance = Math.max(0, totalUSD - balanceToUse);
+            if (paymentCashUSD) paymentCashUSD.value = remainAfterBalance.toFixed(4);
+            if (paymentCashUZS) paymentCashUZS.value = Math.round(remainAfterBalance * exchangeRate);
+        } else {
+            if (balanceSection) balanceSection.style.display = 'none';
+            if (balanceInput) balanceInput.value = '';
+            if (paymentCashUSD) paymentCashUSD.value = totalUSD.toFixed(4);
+            if (paymentCashUZS) paymentCashUZS.value = Math.round(totalUZS);
+        }
+        
         if (paymentClickUSD) paymentClickUSD.value = '';
         if (paymentClickUZS) paymentClickUZS.value = '';
         if (paymentTerminalUSD) paymentTerminalUSD.value = '';
@@ -5729,6 +5774,12 @@
             paymentWarning.textContent = '';
         }
         
+        // Balans seksiyasini yashirish
+        const balanceSection = document.getElementById('paymentBalanceSection');
+        if (balanceSection) balanceSection.style.display = 'none';
+        const balanceInput = document.getElementById('paymentBalanceUSD');
+        if (balanceInput) balanceInput.value = '';
+        
         // Tugmani reset qilish
         const confirmBtn = document.getElementById('confirmPaymentBtn');
         if (confirmBtn) {
@@ -5774,9 +5825,12 @@
         const terminalUSD = paymentTerminalUSD ? parseFloat(paymentTerminalUSD.value) || 0 : 0;
         const debtUSD = paymentDebtUSD ? parseFloat(paymentDebtUSD.value) || 0 : 0;
         
-        console.log('💵 Hozirgi to\'lovlar (faqat USD):', { cashUSD, clickUSD, terminalUSD, debtUSD });
+        const balanceInputEl = document.getElementById('paymentBalanceUSD');
+        const balanceUsedAmt = balanceInputEl ? parseFloat(balanceInputEl.value) || 0 : 0;
         
-        const currentTotal = cashUSD + clickUSD + terminalUSD + debtUSD;
+        console.log('💵 Hozirgi to\'lovlar (faqat USD):', { cashUSD, clickUSD, terminalUSD, debtUSD, balanceUsedAmt });
+        
+        const currentTotal = cashUSD + clickUSD + terminalUSD + debtUSD + balanceUsedAmt;
         const remaining = totalUSD - currentTotal;
         
         console.log('📊 Hozirgi jami:', currentTotal);
@@ -5922,8 +5976,12 @@
             const terminalUZS = paymentTerminalUZS ? parseFloat(paymentTerminalUZS.value) || 0 : 0;
             const debtUZS = paymentDebtUZS ? parseFloat(paymentDebtUZS.value) || 0 : 0;
             
+            // Mijoz balansi
+            const paymentBalanceEl = document.getElementById('paymentBalanceUSD');
+            const balanceUsed = paymentBalanceEl ? parseFloat(paymentBalanceEl.value) || 0 : 0;
+            
             // Faqat USD qiymatlardan foydalanish (UZS avtomatik sinxronlashgan)
-            const totalPayment = cashUSD + clickUSD + terminalUSD + debtUSD;
+            const totalPayment = cashUSD + clickUSD + terminalUSD + debtUSD + balanceUsed;
             
             // Jami summani hisoblash
             let totalUSD = 0;
@@ -6046,7 +6104,8 @@
                     terminal_usd: terminalUSD,
                     terminal_uzs: terminalUZS,
                     debt_usd: debtUSD,
-                    debt_uzs: debtUZS
+                    debt_uzs: debtUZS,
+                    balance_used: balanceUsed
                 },
                 total_usd: totalUSD,
                 total_uzs: totalUSD * exchangeRate,

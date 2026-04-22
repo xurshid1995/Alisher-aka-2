@@ -1015,6 +1015,7 @@ class Customer(db.Model):
             'store_id': self.store_id,
             'store_name': store_name,
             'telegram_chat_id': self.telegram_chat_id,
+            'balance': float(self.balance or 0),
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None}
 
@@ -11122,6 +11123,11 @@ def create_sale():
         click_usd = float(payment_info.get('click_usd', 0))
         terminal_usd = float(payment_info.get('terminal_usd', 0))
         debt_usd = float(payment_info.get('debt_usd', 0))
+        balance_used = float(payment_info.get('balance_used', 0))
+        
+        # Balansdan foydalanilgan summa naqd pul sifatida hisoblanadi
+        if balance_used > 0:
+            cash_usd += balance_used
 
         # UZS qiymatlarni olish
         cash_uzs = float(payment_info.get('cash_uzs', 0))
@@ -11588,6 +11594,16 @@ def create_sale():
             amount=float(current_sale.total_amount * current_sale.currency_rate)  # UZS da
         )
         db.session.add(operation)
+        
+        # Mijoz balansidan ushbu savdoda ishlatilgan summani ayirish
+        if balance_used > 0 and final_customer_id:
+            sale_customer = Customer.query.get(final_customer_id)
+            if sale_customer:
+                old_bal = Decimal(str(sale_customer.balance or 0))
+                deduct = Decimal(str(balance_used))
+                sale_customer.balance = max(Decimal('0'), old_bal - deduct)
+                print(f"💳 Mijoz balansidan ${balance_used} ayirildi. Yangi balans: ${float(sale_customer.balance)}")
+        
         db.session.commit()
 
         return jsonify({
