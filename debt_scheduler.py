@@ -273,11 +273,8 @@ class DebtScheduler:
             bool: Yuborildi/yuborilmadi
         """
         try:
-            # Asyncio eventloop ichida bajariladi
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            
-            result = loop.run_until_complete(
+            # asyncio.run() har safar yangi loop yaratib, to'g'ri yopadi
+            return asyncio.run(
                 self.bot.send_debt_reminder(
                     chat_id=chat_id,
                     customer_name=customer_name,
@@ -288,10 +285,6 @@ class DebtScheduler:
                     customer_id=customer_id
                 )
             )
-            
-            loop.close()
-            return result
-            
         except Exception as e:
             logger.error(f"❌ Sync telegram xatolik: {e}")
             return False

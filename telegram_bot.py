@@ -177,8 +177,8 @@ class DebtTelegramBot:
         Returns:
             bool: Yuborildi/yuborilmadi
         """
-        if not self.bot:
-            logger.error("Bot ishga tushmagan")
+        if not self.token:
+            logger.error("Bot token sozlanmagan")
             return False
 
         try:
@@ -186,15 +186,10 @@ class DebtTelegramBot:
             debt_usd_str = f"${debt_usd:,.2f}"
             debt_uzs_str = f"{debt_uzs:,.0f} so'm"
 
-            # Sana formatlash
-            date_str = ""
-            if sale_date:
-                date_str = f"\n📅 Savdo sanasi: {sale_date.strftime('%d.%m.%Y')}"
-
             # Bugungi sana
             from datetime import datetime as dt
             today_str = dt.now().strftime('%d.%m.%Y')
-            
+
             # Xabar matni
             message = (
                 f"💰 <b>QARZ ESLATMASI</b>\n\n"
@@ -206,11 +201,13 @@ class DebtTelegramBot:
                 "Rahmat! 🙏"
             )
 
-            await self.bot.send_message(
-                chat_id=chat_id,
-                text=message,
-                parse_mode='HTML'
-            )
+            # Har safar yangi Bot yaratilib, async with bilan to'g'ri yopiladi
+            async with Bot(token=self.token) as bot:
+                await bot.send_message(
+                    chat_id=chat_id,
+                    text=message,
+                    parse_mode='HTML'
+                )
 
             logger.info(f"✅ Qarz eslatmasi yuborildi: {customer_name} (Chat ID: {chat_id})")
             return True
