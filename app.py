@@ -10623,7 +10623,12 @@ def finalize_sale(sale_id):
         exchange_rate = data.get('exchange_rate', get_current_currency_rate())
 
         # To'lov ma'lumotlarini yangilash
-        sale.cash_usd = Decimal(str(payment.get('cash_usd', 0)))
+        balance_used_fin = float(payment.get('balance_used', 0))
+        
+        # Balansdan foydalanilgan qism naqd pul sifatida savdoga kiritiladi
+        cash_usd_fin = float(payment.get('cash_usd', 0)) + balance_used_fin
+        
+        sale.cash_usd = Decimal(str(cash_usd_fin))
         sale.cash_amount = Decimal(str(payment.get('cash_uzs', 0)))
         sale.click_usd = Decimal(str(payment.get('click_usd', 0)))
         sale.click_amount = Decimal(str(payment.get('click_uzs', 0)))
@@ -10653,6 +10658,16 @@ def finalize_sale(sale_id):
         # Mijoz ID ni yangilash (agar kiritilgan bo'lsa)
         if customer_id:
             sale.customer_id = int(customer_id)
+
+        # Mijoz balansidan foydalanilgan summani ayirish
+        if balance_used_fin > 0:
+            final_cid = int(customer_id) if customer_id else sale.customer_id
+            if final_cid:
+                fin_customer = Customer.query.get(final_cid)
+                if fin_customer:
+                    old_bal = Decimal(str(fin_customer.balance or 0))
+                    fin_customer.balance = max(Decimal('0'), old_bal - Decimal(str(balance_used_fin)))
+                    print(f"💳 Finalize: Mijoz balansidan ${balance_used_fin} ayirildi. Yangi balans: ${float(fin_customer.balance)}")
 
         db.session.commit()
 
