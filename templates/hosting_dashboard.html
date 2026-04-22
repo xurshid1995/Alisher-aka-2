@@ -375,7 +375,10 @@ const HD2LANG = {
     server_turning: {{ t('hd2_server_turning')|tojson }},
     loading: {{ t('hd2_loading')|tojson }},
     droplets_error: {{ t('hd2_droplets_error')|tojson }},
-    droplets_not_found: {{ t('hd2_droplets_not_found')|tojson }}
+    droplets_not_found: {{ t('hd2_droplets_not_found')|tojson }},
+    delete: {{ t('hd2_delete')|tojson }},
+    confirm_delete: {{ t('hd2_confirm_delete')|tojson }},
+    client_deleted: {{ t('hd2_client_deleted')|tojson }}
 };
 
 // ==========================================
@@ -467,6 +470,9 @@ async function loadClients() {
                     ${c.droplet_id ? `<button class="btn-hosting btn-sm ${c.server_status === 'active' ? 'btn-danger-hosting' : 'btn-success-hosting'}" onclick="toggleServer(${c.droplet_id}, '${c.server_status}', '${c.name.replace(/'/g, "\\'")}')" title="${c.server_status === 'active' ? HD2LANG.action_off : HD2LANG.action_on}">
                         <i class="fas ${c.server_status === 'active' ? 'fa-power-off' : 'fa-play'}"></i>
                     </button>` : ''}
+                    <button class="btn-hosting btn-sm btn-danger-hosting" onclick="deleteClient(${c.id}, '${c.name.replace(/'/g, "\\'")}')" title="${HD2LANG.delete}">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </td>
             </tr>`;
         }).join('');
@@ -795,6 +801,27 @@ async function approveOrder(orderId) {
             let msg = '✅ ' + HD2LANG.order_approved;
             if (result.server_msg) msg += '\n' + result.server_msg;
             alert(msg);
+        } else {
+            alert(HD2LANG.error_prefix + ': ' + (result.error || HD2LANG.error_unknown));
+        }
+    } catch (e) {
+        alert(HD2LANG.error_prefix + ': ' + e.message);
+    }
+}
+
+// ==========================================
+// DELETE CLIENT
+// ==========================================
+async function deleteClient(clientId, clientName) {
+    const msg = HD2LANG.confirm_delete.replace('{name}', clientName);
+    if (!confirm(msg)) return;
+    try {
+        const res = await fetch(`/api/hosting/clients/${clientId}`, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+            alert(HD2LANG.client_deleted);
+            loadClients();
+            loadStats();
         } else {
             alert(HD2LANG.error_prefix + ': ' + (result.error || HD2LANG.error_unknown));
         }

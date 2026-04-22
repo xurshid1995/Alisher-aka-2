@@ -1388,6 +1388,9 @@ TRANSLATIONS = {
         'hd2_droplets_error': 'Xatolik',
         'hd2_droplets_not_found': 'Dropletlar topilmadi',
         'hd2_no_payments_yet': 'To\'lovlar yo\'q',
+        'hd2_delete': 'O\'chirish',
+        'hd2_confirm_delete': '⚠️ "{name}" mijozini o\'chirishni tasdiqlaysizmi? Bu amal bekor qilinmaydi!',
+        'hd2_client_deleted': 'Mijoz o\'chirildi',
 
         # ==================== SIDEBAR NAVIGATION ====================
         'nav_home': 'Bosh sahifa',
@@ -3372,6 +3375,9 @@ TRANSLATIONS = {
         'hd2_droplets_error': 'Хатолик',
         'hd2_droplets_not_found': 'Дроплетлар топилмади',
         'hd2_no_payments_yet': 'Тўловлар йўқ',
+        'hd2_delete': 'Ўчириш',
+        'hd2_confirm_delete': '⚠️ "{name}" мижозини ўчиришни тасдиқлайсизми? Бу амал бекор қилинмайди!',
+        'hd2_client_deleted': 'Мижоз ўчирилди',
 
         # ==================== SIDEBAR NAVIGATION ====================
         'nav_home': 'Бош саҳифа',
@@ -5356,6 +5362,9 @@ TRANSLATIONS = {
         'hd2_droplets_error': 'Ошибка',
         'hd2_droplets_not_found': 'Дроплеты не найдены',
         'hd2_no_payments_yet': 'Нет оплат',
+        'hd2_delete': 'Удалить',
+        'hd2_confirm_delete': '⚠️ Удалить клиента "{name}"? Это действие нельзя отменить!',
+        'hd2_client_deleted': 'Клиент удалён',
 
         # ==================== SIDEBAR NAVIGATION ====================
         'nav_home': 'Главная',
