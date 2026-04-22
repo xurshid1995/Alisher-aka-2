@@ -1710,8 +1710,8 @@ class HostingClient(db.Model):
     notes = db.Column(db.Text, nullable=True)
 
     # Relationships
-    payment_orders = db.relationship('HostingPaymentOrder', backref='client', lazy='dynamic')
-    payments = db.relationship('HostingPayment', backref='client', lazy='dynamic')
+    payment_orders = db.relationship('HostingPaymentOrder', backref='client', lazy='dynamic', passive_deletes=True)
+    payments = db.relationship('HostingPayment', backref='client', lazy='dynamic', passive_deletes=True)
 
     def __repr__(self):
         return f'<HostingClient {self.id}: {self.name}>'
