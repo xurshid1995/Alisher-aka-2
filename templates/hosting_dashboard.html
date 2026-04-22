@@ -815,6 +815,14 @@ async function approveOrder(orderId) {
 async function deleteClient(clientId, clientName) {
     const msg = HD2LANG.confirm_delete.replace('{name}', clientName);
     if (!confirm(msg)) return;
+
+    const inputName = prompt(`🔴 ${HD2LANG.confirm_name}\n\n"${clientName}"`);
+    if (inputName === null) return;
+    if (inputName.trim() !== clientName.trim()) {
+        alert('❌ ' + HD2LANG.name_mismatch);
+        return;
+    }
+
     try {
         const res = await fetch(`/api/hosting/clients/${clientId}`, { method: 'DELETE' });
         const result = await res.json();
