@@ -3965,16 +3965,16 @@ def api_return_product():
                         if remaining_to_deduct <= 0:
                             break
                         old_d = Decimal(str(ds.debt_usd))
-                        d2 = min(Decimal(str(remaining_to_deduct)), old_d)
+                        d2 = min(remaining_to_deduct, old_d)
                         ds.debt_usd = old_d - d2
                         if ds.debt_usd <= 0:
                             ds.debt_usd = Decimal('0')
                             ds.payment_status = 'paid'
-                        remaining_to_deduct -= float(d2)
+                        remaining_to_deduct -= d2
                         logger.info(f"💳 Savdo #{ds.id} qarzidan ${d2} sondirildi (qoldi: ${ds.debt_usd})")
 
                 # 3. Agar baribir qolsa (barcha qarzlar yopildi) — balansga
-                if remaining_to_deduct > 0.001:
+                if remaining_to_deduct > Decimal('0.001'):
                     customer.balance = Decimal(str(customer.balance or 0)) + Decimal(str(remaining_to_deduct))
                     logger.info(f"🏦 Ortiqcha ${remaining_to_deduct:.2f} balansga qo'shildi")
 
