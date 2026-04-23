@@ -3422,7 +3422,7 @@ def api_customer_timeline(customer_id):
             items_list = []
             for item in sale.items:
                 items_list.append({
-                    'product_name': item.product_name_snapshot or (item.product.name if item.product else 'Noma\'lum'),
+                    'product_name': item.product_name or (item.product.name if item.product else 'Noma\'lum'),
                     'quantity': item.quantity,
                     'unit_price': float(item.unit_price or 0),
                     'total': float((item.unit_price or 0) * item.quantity)
