@@ -1082,11 +1082,11 @@
                             <div style="font-weight: 600; color: #1e40af; margin-bottom: 12px; font-size: 14px;">💸 Qaytarish turini tanlang:</div>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 18px; border-radius: 8px; border: 2px solid #10b981; background: #ecfdf5; font-weight: 600; color: #065f46; font-size: 14px;">
-                                    <input type="radio" name="refundType_${sale.id}" value="cash" style="accent-color: #10b981; width:16px; height:16px;" onchange="enableReturnBtn(${item.product_id})"> 💵 Naxt pul
+                                    <input type="radio" name="refundType_${sale.id}" value="cash" style="accent-color: #10b981; width:16px; height:16px;" onchange="enableReturnBtn(${productId})"> 💵 Naxt pul
                                 </label>
                                 ${sale.customer_id ? `
                                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 18px; border-radius: 8px; border: 2px solid #3b82f6; background: #eff6ff; font-weight: 600; color: #1e40af; font-size: 14px;">
-                                    <input type="radio" name="refundType_${sale.id}" value="balance" style="accent-color: #3b82f6; width:16px; height:16px;" onchange="enableReturnBtn(${item.product_id})"> 🏦 Mijoz balansiga
+                                    <input type="radio" name="refundType_${sale.id}" value="balance" style="accent-color: #3b82f6; width:16px; height:16px;" onchange="enableReturnBtn(${productId})"> 🏦 Mijoz balansiga
                                 </label>` : ''}
                             </div>
                         </div>
