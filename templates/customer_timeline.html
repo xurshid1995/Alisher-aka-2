@@ -279,6 +279,8 @@ function renderSale(e) {
         </div>
     </div>`;
 }
+
+function renderPayment(e) {
     const chips = [];
     if (e.cash_usd > 0) chips.push(`💵 Naqd: $${e.cash_usd.toFixed(2)}`);
     if (e.click_usd > 0) chips.push(`📱 Click: $${e.click_usd.toFixed(2)}`);
