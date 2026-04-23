@@ -1015,7 +1015,13 @@
                             </div>
                             <div style="background: #f8f9fa; padding: 12px; border-radius: 6px;">
                                 <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Holat</div>
-                                <div>${getPaymentStatusBadge(sale)}</div>
+                                <div style="margin-bottom: 6px;">${getPaymentStatusBadge(sale)}</div>
+                                <div style="display: flex; flex-direction: column; gap: 3px; font-size: 12px;">
+                                    ${sale.cash_usd > 0 ? `<span style="color:#16a34a;">💵 Naqd: $${parseFloat(sale.cash_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.click_usd > 0 ? `<span style="color:#2563eb;">📱 Click: $${parseFloat(sale.click_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.terminal_usd > 0 ? `<span style="color:#7c3aed;">💳 Terminal: $${parseFloat(sale.terminal_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.debt_usd > 0 ? `<span style="color:#dc2626;">📝 Qarz: $${parseFloat(sale.debt_usd).toFixed(2)}</span>` : ''}
+                                </div>
                             </div>
                         </div>
 
@@ -1560,7 +1566,13 @@
                             </div>
                             <div style="background: #f8f9fa; padding: 12px; border-radius: 6px;">
                                 <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Holat</div>
-                                <div>${getPaymentStatusBadge(sale)}</div>
+                                <div style="margin-bottom: 6px;">${getPaymentStatusBadge(sale)}</div>
+                                <div style="display: flex; flex-direction: column; gap: 3px; font-size: 12px;">
+                                    ${sale.cash_usd > 0 ? `<span style="color:#16a34a;">💵 Naqd: $${parseFloat(sale.cash_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.click_usd > 0 ? `<span style="color:#2563eb;">📱 Click: $${parseFloat(sale.click_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.terminal_usd > 0 ? `<span style="color:#7c3aed;">💳 Terminal: $${parseFloat(sale.terminal_usd).toFixed(2)}</span>` : ''}
+                                    ${sale.debt_usd > 0 ? `<span style="color:#dc2626;">📝 Qarz: $${parseFloat(sale.debt_usd).toFixed(2)}</span>` : ''}
+                                </div>
                             </div>
                         </div>
 
