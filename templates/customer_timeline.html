@@ -63,6 +63,9 @@
 .tl-after-debt { background:#fee2e2; color:#dc2626; border-radius:5px; padding:2px 8px; font-weight:600; }
 .tl-after-debt.zero { background:#dcfce7; color:#16a34a; }
 .tl-after-balance { background:#dbeafe; color:#1d4ed8; border-radius:5px; padding:2px 8px; font-weight:600; }
+.tl-dot-return { color: #f59e0b; background: #f59e0b; }
+.tl-card-return { border-left-color: #f59e0b; }
+.tl-type-return { background: #fef3c7; color: #92400e; }
 
 .tl-items-list { margin-top: 10px; border-top: 1px solid #f1f5f9; padding-top: 8px; }
 .tl-items-toggle { font-size: 12px; color: #1a6eff; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
@@ -112,6 +115,7 @@
         <button class="tl-filter-btn active" onclick="setFilter('all')">Barchasi</button>
         <button class="tl-filter-btn" onclick="setFilter('sale')">🛒 Savdolar</button>
         <button class="tl-filter-btn" onclick="setFilter('payment')">💳 To'lovlar</button>
+        <button class="tl-filter-btn" onclick="setFilter('return')">↩️ Qaytarilganlar</button>
     </div>
 
     <!-- Timeline -->
@@ -195,7 +199,7 @@ function renderTimeline() {
         html += `<div style="font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:8px;margin-top:4px;letter-spacing:0.5px;">${formatDay(day)}</div>`;
         html += '<div class="tl-container">';
         groups[day].forEach(e => {
-            html += e.type === 'sale' ? renderSale(e) : renderPayment(e);
+        html += e.type === 'sale' ? renderSale(e) : e.type === 'payment' ? renderPayment(e) : renderReturn(e);
         });
         html += '</div>';
     });
@@ -235,6 +239,33 @@ function afterRow(e) {
     if (bal > 0) html += `<span class="tl-after-balance">Balans: $${bal.toFixed(2)}</span>`;
     html += `</div>`;
     return html;
+}
+
+function renderReturn(e) {
+    const chipsHtml = [
+        `🔗 Savdo #${e.sale_id}`,
+        `📦 ${e.product_name} × ${e.returned_quantity}`,
+        e.username ? `👤 ${e.username}` : ''
+    ].filter(Boolean).map(c => `<span class="tl-detail-chip">${c}</span>`).join('');
+    const notesHtml = e.description ? `<div style="font-size:12px;color:#94a3b8;margin-top:6px;">💬 ${e.description}</div>` : '';
+
+    return `<div class="tl-item">
+        <div class="tl-dot tl-dot-return"></div>
+        <div class="tl-card tl-card-return">
+            <div class="tl-card-header">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="tl-time-badge">${timeOnly(e.date)}</span>
+                    <span class="tl-type-badge tl-type-return">↩️ Qaytarildi</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="tl-amount" style="color:#f59e0b;">-$${e.amount_usd.toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="tl-details">${chipsHtml}</div>
+            ${notesHtml}
+            ${afterRow(e)}
+        </div>
+    </div>`;
 }
 
 function renderSale(e) {

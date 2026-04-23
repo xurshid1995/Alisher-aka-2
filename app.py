@@ -3465,6 +3465,27 @@ def api_customer_timeline(customer_id):
                 'sale_id': p.sale_id
             })
 
+        # Qaytarilgan mahsulotlarni olish (operation_history orqali)
+        sale_ids = [s.id for s in sales]
+        if sale_ids:
+            returns = OperationHistory.query.filter(
+                OperationHistory.operation_type == 'return',
+                OperationHistory.record_id.in_(sale_ids)
+            ).order_by(OperationHistory.created_at.desc()).all()
+            for r in returns:
+                nd = r.new_data or {}
+                events.append({
+                    'type': 'return',
+                    'id': r.id,
+                    'date': r.created_at.strftime('%Y-%m-%d %H:%M:%S') if r.created_at else None,
+                    'sale_id': nd.get('sale_id') or r.record_id,
+                    'product_name': nd.get('product_name', 'Noma\'lum'),
+                    'returned_quantity': float(nd.get('returned_quantity', 0)),
+                    'amount_usd': float(nd.get('amount_usd', 0)),
+                    'username': r.username or '',
+                    'description': r.description or ''
+                })
+
         # Sanaga ko'ra tartiblash (yangirog'i birinchi)
         events.sort(key=lambda x: x['date'] or '', reverse=True)
 
