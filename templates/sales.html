@@ -5774,8 +5774,8 @@
         const debtBtn = document.getElementById('debtQolganBtn');
         const balanceVal = balanceInput ? parseFloat(balanceInput.value) || 0 : 0;
         
-        // Qisman balans ishlatilsa (0 < balans < mavjud balans) → qarz disable
-        const isPartialBalance = balanceVal > 0 && balanceVal < currentCustomerBalance;
+        // Mijoz balansida pul bor, lekin to'liq ishlatilmagan (0 ham kiradi) → qarz disable
+        const isPartialBalance = currentCustomerBalance > 0 && balanceVal < currentCustomerBalance;
         
         if (isPartialBalance) {
             // Qisman balans → qarz maydonini bloklash
