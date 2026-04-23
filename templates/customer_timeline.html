@@ -58,6 +58,11 @@
 
 .tl-details { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .tl-detail-chip { font-size: 11px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px 8px; color: #475569; }
+.tl-after-row { display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0; font-size:12px; }
+.tl-after-label { color:#94a3b8; }
+.tl-after-debt { background:#fee2e2; color:#dc2626; border-radius:5px; padding:2px 8px; font-weight:600; }
+.tl-after-debt.zero { background:#dcfce7; color:#16a34a; }
+.tl-after-balance { background:#dbeafe; color:#1d4ed8; border-radius:5px; padding:2px 8px; font-weight:600; }
 
 .tl-items-list { margin-top: 10px; border-top: 1px solid #f1f5f9; padding-top: 8px; }
 .tl-items-toggle { font-size: 12px; color: #1a6eff; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
@@ -220,6 +225,18 @@ function statusBadge(status) {
     return '<span class="tl-status-partial">' + status + '</span>';
 }
 
+function afterRow(e) {
+    const debt = e.debt_after || 0;
+    const bal = e.balance_after || 0;
+    const debtCls = debt > 0 ? 'tl-after-debt' : 'tl-after-debt zero';
+    let html = `<div class="tl-after-row">
+        <span class="tl-after-label">Amaldan keyin:</span>
+        <span class="${debtCls}">Qarz: $${debt.toFixed(2)}</span>`;
+    if (bal > 0) html += `<span class="tl-after-balance">Balans: $${bal.toFixed(2)}</span>`;
+    html += `</div>`;
+    return html;
+}
+
 function renderSale(e) {
     const chips = [];
     if (e.cash_usd > 0) chips.push(`💵 Naqd: $${e.cash_usd.toFixed(2)}`);
@@ -258,11 +275,10 @@ function renderSale(e) {
             <div class="tl-details">${chipsHtml}</div>
             ${itemsHtml}
             ${notesHtml}
+            ${afterRow(e)}
         </div>
     </div>`;
 }
-
-function renderPayment(e) {
     const chips = [];
     if (e.cash_usd > 0) chips.push(`💵 Naqd: $${e.cash_usd.toFixed(2)}`);
     if (e.click_usd > 0) chips.push(`📱 Click: $${e.click_usd.toFixed(2)}`);
@@ -288,6 +304,7 @@ function renderPayment(e) {
             </div>
             <div class="tl-details">${chipsHtml}</div>
             ${notesHtml}
+            ${afterRow(e)}
         </div>
     </div>`;
 }

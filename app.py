@@ -3469,9 +3469,37 @@ def api_customer_timeline(customer_id):
         events.sort(key=lambda x: x['date'] or '', reverse=True)
 
         # Haqiqiy qarz = savdolardagi joriy qolgan debt_usd yig'indisi
-        # (debt_usd har to'lovda kamaytiriladi, shuning uchun to'g'ridan-to'g'ri yig'ish kifoya)
         current_debt = sum(float(s.debt_usd or 0) for s in sales if float(s.debt_usd or 0) > 0)
         total_paid_usd = sum(float(p.total_usd or 0) for p in payments)
+
+        # --- Har bir amaldan keyin qarz va balans holati ---
+        # Har bir savdo uchun asl qarz: joriy debt_usd + o'sha savdoga bog'liq to'lovlar
+        sale_payments_map = {}  # sale_id -> jami to'langan
+        for p in payments:
+            if p.sale_id:
+                sale_payments_map[p.sale_id] = sale_payments_map.get(p.sale_id, 0.0) + float(p.total_usd or 0)
+        original_debt_map = {}  # sale_id -> asl qarz
+        for s in sales:
+            tied = sale_payments_map.get(s.id, 0.0)
+            original_debt_map[s.id] = float(s.debt_usd or 0) + tied
+
+        # Vaqt bo'yicha o'sish tartibida (eski → yangi) ishlaymiz
+        chrono = sorted(events, key=lambda x: x['date'] or '')
+        running_debt = 0.0
+        running_balance = 0.0
+        for ev in chrono:
+            if ev['type'] == 'sale':
+                orig = original_debt_map.get(ev['id'], ev['debt_usd'])
+                running_debt += orig
+            elif ev['type'] == 'payment':
+                paid = ev['total_usd']
+                if paid >= running_debt:
+                    running_balance += paid - running_debt
+                    running_debt = 0.0
+                else:
+                    running_debt -= paid
+            ev['debt_after'] = round(running_debt, 2)
+            ev['balance_after'] = round(running_balance, 2)
 
         return jsonify({
             'success': True,
