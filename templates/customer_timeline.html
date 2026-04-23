@@ -51,6 +51,7 @@
 .tl-type-sale { background: #dbeafe; color: #1d4ed8; }
 .tl-type-payment { background: #dcfce7; color: #15803d; }
 .tl-date { font-size: 12px; color: #94a3b8; }
+.tl-time-badge { background: #dbeafe; color: #1d4ed8; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
 .tl-amount { font-size: 16px; font-weight: 700; }
 .tl-amount-sale { color: #1e293b; }
 .tl-amount-payment { color: #16a34a; }
@@ -246,7 +247,7 @@ function renderSale(e) {
         <div class="tl-card tl-card-sale">
             <div class="tl-card-header">
                 <div style="display:flex;align-items:center;gap:8px;">
-                    <span class="tl-date" style="font-size:13px;font-weight:600;">${timeOnly(e.date)}</span>
+                    <span class="tl-time-badge">${timeOnly(e.date)}</span>
                     <span class="tl-type-badge tl-type-sale">🛒 Savdo #${e.id}</span>
                     ${statusBadge(e.payment_status)}
                 </div>
@@ -278,7 +279,7 @@ function renderPayment(e) {
         <div class="tl-card tl-card-payment">
             <div class="tl-card-header">
                 <div style="display:flex;align-items:center;gap:8px;">
-                    <span class="tl-date" style="font-size:13px;font-weight:600;">${timeOnly(e.date)}</span>
+                    <span class="tl-time-badge">${timeOnly(e.date)}</span>
                     <span class="tl-type-badge tl-type-payment">💳 To'lov #${e.id}</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
