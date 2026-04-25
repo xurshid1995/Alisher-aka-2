@@ -10079,6 +10079,14 @@ def api_add_user():
             return jsonify(
                 {'error': 'Bu foydalanuvchi nomi yoki email allaqachon mavjud'}), 400
 
+        # Telefon raqam unikalligini tekshirish
+        if data.get('phone'):
+            clean_new = ''.join(filter(str.isdigit, data['phone']))
+            if len(clean_new) >= 9:
+                for u in User.query.filter(User.phone != None, User.phone != '').all():
+                    if ''.join(filter(str.isdigit, u.phone))[-9:] == clean_new[-9:]:
+                        return jsonify({'error': f'Bu telefon raqam allaqachon {u.username} foydalanuvchisiga biriktirilgan'}), 400
+
         # Store_id ni data'dan olish
         store_id = data.get('store_id')
         if store_id:
@@ -10340,6 +10348,14 @@ def update_user(user_id):
 
             if existing_user:
                 return jsonify({'error': 'Bu email allaqachon mavjud'}), 400
+
+        # Telefon raqam unikalligini tekshirish (o'zi bundan mustasno)
+        if data.get('phone'):
+            clean_new = ''.join(filter(str.isdigit, data['phone']))
+            if len(clean_new) >= 9:
+                for u in User.query.filter(User.id != user_id, User.phone != None, User.phone != '').all():
+                    if ''.join(filter(str.isdigit, u.phone))[-9:] == clean_new[-9:]:
+                        return jsonify({'error': f'Bu telefon raqam allaqachon {u.username} foydalanuvchisiga biriktirilgan'}), 400
 
         # Ma'lumotlarni yangilash
         user.first_name = data['first_name']
