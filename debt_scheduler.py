@@ -371,15 +371,15 @@ class DebtScheduler:
             )
             logger.info("✅ Belgilangan eslatmalar: har 5 daqiqada tekshiriladi")
             
-            # Muddatli qarz eslatmalari (har kuni soat 09:00 da)
+            # Muddatli qarz eslatmalari (har kuni soat 09:20 da)
             self.scheduler.add_job(
                 self.check_due_date_reminders,
-                CronTrigger(hour=9, minute=0),
+                CronTrigger(hour=9, minute=20),
                 id='due_date_reminders',
                 name='Muddatli qarz eslatmalari',
                 replace_existing=True
             )
-            logger.info("✅ Muddatli qarz eslatmalari: har kuni 09:00 da")
+            logger.info("✅ Muddatli qarz eslatmalari: har kuni 09:20 da")
             
             # Schedulerni boshlash
             self.scheduler.start()
