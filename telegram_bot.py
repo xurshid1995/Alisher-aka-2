@@ -1448,6 +1448,86 @@ async def handle_unknown_message(update: Update, context: ContextTypes.DEFAULT_T
     )
 
 
+# ========== XODIM HISOBI BOG'LASH (/link_account) ==========
+# Foydalanuvchi telefon raqamini kutish holati
+_pending_link = {}  # {chat_id: True}
+
+async def link_account_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """/link_account komandasi - xodim hisobini Telegram bilan bog'lash"""
+    chat_id = update.effective_chat.id
+    _pending_link[chat_id] = True
+
+    keyboard = [[KeyboardButton("📱 Telefon raqamni yuborish", request_contact=True)]]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+
+    await update.message.reply_text(
+        "🔗 <b>Hisobni bog'lash</b>\n\n"
+        "Parol tiklash xizmatidan foydalanish uchun telefon raqamingizni yuboring.\n\n"
+        "Pastdagi tugmani bosing:",
+        parse_mode='HTML',
+        reply_markup=reply_markup
+    )
+
+
+async def handle_link_contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """link_account uchun contact handler"""
+    from app import app, db
+
+    chat_id = update.effective_chat.id
+    if chat_id not in _pending_link:
+        # Oddiy mijoz kontakti — eski handlega o'tkazamiz
+        await handle_contact(update, context)
+        return
+
+    del _pending_link[chat_id]
+    contact = update.message.contact
+    phone_number = contact.phone_number
+    clean_phone = ''.join(filter(str.isdigit, phone_number))
+
+    with app.app_context():
+        try:
+            from app import User
+
+            user = None
+            all_users = User.query.filter_by(is_active=True).all()
+            for u in all_users:
+                if u.phone:
+                    clean_db = ''.join(filter(str.isdigit, u.phone))
+                    if len(clean_phone) >= 9 and len(clean_db) >= 9 and clean_db[-9:] == clean_phone[-9:]:
+                        user = u
+                        break
+
+            if not user:
+                await update.message.reply_text(
+                    "❌ Bu telefon raqam tizimda topilmadi.\n\n"
+                    "Administrator bilan bog'laning.",
+                    reply_markup=ReplyKeyboardRemove()
+                )
+                return
+
+            # telegram_chat_id ni yangilash
+            user.telegram_chat_id = chat_id
+            db.session.commit()
+
+            await update.message.reply_text(
+                f"✅ <b>Muvaffaqiyatli bog'landi!</b>\n\n"
+                f"👤 Foydalanuvchi: <b>{user.username}</b>\n"
+                f"📛 Ismi: {user.first_name} {user.last_name}\n\n"
+                f"Endi saytda \"Parolni unutdingizmi?\" tugmasi orqali parolni tiklashingiz mumkin.",
+                parse_mode='HTML',
+                reply_markup=ReplyKeyboardRemove()
+            )
+            logger.info(f"✅ Xodim hisobi bog'landi: {user.username} → chat_id={chat_id}")
+
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"❌ link_account xatolik: {e}")
+            await update.message.reply_text(
+                "❌ Xatolik yuz berdi. Qayta urinib ko'ring.",
+                reply_markup=ReplyKeyboardRemove()
+            )
+
+
 def create_telegram_app():
     """Telegram Application yaratish"""
     token = os.getenv('TELEGRAM_BOT_TOKEN')
@@ -1463,9 +1543,10 @@ def create_telegram_app():
         application.add_handler(CommandHandler("start", start_command))
         application.add_handler(CommandHandler("help", help_command))
         application.add_handler(CommandHandler("mydebt", my_debt_command))
+        application.add_handler(CommandHandler("link_account", link_account_command))
 
-        # Contact handler - telefon raqam tugmasi uchun
-        application.add_handler(MessageHandler(filters.CONTACT, handle_contact))
+        # Contact handler - /link_account yoki oddiy telefon uchun
+        application.add_handler(MessageHandler(filters.CONTACT, handle_link_contact))
 
         # "Qarzni tekshirish" tugmasi handler
         application.add_handler(

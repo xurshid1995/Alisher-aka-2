@@ -1109,6 +1109,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20))
+    telegram_chat_id = db.Column(db.BigInteger, nullable=True)  # Parol tiklash uchun Telegram chat ID
     # admin, sotuvchi, kassir, ombor_xodimi
     role = db.Column(db.String(50), nullable=False, default='sotuvchi')
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=True)
@@ -13562,6 +13563,25 @@ def internal_server_error(e):
 
 
 # ==================== LOGIN SAHIFASI ====================
+# Parol tiklash uchun vaqtinchalik kodlar (xotirada)
+import threading as _threading
+_reset_codes_lock = _threading.Lock()
+_password_reset_codes = {}   # {phone: {code, user_id, username, expires_at}}
+_reset_tokens = {}           # {token: {user_id, username, expires_at}}
+
+
+def _cleanup_reset_codes():
+    """Muddati o'tgan kodlarni tozalash"""
+    now = datetime.now()
+    with _reset_codes_lock:
+        for k in list(_password_reset_codes.keys()):
+            if _password_reset_codes[k]['expires_at'] < now:
+                del _password_reset_codes[k]
+        for k in list(_reset_tokens.keys()):
+            if _reset_tokens[k]['expires_at'] < now:
+                del _reset_tokens[k]
+
+
 @app.route('/login')
 def login_page():
     message = request.args.get('message')
@@ -13718,6 +13738,171 @@ def api_login():
             'success': False,
             'message': 'Server xatoligi yuz berdi. Iltimos qayta urinib ko\'ring.'
         }), 500
+
+
+@app.route('/api/forgot-password', methods=['POST'])
+def api_forgot_password():
+    """1-qadam: Telefon raqam orqali OTP yuborish"""
+    try:
+        _cleanup_reset_codes()
+        data = request.get_json()
+        phone_input = (data.get('phone') or '').strip()
+        if not phone_input:
+            return jsonify({'success': False, 'message': 'Telefon raqam kiritilmadi'}), 400
+
+        clean_input = ''.join(filter(str.isdigit, phone_input))
+
+        # User jadvalida telefon raqamni qidirish
+        user = None
+        all_users = User.query.filter_by(is_active=True).all()
+        for u in all_users:
+            if u.phone:
+                clean_db = ''.join(filter(str.isdigit, u.phone))
+                if len(clean_input) >= 9 and len(clean_db) >= 9 and clean_db[-9:] == clean_input[-9:]:
+                    user = u
+                    break
+
+        if not user:
+            return jsonify({'success': False, 'message': 'Bu telefon raqam tizimda topilmadi'}), 404
+
+        if not user.telegram_chat_id:
+            return jsonify({
+                'success': False,
+                'message': f'Telegram bog\'lanmagan. Avval @Sergeli143_bot ga /link_account yozing.'
+            }), 400
+
+        # 6 raqamli OTP yaratish
+        import random as _random
+        code = str(_random.randint(100000, 999999))
+        expires_at = datetime.now() + timedelta(minutes=5)
+
+        with _reset_codes_lock:
+            _password_reset_codes[clean_input[-9:]] = {
+                'code': code,
+                'user_id': user.id,
+                'username': user.username,
+                'expires_at': expires_at
+            }
+
+        # Telegram orqali kod yuborish
+        bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+        if bot_token:
+            import requests as _req
+            msg = (
+                f"🔐 <b>PAROL TIKLASH KODI</b>\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n\n"
+                f"Tasdiqlash kodi: <b>{code}</b>\n\n"
+                f"⏱ Amal qilish muddati: 5 daqiqa\n\n"
+                f"<i>Agar siz so'ramagan bo'lsangiz, ushbu xabarni e'tiborsiz qoldiring.</i>"
+            )
+            _req.post(
+                f"https://api.telegram.org/bot{bot_token}/sendMessage",
+                json={'chat_id': user.telegram_chat_id, 'text': msg, 'parse_mode': 'HTML'},
+                timeout=10
+            )
+
+        return jsonify({'success': True, 'message': 'Tasdiqlash kodi Telegram ga yuborildi'})
+
+    except Exception as e:
+        logger.error(f"forgot-password xatolik: {e}")
+        return jsonify({'success': False, 'message': 'Server xatoligi'}), 500
+
+
+@app.route('/api/verify-reset-code', methods=['POST'])
+def api_verify_reset_code():
+    """2-qadam: OTP kodni tekshirish va token qaytarish"""
+    try:
+        _cleanup_reset_codes()
+        data = request.get_json()
+        phone_input = (data.get('phone') or '').strip()
+        code_input = (data.get('code') or '').strip()
+
+        clean_input = ''.join(filter(str.isdigit, phone_input))
+        key = clean_input[-9:] if len(clean_input) >= 9 else clean_input
+
+        with _reset_codes_lock:
+            entry = _password_reset_codes.get(key)
+
+        if not entry:
+            return jsonify({'success': False, 'message': 'Kod topilmadi yoki muddati o\'tgan'}), 400
+
+        if datetime.now() > entry['expires_at']:
+            with _reset_codes_lock:
+                _password_reset_codes.pop(key, None)
+            return jsonify({'success': False, 'message': 'Kod muddati o\'tgan, qayta so\'rang'}), 400
+
+        if entry['code'] != code_input:
+            return jsonify({'success': False, 'message': 'Kod noto\'g\'ri'}), 400
+
+        # Kod to'g'ri — bir martalik token yaratish
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now() + timedelta(minutes=10)
+        with _reset_codes_lock:
+            _reset_tokens[token] = {
+                'user_id': entry['user_id'],
+                'username': entry['username'],
+                'expires_at': expires_at
+            }
+            _password_reset_codes.pop(key, None)
+
+        return jsonify({
+            'success': True,
+            'token': token,
+            'username': entry['username']
+        })
+
+    except Exception as e:
+        logger.error(f"verify-reset-code xatolik: {e}")
+        return jsonify({'success': False, 'message': 'Server xatoligi'}), 500
+
+
+@app.route('/api/reset-password', methods=['POST'])
+def api_reset_password():
+    """3-qadam: Yangi parolni saqlash"""
+    try:
+        _cleanup_reset_codes()
+        data = request.get_json()
+        token = (data.get('token') or '').strip()
+        new_password = data.get('new_password') or ''
+        confirm_password = data.get('confirm_password') or ''
+
+        if not token:
+            return jsonify({'success': False, 'message': 'Token topilmadi'}), 400
+
+        with _reset_codes_lock:
+            entry = _reset_tokens.get(token)
+
+        if not entry:
+            return jsonify({'success': False, 'message': 'Token noto\'g\'ri yoki muddati o\'tgan'}), 400
+
+        if datetime.now() > entry['expires_at']:
+            with _reset_codes_lock:
+                _reset_tokens.pop(token, None)
+            return jsonify({'success': False, 'message': 'Token muddati o\'tgan, qayta boshlang'}), 400
+
+        if len(new_password) < 6:
+            return jsonify({'success': False, 'message': 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak'}), 400
+
+        if new_password != confirm_password:
+            return jsonify({'success': False, 'message': 'Parollar mos kelmadi'}), 400
+
+        user = User.query.get(entry['user_id'])
+        if not user:
+            return jsonify({'success': False, 'message': 'Foydalanuvchi topilmadi'}), 404
+
+        user.password = hash_password(new_password)
+        db.session.commit()
+
+        with _reset_codes_lock:
+            _reset_tokens.pop(token, None)
+
+        logger.info(f"✅ Parol tiklandi: {user.username}")
+        return jsonify({'success': True, 'message': 'Parol muvaffaqiyatli yangilandi'})
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"reset-password xatolik: {e}")
+        return jsonify({'success': False, 'message': 'Server xatoligi'}), 500
 
 
 @app.route('/logout')

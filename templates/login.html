@@ -510,7 +510,7 @@
                         <input type="checkbox" id="rememberMe" name="remember">
                         <span>{{ t('remember_me') }}</span>
                     </label>
-                    <a href="#" class="forgot-password">{{ t('forgot_password') }}</a>
+                    <a href="#" class="forgot-password" onclick="openResetModal(); return false;">{{ t('forgot_password') }}</a>
                 </div>
 
                 <button type="submit" class="btn-login" id="loginBtn">
@@ -707,5 +707,171 @@
         };
     })();
     </script>
+
+<!-- ===== PAROL TIKLASH MODALI ===== -->
+<div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;margin:16px;">
+    <button onclick="closeResetModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;">✕</button>
+    <h2 style="margin:0 0 6px;font-size:20px;color:#1e293b;">🔐 Parolni tiklash</h2>
+    <p style="margin:0 0 20px;font-size:13px;color:#64748b;" id="resetSubtitle">Telefon raqamingizni kiriting, Telegram orqali kod yuboramiz</p>
+
+    <!-- Alert -->
+    <div id="resetAlert" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;"></div>
+
+    <!-- Step 1: Telefon -->
+    <div id="resetStep1">
+      <label style="font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;">Telefon raqam</label>
+      <input id="resetPhone" type="tel" placeholder="+998 90 123-45-67"
+             style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:15px;margin:6px 0 16px;box-sizing:border-box;outline:none;"
+             onfocus="this.style.borderColor='#1a6eff'" onblur="this.style.borderColor='#e2e8f0'">
+      <button onclick="sendResetCode()"
+              style="width:100%;padding:12px;background:#1a6eff;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;"
+              id="sendCodeBtn">📨 Kod yuborish</button>
+    </div>
+
+    <!-- Step 2: Kod -->
+    <div id="resetStep2" style="display:none;">
+      <label style="font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;">Telegram kodi (6 raqam)</label>
+      <input id="resetCode" type="text" placeholder="000000" maxlength="6"
+             style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:22px;letter-spacing:8px;text-align:center;margin:6px 0 16px;box-sizing:border-box;outline:none;"
+             onfocus="this.style.borderColor='#1a6eff'" onblur="this.style.borderColor='#e2e8f0'">
+      <button onclick="verifyResetCode()"
+              style="width:100%;padding:12px;background:#1a6eff;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">✅ Tasdiqlash</button>
+      <button onclick="showResetStep(1)" style="width:100%;padding:10px;background:none;border:none;color:#64748b;font-size:13px;cursor:pointer;margin-top:8px;">← Orqaga</button>
+    </div>
+
+    <!-- Step 3: Yangi parol -->
+    <div id="resetStep3" style="display:none;">
+      <p style="font-size:13px;color:#16a34a;background:#dcfce7;padding:8px 12px;border-radius:8px;margin-bottom:14px;">
+        ✅ Tasdiqlandi! Login: <b id="confirmedUsername"></b>
+      </p>
+      <label style="font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;">Yangi parol</label>
+      <div style="position:relative;margin:6px 0 12px;">
+        <input id="newPassword" type="password" placeholder="Kamida 6 ta belgi"
+               style="width:100%;padding:11px 44px 11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;outline:none;"
+               onfocus="this.style.borderColor='#1a6eff'" onblur="this.style.borderColor='#e2e8f0'">
+        <button type="button" onclick="toggleResetPass('newPassword','eyeNew')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;"><i class="fas fa-eye" id="eyeNew"></i></button>
+      </div>
+      <label style="font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;">Parolni takrorlang</label>
+      <div style="position:relative;margin:6px 0 16px;">
+        <input id="confirmPassword" type="password" placeholder="Yana kiriting"
+               style="width:100%;padding:11px 44px 11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;box-sizing:border-box;outline:none;"
+               onfocus="this.style.borderColor='#1a6eff'" onblur="this.style.borderColor='#e2e8f0'">
+        <button type="button" onclick="toggleResetPass('confirmPassword','eyeConfirm')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;"><i class="fas fa-eye" id="eyeConfirm"></i></button>
+      </div>
+      <button onclick="doResetPassword()"
+              style="width:100%;padding:12px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">💾 Parolni saqlash</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _resetToken = '';
+let _resetPhone = '';
+
+function openResetModal() {
+    document.getElementById('resetModal').style.display = 'flex';
+    showResetStep(1);
+    resetAlert('');
+}
+function closeResetModal() {
+    document.getElementById('resetModal').style.display = 'none';
+}
+function showResetStep(n) {
+    [1,2,3].forEach(i => document.getElementById('resetStep'+i).style.display = i===n ? 'block' : 'none');
+    const subtitles = ['', 'Telefon raqamingizni kiriting, Telegram orqali kod yuboramiz',
+                       'Telegram ga kelgan 6 raqamli kodni kiriting',
+                       'Yangi parolingizni kiriting'];
+    document.getElementById('resetSubtitle').textContent = subtitles[n];
+}
+function resetAlert(msg, type='error') {
+    const el = document.getElementById('resetAlert');
+    if (!msg) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.style.background = type === 'success' ? '#dcfce7' : '#fee2e2';
+    el.style.color = type === 'success' ? '#15803d' : '#dc2626';
+    el.textContent = msg;
+}
+
+async function sendResetCode() {
+    const phone = document.getElementById('resetPhone').value.trim();
+    if (!phone) { resetAlert('Telefon raqam kiritilmadi'); return; }
+    const btn = document.getElementById('sendCodeBtn');
+    btn.disabled = true; btn.textContent = '⏳ Yuborilmoqda...';
+    resetAlert('');
+    try {
+        const r = await fetch('/api/forgot-password', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({phone})
+        });
+        const d = await r.json();
+        if (d.success) {
+            _resetPhone = phone;
+            showResetStep(2);
+            resetAlert('Telegram ga kod yuborildi ✅', 'success');
+        } else {
+            resetAlert(d.message || 'Xatolik yuz berdi');
+        }
+    } catch(e) { resetAlert('Server bilan aloqa uzildi'); }
+    btn.disabled = false; btn.textContent = '📨 Kod yuborish';
+}
+
+async function verifyResetCode() {
+    const code = document.getElementById('resetCode').value.trim();
+    if (code.length !== 6) { resetAlert('6 raqamli kod kiriting'); return; }
+    resetAlert('');
+    try {
+        const r = await fetch('/api/verify-reset-code', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({phone: _resetPhone, code})
+        });
+        const d = await r.json();
+        if (d.success) {
+            _resetToken = d.token;
+            document.getElementById('confirmedUsername').textContent = d.username;
+            // Login maydonini avtomatik to'ldirish
+            const loginInput = document.getElementById('username');
+            if (loginInput) loginInput.value = d.username;
+            showResetStep(3);
+            resetAlert('');
+        } else {
+            resetAlert(d.message || 'Kod noto\'g\'ri');
+        }
+    } catch(e) { resetAlert('Server bilan aloqa uzildi'); }
+}
+
+async function doResetPassword() {
+    const np = document.getElementById('newPassword').value;
+    const cp = document.getElementById('confirmPassword').value;
+    if (!np || np.length < 6) { resetAlert('Parol kamida 6 ta belgidan iborat bo\'lishi kerak'); return; }
+    if (np !== cp) { resetAlert('Parollar mos kelmadi'); return; }
+    resetAlert('');
+    try {
+        const r = await fetch('/api/reset-password', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({token: _resetToken, new_password: np, confirm_password: cp})
+        });
+        const d = await r.json();
+        if (d.success) {
+            resetAlert('✅ Parol muvaffaqiyatli yangilandi! Tizimga kirish uchun foydalaning.', 'success');
+            setTimeout(() => closeResetModal(), 2500);
+        } else {
+            resetAlert(d.message || 'Xatolik yuz berdi');
+        }
+    } catch(e) { resetAlert('Server bilan aloqa uzildi'); }
+}
+
+function toggleResetPass(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+    else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+}
+
+// Modal tashqarisiga bosish — yopish
+document.getElementById('resetModal').addEventListener('click', function(e) {
+    if (e.target === this) closeResetModal();
+});
+</script>
 </body>
 </html>
