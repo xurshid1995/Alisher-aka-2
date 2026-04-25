@@ -3953,7 +3953,8 @@ def api_return_product():
                     ).order_by(Sale.sale_date.asc()).all()
 
                     if not other_debt_sales and remaining_to_deduct == total_returned_usd:
-                        # Umuman qarz yo'q
+                        # Umuman qarz yo'q — session rollback qilish
+                        db.session.rollback()
                         return jsonify({
                             'success': False,
                             'error': 'no_debt',

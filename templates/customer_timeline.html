@@ -86,18 +86,15 @@
 <div class="tl-page">
     <!-- Header -->
     <div class="tl-header">
-        <h1 class="tl-title">📋 {{ customer.name }} — Amallar tarixi</h1>
-        <a href="/customer-balances" class="tl-back-btn">← Orqaga</a>
-    </div>
-
-    <!-- Customer info -->
-    <div class="tl-customer-card">
-        <div class="tl-avatar" id="avatarInitial">?</div>
-        <div>
-            <div class="tl-cname">{{ customer.name }}</div>
-            <div class="tl-cphone">📞 {{ customer.phone or '—' }}</div>
+        <div class="tl-customer-card" style="margin:0;box-shadow:none;background:transparent;padding:0;">
+            <div class="tl-avatar" id="avatarInitial">?</div>
+            <div>
+                <div class="tl-cname">{{ customer.name }}</div>
+                <div class="tl-cphone">📞 {{ customer.phone or '—' }}</div>
+            </div>
+            <div class="tl-cbadges" id="customerBadges"></div>
         </div>
-        <div class="tl-cbadges" id="customerBadges"></div>
+        <a href="/customer-balances" class="tl-back-btn">← Orqaga</a>
     </div>
 
     <!-- Stats -->
