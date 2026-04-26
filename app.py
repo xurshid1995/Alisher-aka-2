@@ -1481,6 +1481,7 @@ class Sale(db.Model):
                             unit_price = old_total / old_quantity
 
                     returned_quantity = op.new_data.get('returned_quantity', 0)
+                    unit_price = unit_price or Decimal('0')
                     total_price = unit_price * returned_quantity
 
                     returned_items.append({
@@ -1678,165 +1679,6 @@ class CurrencyRate(db.Model):
             'updated_date': self.updated_date.isoformat() if self.updated_date else None,
             'is_active': self.is_active,
             'updated_by': self.updated_by}
-
-
-# ============================================
-# HOSTING TO'LOV TIZIMI MODELLARI
-# ============================================
-
-class HostingClient(db.Model):
-    """Hosting mijozlari - DigitalOcean serverlari"""
-    __tablename__ = 'hosting_clients'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)  # Mijoz ismi / kompaniya
-    phone = db.Column(db.String(20), nullable=True)
-    telegram_chat_id = db.Column(db.BigInteger, nullable=True)  # Telegram chat ID
-    telegram_username = db.Column(db.String(100), nullable=True)  # @username
-
-    # DigitalOcean ma'lumotlari
-    droplet_id = db.Column(db.BigInteger, nullable=True)  # DO Droplet ID
-    droplet_name = db.Column(db.String(200), nullable=True)  # Server nomi
-    server_ip = db.Column(db.String(50), nullable=True)  # IP manzil
-
-    # To'lov ma'lumotlari
-    monthly_price_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)
-    payment_day = db.Column(db.Integer, default=1)  # Oyning nechanchi kuni to'laydi
-    balance = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)  # Mijoz balansi
-
-    # Holat
-    is_active = db.Column(db.Boolean, default=True)
-    server_status = db.Column(db.String(20), default='active')  # active, off, suspended
-    status_token = db.Column(db.String(64), unique=True, nullable=True)  # Mijoz uchun maxfiy token
-
-    # Vaqtlar
-    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-    updated_at = db.Column(db.DateTime, default=lambda: get_tashkent_time(), onupdate=lambda: get_tashkent_time())
-    notes = db.Column(db.Text, nullable=True)
-
-    # Relationships
-    payment_orders = db.relationship('HostingPaymentOrder', backref='client', lazy='dynamic', passive_deletes=True)
-    payments = db.relationship('HostingPayment', backref='client', lazy='dynamic', passive_deletes=True)
-
-    def __repr__(self):
-        return f'<HostingClient {self.id}: {self.name}>'
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'phone': self.phone,
-            'telegram_chat_id': self.telegram_chat_id,
-            'telegram_username': self.telegram_username,
-            'droplet_id': self.droplet_id,
-            'droplet_name': self.droplet_name,
-            'server_ip': self.server_ip,
-            'monthly_price_uzs': float(self.monthly_price_uzs or 0),
-            'payment_day': self.payment_day,
-            'balance': float(self.balance or 0),
-            'is_active': self.is_active,
-            'server_status': self.server_status,
-            'status_token': self.status_token,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
-            'notes': self.notes
-        }
-
-
-class HostingPaymentOrder(db.Model):
-    """To'lov buyurtmalari - mijoz to'lov qilmoqchi"""
-    __tablename__ = 'hosting_payment_orders'
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey('hosting_clients.id', ondelete='CASCADE'), nullable=False)
-    order_code = db.Column(db.String(20), unique=True, nullable=False)  # Buyurtma kodi: HP-XXXX
-
-    # To'lov ma'lumotlari
-    amount_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False)
-    months = db.Column(db.Integer, default=1)  # Nechi oylik to'lov
-
-    # Status: pending -> client_confirmed -> payment_matched -> approved / rejected / expired
-    status = db.Column(db.String(30), default='pending', nullable=False)
-
-    # Card Xabar matching
-    card_xabar_amount = db.Column(db.DECIMAL(precision=15, scale=2), nullable=True)
-    card_xabar_time = db.Column(db.DateTime, nullable=True)
-    card_xabar_message = db.Column(db.Text, nullable=True)
-
-    # Vaqtlar
-    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-    confirmed_at = db.Column(db.DateTime, nullable=True)  # Mijoz "To'ladim" bosgan vaqt
-    matched_at = db.Column(db.DateTime, nullable=True)  # Card Xabar mos kelgan vaqt
-    approved_at = db.Column(db.DateTime, nullable=True)  # Admin tasdiqlagan vaqt
-    expires_at = db.Column(db.DateTime, nullable=True)  # Buyurtma muddati
-
-    admin_notes = db.Column(db.Text, nullable=True)
-
-    def __repr__(self):
-        return f'<HostingPaymentOrder {self.order_code}: {self.status}>'
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'client_id': self.client_id,
-            'client_name': self.client.name if self.client else None,
-            'order_code': self.order_code,
-            'amount_uzs': float(self.amount_uzs or 0),
-            'months': self.months,
-            'status': self.status,
-            'card_xabar_amount': float(self.card_xabar_amount) if self.card_xabar_amount else None,
-            'card_xabar_time': self.card_xabar_time.isoformat() if self.card_xabar_time else None,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'confirmed_at': self.confirmed_at.isoformat() if self.confirmed_at else None,
-            'matched_at': self.matched_at.isoformat() if self.matched_at else None,
-            'approved_at': self.approved_at.isoformat() if self.approved_at else None,
-            'admin_notes': self.admin_notes
-        }
-
-
-class HostingPayment(db.Model):
-    """Tasdiqlangan to'lovlar tarixi"""
-    __tablename__ = 'hosting_payments'
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey('hosting_clients.id', ondelete='CASCADE'), nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('hosting_payment_orders.id', ondelete='SET NULL'), nullable=True)
-
-    # To'lov ma'lumotlari
-    amount_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False)
-    months_paid = db.Column(db.Integer, default=1)
-    payment_date = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-
-    # Davr
-    period_start = db.Column(db.Date, nullable=True)
-    period_end = db.Column(db.Date, nullable=True)
-
-    # Tasdiqlash
-    confirmed_by = db.Column(db.String(100), default='admin')
-    notes = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-
-    # Relationships
-    order = db.relationship('HostingPaymentOrder', backref='payment')
-
-    def __repr__(self):
-        return f'<HostingPayment {self.id}: {self.client_id} - {self.amount_uzs} UZS>'
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'client_id': self.client_id,
-            'client_name': self.client.name if self.client else None,
-            'order_id': self.order_id,
-            'order_code': self.order.order_code if self.order else None,
-            'amount_uzs': float(self.amount_uzs or 0),
-            'months_paid': self.months_paid,
-            'payment_date': self.payment_date.strftime('%Y-%m-%d %H:%M') if self.payment_date else None,
-            'period_start': self.period_start.isoformat() if self.period_start else None,
-            'period_end': self.period_end.isoformat() if self.period_end else None,
-            'confirmed_by': self.confirmed_by,
-            'notes': self.notes
-        }
 
 
 # API Test sahifasi
@@ -3230,7 +3072,9 @@ def calculate_total():
     total = Decimal('0.00')
 
     for product in products:
-        total += product.price * product.stock_quantity
+        price = product.price or Decimal('0')
+        quantity = product.stock_quantity or 0
+        total += price * quantity
 
     return jsonify({
         'total_value': float(total),
@@ -3776,7 +3620,8 @@ def api_return_product():
 
             # Qaytariladigan summa, xarajat va foyda (USD da)
             # SaleItem da total qiymatlar saqlanadi, shuning uchun unit qiymatni hisoblash kerak
-            returned_usd = sale_item.unit_price * Decimal(str(return_quantity))
+            unit_price = sale_item.unit_price or Decimal('0')
+            returned_usd = unit_price * Decimal(str(return_quantity))
             returned_cost = Decimal(str(sale_item.cost_price or 0)) * Decimal(str(return_quantity))
 
             # Foyda = total_profit dan proporsional qismini olish
@@ -3798,7 +3643,9 @@ def api_return_product():
                 db.session.delete(sale_item)
             else:
                 # Total price ni yangilash
-                sale_item.total_price = sale_item.unit_price * Decimal(str(sale_item.quantity))
+                unit_price = sale_item.unit_price or Decimal('0')
+                quantity = sale_item.quantity or 0
+                sale_item.total_price = unit_price * Decimal(str(quantity))
 
             # Stock ga qaytarish
             if location_type == 'store':
@@ -3865,7 +3712,7 @@ def api_return_product():
                 description=f"Qaytarildi: {product.name} - {return_quantity} dona (Savdo #{sale_id})",
                 old_data={
                     'quantity': float(old_quantity),
-                    'total_price': float(sale_item.unit_price * Decimal(str(old_quantity)))
+                    'total_price': float((sale_item.unit_price or Decimal('0')) * Decimal(str(old_quantity)))
                 },
                 new_data={
                     'product_id': product_id,
@@ -6005,10 +5852,14 @@ def api_warehouse_stock(warehouse_id):
 
         for stock in stocks:
             # Calculate unit profit
-            unit_profit = stock.product.sell_price - stock.product.cost_price
-            total_stock_value = stock.product.sell_price * stock.quantity
-            total_stock_cost_value = stock.product.cost_price * stock.quantity
-            total_stock_profit = unit_profit * stock.quantity
+            sell_price = stock.product.sell_price or Decimal('0')
+            cost_price = stock.product.cost_price or Decimal('0')
+            quantity = stock.quantity or 0
+            
+            unit_profit = sell_price - cost_price
+            total_stock_value = sell_price * quantity
+            total_stock_cost_value = cost_price * quantity
+            total_stock_profit = unit_profit * quantity
 
             # Determine status
             item_status = 'normal'
@@ -12520,8 +12371,10 @@ def create_pending_sale(data):
         total_profit = Decimal('0')
 
         for sale_item in new_sale.items:
-            total_cost += sale_item.cost_price * sale_item.quantity
-            total_profit += sale_item.profit
+            cost_price = sale_item.cost_price or Decimal('0')
+            quantity = sale_item.quantity or 0
+            total_cost += cost_price * quantity
+            total_profit += sale_item.profit or Decimal('0')
 
         new_sale.total_amount = total_amount  # USD da
         new_sale.total_cost = total_cost  # USD da
@@ -15276,588 +15129,6 @@ def api_check_and_send_reminders():
     except Exception as e:
         db.session.rollback()
         logger.error(f"Eslatmalarni tekshirishda xatolik: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-# ============================================
-# HOSTING ADMIN PANEL ROUTES
-# ============================================
-
-@app.route('/api/hosting/widget/<token>')
-def api_hosting_widget_status(token):
-    """Mijoz saytidagi widget uchun public API (login kerak emas)"""
-    try:
-        client = HostingClient.query.filter_by(status_token=token, is_active=True).first()
-        if not client:
-            return jsonify({'success': False, 'error': 'Token noto\'g\'ri'}), 404
-
-        balance = float(client.balance or 0)
-        monthly_price = float(client.monthly_price_uzs or 0)
-        today = get_tashkent_time().date()
-
-        days_left = 0
-        end_date = None
-        status = 'overdue'
-
-        if monthly_price > 0 and balance > 0:
-            daily_price = monthly_price / 30
-            days_left = int(balance / daily_price)
-            end_date = (today + timedelta(days=days_left)).strftime('%d.%m.%Y')
-            if days_left > 7:
-                status = 'ok'
-            elif days_left > 3:
-                status = 'warning'
-            else:
-                status = 'danger'
-        elif balance <= 0:
-            status = 'overdue'
-            days_left = 0
-
-        # CORS header
-        response = jsonify({
-            'success': True,
-            'name': client.name,
-            'balance': balance,
-            'balance_formatted': f"{balance:,.0f}".replace(',', ' '),
-            'monthly_price': monthly_price,
-            'monthly_formatted': f"{monthly_price:,.0f}".replace(',', ' '),
-            'days_left': days_left,
-            'end_date': end_date,
-            'server_status': client.server_status,
-            'status': status
-        })
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        return response
-    except Exception as e:
-        logger.error(f"Widget API xatosi: {e}")
-        return jsonify({'success': False, 'error': 'Server xatosi'}), 500
-
-
-@app.route('/hosting')
-@role_required('admin')
-def hosting_dashboard():
-    """Hosting boshqaruv paneli"""
-    return render_template('hosting_dashboard.html')
-
-
-@app.route('/api/hosting/clients', methods=['GET'])
-@role_required('admin')
-def api_hosting_clients():
-    """Hosting mijozlar ro'yxati"""
-    try:
-        clients = HostingClient.query.order_by(HostingClient.name).all()
-        result = []
-        for c in clients:
-            data = c.to_dict()
-            today = get_tashkent_time().date()
-
-            # Balansga asosan to'lov muddatini hisoblash
-            balance = float(c.balance or 0)
-            monthly_price = float(c.monthly_price_uzs or 0)
-
-            if monthly_price > 0 and balance > 0:
-                # Balans necha kunga yetadi
-                daily_price = monthly_price / 30
-                balance_days = int(balance / daily_price)
-                balance_end_date = today + timedelta(days=balance_days)
-                data['balance_end_date'] = balance_end_date.strftime('%d.%m.%Y')
-                data['balance_days_left'] = balance_days
-                data['next_payment_date'] = balance_end_date.strftime('%d.%m.%Y')
-
-                if balance_days < 0:
-                    data['payment_status'] = 'overdue'
-                elif balance_days <= 3:
-                    data['payment_status'] = 'warning'
-                elif balance_days <= 7:
-                    data['payment_status'] = 'warning'
-                else:
-                    data['payment_status'] = 'ok'
-                data['days_left'] = balance_days
-            elif monthly_price > 0 and balance <= 0:
-                data['balance_end_date'] = None
-                data['balance_days_left'] = 0
-                data['next_payment_date'] = today.strftime('%d.%m.%Y')
-                data['payment_status'] = 'overdue'
-                data['days_left'] = 0
-            else:
-                data['balance_end_date'] = None
-                data['balance_days_left'] = None
-                data['next_payment_date'] = None
-                data['payment_status'] = 'never_paid'
-                data['days_left'] = None
-
-            # Oxirgi to'lov sanasi
-            last_payment = HostingPayment.query.filter_by(
-                client_id=c.id
-            ).order_by(HostingPayment.payment_date.desc()).first()
-            data['last_payment_date'] = last_payment.payment_date.strftime('%d.%m.%Y') if last_payment and last_payment.payment_date else None
-
-            # Pending buyurtmalar soni
-            pending_count = HostingPaymentOrder.query.filter(
-                HostingPaymentOrder.client_id == c.id,
-                HostingPaymentOrder.status.in_(['pending', 'client_confirmed', 'payment_matched'])
-            ).count()
-            data['pending_orders'] = pending_count
-
-            result.append(data)
-
-        return jsonify({'success': True, 'clients': result})
-    except Exception as e:
-        logger.error(f"Hosting clients xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/clients', methods=['POST'])
-@role_required('admin')
-def api_hosting_client_create():
-    """Yangi hosting mijoz qo'shish"""
-    try:
-        data = request.get_json()
-        if not data or not data.get('name'):
-            return jsonify({'success': False, 'error': 'Ism kiritilmagan'}), 400
-
-        client = HostingClient(
-            name=data['name'],
-            phone=data.get('phone'),
-            telegram_chat_id=data.get('telegram_chat_id'),
-            telegram_username=data.get('telegram_username'),
-            droplet_id=data.get('droplet_id'),
-            droplet_name=data.get('droplet_name'),
-            server_ip=data.get('server_ip'),
-            monthly_price_uzs=Decimal(str(data.get('monthly_price_uzs', 0))),
-            payment_day=data.get('payment_day', 1),
-            notes=data.get('notes'),
-            status_token=secrets.token_hex(16)
-        )
-        db.session.add(client)
-        db.session.commit()
-
-        return jsonify({'success': True, 'client': client.to_dict()})
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Hosting client yaratishda xato: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/clients/<int:client_id>', methods=['PUT'])
-@role_required('admin')
-def api_hosting_client_update(client_id):
-    """Hosting mijozni tahrirlash"""
-    try:
-        client = HostingClient.query.get(client_id)
-        if not client:
-            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
-
-        data = request.get_json()
-        if data.get('name'):
-            client.name = data['name']
-        if 'phone' in data:
-            client.phone = data['phone']
-        if 'telegram_chat_id' in data:
-            client.telegram_chat_id = data['telegram_chat_id']
-        if 'telegram_username' in data:
-            client.telegram_username = data['telegram_username']
-        if 'droplet_id' in data:
-            client.droplet_id = data['droplet_id']
-        if 'droplet_name' in data:
-            client.droplet_name = data['droplet_name']
-        if 'server_ip' in data:
-            client.server_ip = data['server_ip']
-        if 'monthly_price_uzs' in data:
-            client.monthly_price_uzs = Decimal(str(data['monthly_price_uzs']))
-        if 'payment_day' in data:
-            client.payment_day = data['payment_day']
-        if 'is_active' in data:
-            client.is_active = data['is_active']
-        if 'notes' in data:
-            client.notes = data['notes']
-        if 'balance' in data:
-            client.balance = Decimal(str(data['balance']))
-
-        db.session.commit()
-
-        # Agar balans musbat bo'lsa va server o'chiq bo'lsa - avtomatik yoqish
-        if float(client.balance or 0) > 0 and client.droplet_id and client.server_status in ('suspended', 'off'):
-            try:
-                from digitalocean_manager import DigitalOceanManager
-                do_mgr = DigitalOceanManager()
-                status = do_mgr.get_droplet_status(client.droplet_id)
-                if status == 'off':
-                    success = do_mgr.power_on(client.droplet_id)
-                    if success:
-                        client.server_status = 'active'
-                        db.session.commit()
-                        logger.info(f"🟢 Server yoqildi (mijoz tahrirlandi): {client.name} (droplet: {client.droplet_id})")
-                elif status == 'active':
-                    client.server_status = 'active'
-                    db.session.commit()
-            except Exception as e:
-                logger.error(f"DO server yoqishda xato ({client.name}): {e}")
-
-        return jsonify({'success': True, 'client': client.to_dict()})
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Hosting client yangilashda xato: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/clients/<int:client_id>/add-balance', methods=['POST'])
-@role_required('admin')
-def api_hosting_client_add_balance(client_id):
-    """Mijoz balansiga summa qo'shish"""
-    try:
-        client = HostingClient.query.get(client_id)
-        if not client:
-            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
-
-        data = request.get_json()
-        amount = data.get('amount')
-        if not amount or float(amount) <= 0:
-            return jsonify({'success': False, 'error': 'Summa musbat bo\'lishi kerak'}), 400
-
-        client.balance = (client.balance or Decimal('0')) + Decimal(str(amount))
-        db.session.commit()
-
-        # Server yoqish (agar o'chiq yoki suspended bo'lsa va balans musbat bo'lsa)
-        server_msg = ""
-        if client.droplet_id and float(client.balance) > 0 and client.server_status in ('suspended', 'off'):
-            try:
-                from digitalocean_manager import DigitalOceanManager
-                do_mgr = DigitalOceanManager()
-                status = do_mgr.get_droplet_status(client.droplet_id)
-                if status == 'off':
-                    success = do_mgr.power_on(client.droplet_id)
-                    if success:
-                        client.server_status = 'active'
-                        db.session.commit()
-                        server_msg = "Server avtomatik yoqildi"
-                        logger.info(f"🟢 Server yoqildi (balans to'ldirildi): {client.name} (droplet: {client.droplet_id})")
-                    else:
-                        server_msg = "Server yoqishda xato - qo'lda yoqing"
-                        logger.warning(f"⚠️ Server yoqishda xato: {client.name}")
-                elif status == 'active':
-                    client.server_status = 'active'
-                    db.session.commit()
-                    server_msg = "Server allaqachon yoqiq"
-            except Exception as e:
-                logger.error(f"DO server yoqishda xato ({client.name}): {e}")
-                server_msg = f"Server yoqishda xato: {str(e)[:50]}"
-
-        return jsonify({'success': True, 'balance': float(client.balance), 'server_msg': server_msg})
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Hosting balance qo'shishda xato: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/clients/<int:client_id>', methods=['DELETE'])
-@role_required('admin')
-def api_hosting_client_delete(client_id):
-    """Hosting mijozni o'chirish"""
-    try:
-        client = HostingClient.query.get(client_id)
-        if not client:
-            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
-
-        db.session.delete(client)
-        db.session.commit()
-        return jsonify({'success': True})
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Hosting client o'chirishda xato: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/orders', methods=['GET'])
-@role_required('admin')
-def api_hosting_orders():
-    """To'lov buyurtmalari ro'yxati"""
-    try:
-        status_filter = request.args.get('status')
-        query = HostingPaymentOrder.query
-
-        if status_filter:
-            query = query.filter_by(status=status_filter)
-
-        orders = query.order_by(HostingPaymentOrder.created_at.desc()).limit(100).all()
-        result = [o.to_dict() for o in orders]
-
-        return jsonify({'success': True, 'orders': result})
-    except Exception as e:
-        logger.error(f"Hosting orders xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/orders/<int:order_id>/approve', methods=['POST'])
-@role_required('admin')
-def api_hosting_order_approve(order_id):
-    """Buyurtmani tasdiqlash (web paneldan)"""
-    try:
-        order = HostingPaymentOrder.query.get(order_id)
-        if not order:
-            return jsonify({'success': False, 'error': 'Buyurtma topilmadi'}), 404
-
-        if order.status == 'approved':
-            return jsonify({'success': False, 'error': 'Allaqachon tasdiqlangan'}), 400
-
-        client = HostingClient.query.get(order.client_id)
-        now = get_tashkent_time()
-
-        # To'lov yaratish
-        period_start = now.date()
-        end_month = period_start.month + order.months
-        end_year = period_start.year + (end_month - 1) // 12
-        end_month = ((end_month - 1) % 12) + 1
-        try:
-            period_end = period_start.replace(year=end_year, month=end_month)
-        except ValueError:
-            import calendar
-            last_day = calendar.monthrange(end_year, end_month)[1]
-            period_end = period_start.replace(year=end_year, month=end_month, day=min(period_start.day, last_day))
-
-        payment = HostingPayment(
-            client_id=client.id,
-            order_id=order.id,
-            amount_uzs=order.amount_uzs,
-            months_paid=order.months,
-            payment_date=now,
-            period_start=period_start,
-            period_end=period_end,
-            confirmed_by=session.get('user_name', 'admin')
-        )
-        db.session.add(payment)
-
-        # Balansni yangilash
-        client.balance = (client.balance or Decimal('0')) + order.amount_uzs
-
-        order.status = 'approved'
-        order.approved_at = now
-        db.session.commit()
-
-        # Server yoqish
-        server_msg = ""
-        if client and client.droplet_id:
-            try:
-                from digitalocean_manager import DigitalOceanManager
-                do_mgr = DigitalOceanManager()
-                status = do_mgr.get_droplet_status(client.droplet_id)
-                if status == 'off':
-                    do_mgr.power_on(client.droplet_id)
-                    client.server_status = 'active'
-                    db.session.commit()
-                    server_msg = "Server yoqildi"
-            except Exception as e:
-                server_msg = f"Server yoqishda xato: {str(e)[:50]}"
-
-        return jsonify({
-            'success': True,
-            'server_msg': server_msg,
-            'payment': payment.to_dict()
-        })
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Order approve xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/payments', methods=['GET'])
-@role_required('admin')
-def api_hosting_payments():
-    """To'lovlar tarixi"""
-    try:
-        client_id = request.args.get('client_id', type=int)
-        query = HostingPayment.query
-
-        if client_id:
-            query = query.filter_by(client_id=client_id)
-
-        payments = query.order_by(HostingPayment.payment_date.desc()).limit(100).all()
-        result = [p.to_dict() for p in payments]
-
-        return jsonify({'success': True, 'payments': result})
-    except Exception as e:
-        logger.error(f"Hosting payments xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/payments', methods=['POST'])
-@role_required('admin')
-def api_hosting_payment_manual():
-    """Qo'lda to'lov qo'shish"""
-    try:
-        data = request.get_json()
-        if not data or not data.get('client_id') or not data.get('amount_uzs'):
-            return jsonify({'success': False, 'error': 'client_id va amount_uzs kerak'}), 400
-
-        client = HostingClient.query.get(data['client_id'])
-        if not client:
-            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
-
-        now = get_tashkent_time()
-        months = data.get('months_paid', 1)
-        period_start = now.date()
-        end_month = period_start.month + months
-        end_year = period_start.year + (end_month - 1) // 12
-        end_month = ((end_month - 1) % 12) + 1
-        try:
-            period_end = period_start.replace(year=end_year, month=end_month)
-        except ValueError:
-            import calendar
-            last_day = calendar.monthrange(end_year, end_month)[1]
-            period_end = period_start.replace(year=end_year, month=end_month, day=min(period_start.day, last_day))
-
-        payment = HostingPayment(
-            client_id=client.id,
-            amount_uzs=Decimal(str(data['amount_uzs'])),
-            months_paid=months,
-            payment_date=now,
-            period_start=period_start,
-            period_end=period_end,
-            confirmed_by=session.get('user_name', 'admin'),
-            notes=data.get('notes', 'Qo\'lda qo\'shildi')
-        )
-        db.session.add(payment)
-
-        # Balansni yangilash
-        client.balance = (client.balance or Decimal('0')) + Decimal(str(data['amount_uzs']))
-
-        db.session.commit()
-
-        # Server yoqish (agar o'chiq yoki suspended bo'lsa va balans musbat bo'lsa)
-        server_msg = ""
-        if client.droplet_id and float(client.balance) > 0 and client.server_status in ('suspended', 'off'):
-            try:
-                from digitalocean_manager import DigitalOceanManager
-                do_mgr = DigitalOceanManager()
-                status = do_mgr.get_droplet_status(client.droplet_id)
-                if status == 'off':
-                    success = do_mgr.power_on(client.droplet_id)
-                    if success:
-                        client.server_status = 'active'
-                        db.session.commit()
-                        server_msg = "Server avtomatik yoqildi"
-                        logger.info(f"🟢 Server yoqildi (qo'lda to'lov): {client.name} (droplet: {client.droplet_id})")
-                    else:
-                        server_msg = "Server yoqishda xato - qo'lda yoqing"
-                elif status == 'active':
-                    client.server_status = 'active'
-                    db.session.commit()
-                    server_msg = "Server allaqachon yoqiq"
-            except Exception as e:
-                logger.error(f"DO server yoqishda xato ({client.name}): {e}")
-                server_msg = f"Server yoqishda xato: {str(e)[:50]}"
-
-        result = payment.to_dict()
-        result['server_msg'] = server_msg
-        return jsonify({'success': True, 'payment': result})
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Manual payment xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/droplets', methods=['GET'])
-@role_required('admin')
-def api_hosting_droplets():
-    """DigitalOcean dropletlar ro'yxati"""
-    try:
-        from digitalocean_manager import DigitalOceanManager
-        do_mgr = DigitalOceanManager()
-
-        if not do_mgr.is_token_valid():
-            return jsonify({'success': False, 'error': 'DO API token noto\'g\'ri'}), 400
-
-        droplets = do_mgr.get_all_droplets_info()
-        return jsonify({'success': True, 'droplets': droplets})
-    except Exception as e:
-        logger.error(f"DO droplets xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/droplets/<int:droplet_id>/power', methods=['POST'])
-@role_required('admin')
-def api_hosting_droplet_power(droplet_id):
-    """Droplet power on/off"""
-    try:
-        data = request.get_json()
-        action = data.get('action', 'on')
-
-        from digitalocean_manager import DigitalOceanManager
-        do_mgr = DigitalOceanManager()
-
-        if action == 'on':
-            success = do_mgr.power_on(droplet_id)
-        elif action == 'off':
-            success = do_mgr.shutdown(droplet_id)
-        elif action == 'reboot':
-            success = do_mgr.reboot(droplet_id)
-        else:
-            return jsonify({'success': False, 'error': 'Noto\'g\'ri action'}), 400
-
-        # Client statusini yangilash
-        client = HostingClient.query.filter_by(droplet_id=droplet_id).first()
-        if client and success:
-            if action == 'on':
-                client.server_status = 'active'
-            elif action == 'off':
-                client.server_status = 'off'
-            db.session.commit()
-
-        return jsonify({'success': success})
-    except Exception as e:
-        logger.error(f"Droplet power xatosi: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/hosting/stats', methods=['GET'])
-@role_required('admin')
-def api_hosting_stats():
-    """Hosting statistikasi"""
-    try:
-        total_clients = HostingClient.query.filter_by(is_active=True).count()
-        total_revenue = db.session.query(
-            db.func.sum(HostingPayment.amount_uzs)
-        ).scalar() or 0
-
-        # Joriy oy tushumlari
-        now = get_tashkent_time()
-        month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        monthly_revenue = db.session.query(
-            db.func.sum(HostingPayment.amount_uzs)
-        ).filter(
-            HostingPayment.payment_date >= month_start
-        ).scalar() or 0
-
-        # Pending buyurtmalar
-        pending_orders = HostingPaymentOrder.query.filter(
-            HostingPaymentOrder.status.in_(['pending', 'client_confirmed', 'payment_matched'])
-        ).count()
-
-        # Muddati o'tganlar
-        today = now.date()
-        overdue_clients = 0
-        active_clients = HostingClient.query.filter_by(is_active=True).all()
-        for client in active_clients:
-            last_p = HostingPayment.query.filter_by(
-                client_id=client.id
-            ).order_by(HostingPayment.payment_date.desc()).first()
-            if last_p and last_p.period_end and today > last_p.period_end:
-                overdue_clients += 1
-            elif not last_p:
-                overdue_clients += 1
-
-        return jsonify({
-            'success': True,
-            'stats': {
-                'total_clients': total_clients,
-                'total_revenue': float(total_revenue),
-                'monthly_revenue': float(monthly_revenue),
-                'pending_orders': pending_orders,
-                'overdue_clients': overdue_clients
-            }
-        })
-    except Exception as e:
-        logger.error(f"Hosting stats xatosi: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
