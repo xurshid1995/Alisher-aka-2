@@ -154,14 +154,6 @@
                 </a>
             </li>
             {% endif %}
-            {% if session.role == 'admin' %}
-            <li>
-                <a href="/hosting" {% if request.endpoint == 'hosting_dashboard' %}class="active"{% endif %}>
-                    <span class="icon">🖥️</span>
-                    <span>Hosting</span>
-                </a>
-            </li>
-            {% endif %}
             <!-- Mobile uchun bo'sh joy -->
             <li class="sidebar-spacer" style="height: 80px; pointer-events: none;"></li>
         </ul>
