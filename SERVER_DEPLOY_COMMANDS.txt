@@ -3,10 +3,10 @@
 # ========================================
 
 # 1. Serverga kirish
-ssh root@sergeli0606.uz
+ssh root@206.81.17.211
 
 # 2. Loyiha papkasiga o'tish
-cd /var/www/xurshid
+cd /var/www/alisher
 
 # 3. Yangi kodlarni GitHub dan pull qilish
 git pull origin main
@@ -14,46 +14,43 @@ git pull origin main
 # 4. Virtual environment aktivlashtirish
 source venv/bin/activate
 
-# 5. psutil o'rnatish
-pip install psutil==5.9.0
+# 5. Dependencies yangilash (agar kerak bo'lsa)
+pip install -r requirements.txt
 
-# 6. check_logs.sh ga ruxsat berish
-chmod +x check_logs.sh
+# 6. Gunicorn service restart
+sudo systemctl restart alisher
 
-# 7. Gunicorn service restart
-sudo systemctl restart xurshid
+# 7. Service holatini tekshirish
+sudo systemctl status alisher
 
-# 8. Service holatini tekshirish
-sudo systemctl status xurshid
+# 8. Health check test
+curl http://localhost:5000/
 
-# 9. Health check test
-curl http://localhost:5000/health
-
-# 10. Loglarni tekshirish
-./check_logs.sh
+# 9. Loglarni tekshirish
+tail -f logs/app.log
 
 # ========================================
 # TEZKOR DEPLOY (bitta buyruq bilan)
 # ========================================
-ssh root@sergeli0606.uz "cd /var/www/xurshid && git pull origin main && source venv/bin/activate && sudo systemctl restart xurshid && sleep 3 && sudo systemctl status xurshid --no-pager"
+ssh root@206.81.17.211 "cd /var/www/alisher && git pull origin main && source venv/bin/activate && sudo systemctl restart alisher && sleep 3 && sudo systemctl status alisher --no-pager"
 
 # ========================================
 # TEKSHIRISH
 # ========================================
 
 # Browser orqali:
-# 1. https://sergeli0606.uz/health
-# 2. https://sergeli0606.uz/monitoring/dashboard (login qiling)
+# 1. http://206.81.17.211/
+# 2. http://206.81.17.211/monitoring/dashboard (login qiling)
 
 # ========================================
 # MUAMMO BO'LSA
 # ========================================
 
 # Error loglarni ko'rish:
-tail -50 logs/error.log
+tail -50 logs/app.log
 
 # Gunicorn loglarni ko'rish:
-sudo journalctl -u xurshid -n 50
+sudo journalctl -u alisher -n 50
 
 # Service restart:
-sudo systemctl restart xurshid
+sudo systemctl restart alisher

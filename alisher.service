@@ -1,22 +1,21 @@
 [Unit]
-Description=Telegram Bot - Qarz Eslatmalari
+Description=Alisher Flask Application
 After=network.target postgresql.service
 Wants=postgresql.service
 
 [Service]
-Type=simple
+Type=notify
 User=root
 Group=root
 WorkingDirectory=/var/www/alisher
 Environment="PATH=/var/www/alisher/venv/bin"
-ExecStart=/var/www/alisher/venv/bin/python3 /var/www/alisher/run_telegram_bot.py
+ExecStart=/var/www/alisher/venv/bin/gunicorn -c gunicorn_config.py app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
 Restart=always
 RestartSec=10
-
-# Logging
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=telegram-bot
 
 [Install]
 WantedBy=multi-user.target

@@ -189,6 +189,44 @@ addProductViaAPI({
 3. O'zgarishlarni commit qiling
 4. Pull request yuboring
 
+## � Production Deploy
+
+### Server ma'lumotlari:
+- **Server IP**: 206.81.17.211
+- **URL**: http://206.81.17.211
+- **Database**: PostgreSQL (alisher_db)
+- **Web Server**: Nginx + Gunicorn
+
+### Deploy qilish:
+```bash
+# Serverga kirish
+ssh root@206.81.17.211
+
+# Kodni yangilash
+cd /var/www/alisher
+git pull origin main
+
+# Dependencies yangilash
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Service restart
+systemctl restart alisher
+```
+
+### Service boshqaruvi:
+```bash
+# Service status
+systemctl status alisher
+
+# Service restart
+systemctl restart alisher
+
+# Loglarni ko'rish
+tail -f /var/www/alisher/logs/app.log
+journalctl -u alisher -f
+```
+
 ## 📄 Litsenziya
 
 MIT License
@@ -196,5 +234,5 @@ MIT License
 ---
 
 **Muallif:** Python Web Developer  
-**Sana:** September 2025  
-**Maqsad:** Decimal ma'lumot turlari bilan ishlashni o'rgatish
+**Sana:** April 2026  
+**Maqsad:** Omborxona boshqaruv tizimi

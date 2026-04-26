@@ -1,8 +1,8 @@
-# Server Setup - 164.92.177.172 (www.sergeli0606.uz)
+# Server Setup - 206.81.17.211
 
 ## 1. Server'ga kirish
 ```bash
-ssh root@164.92.177.172
+ssh root@206.81.17.211
 ```
 
 ## 2. Tizimni yangilash
@@ -12,7 +12,7 @@ apt update && apt upgrade -y
 
 ## 3. Kerakli paketlarni o'rnatish
 ```bash
-apt install -y python3 python3-pip python3-venv postgresql postgresql-contrib nginx git ufw certbot python3-certbot-nginx
+apt install -y python3 python3-pip python3-venv postgresql postgresql-contrib nginx git ufw libpq-dev python3-dev build-essential
 ```
 
 ## 4. PostgreSQL sozlash
@@ -21,23 +21,24 @@ apt install -y python3 python3-pip python3-venv postgresql postgresql-contrib ng
 sudo -u postgres psql
 
 # Database va user yaratish
-CREATE DATABASE xurshid_db;
-CREATE USER xurshid_user WITH PASSWORD 'KUCHLI_PAROL_KIRITING';
-ALTER ROLE xurshid_user SET client_encoding TO 'utf8';
-ALTER ROLE xurshid_user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE xurshid_user SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE xurshid_db TO xurshid_user;
+CREATE DATABASE alisher_db;
+CREATE USER alisher_user WITH PASSWORD 'KUCHLI_PAROL_KIRITING';
+ALTER ROLE alisher_user SET client_encoding TO 'utf8';
+ALTER ROLE alisher_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE alisher_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE alisher_db TO alisher_user;
+ALTER DATABASE alisher_db OWNER TO alisher_user;
 \q
 ```
 
 ## 5. Loyihani deploy qilish
 ```bash
 # Loyiha papkasini yaratish
-mkdir -p /var/www/xurshid
-cd /var/www/xurshid
+mkdir -p /var/www/alisher
+cd /var/www/alisher
 
 # Git'dan clone qilish
-git clone https://github.com/xurshid1995/xurshid.git .
+git clone https://github.com/xurshid1995/Alisher-aka-2.git .
 
 # Virtual environment yaratish
 python3 -m venv venv
@@ -57,8 +58,8 @@ nano .env
 # Database
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=xurshid_db
-DB_USER=xurshid_user
+DB_NAME=alisher_db
+DB_USER=alisher_user
 DB_PASSWORD=KUCHLI_PAROL
 
 # Flask
@@ -67,13 +68,13 @@ FLASK_DEBUG=False
 SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(32))')
 
 # Session
-SESSION_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=False
 SESSION_COOKIE_HTTPONLY=True
-SESSION_COOKIE_SAMESITE=None
+SESSION_COOKIE_SAMESITE=Lax
 
 # Server
-SERVER_IP=164.92.177.172
-DOMAIN=www.sergeli0606.uz
+SERVER_IP=206.81.17.211
+DOMAIN=206.81.17.211
 
 # Gunicorn
 WORKERS=4
@@ -83,17 +84,20 @@ TIMEOUT=300
 
 ## 7. Database migratsiyalarini bajarish
 ```bash
-cd /var/www/xurshid
+cd /var/www/alisher
 source venv/bin/activate
 
 # Jadvallarni yaratish
-python -c "from app import db; db.create_all(); print('✅ Database tables created')"
+python create_tables.py
+
+# Admin user yaratish
+python create_admin.py
 ```
 
 ## 8. Logs papkasini yaratish
 ```bash
-mkdir -p /var/www/xurshid/logs
-chmod 755 /var/www/xurshid/logs
+mkdir -p /var/www/alisher/logs
+chmod 755 /var/www/alisher/logs
 ```
 
 ## 9. Systemd service sozlash
