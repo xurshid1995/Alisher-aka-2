@@ -7,8 +7,8 @@ Sozlamalar va konstantalar
 # Telegram bot sozlamalari
 TELEGRAM_CONFIG = {
     # Bot asosiy sozlamalari
-    'bot_name': 'Sergeli 143 Qarz Bot',
-    'bot_username': '@Sergeli143_bot',  # Yangi bot username
+    'bot_name': 'Alisher-aka SMS Bot',
+    'bot_username': '@SMShisobot_bot',  # Bot username
     
     # Xabar yuborish sozlamalari
     'rate_limit': 1,  # Sekundiga 1 ta xabar

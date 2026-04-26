@@ -13638,7 +13638,7 @@ def api_forgot_password():
         if not user.telegram_chat_id:
             return jsonify({
                 'success': False,
-                'message': f'Telegram bog\'lanmagan. Avval @Sergeli143_bot ga /link_account yozing.'
+                'message': f'Telegram bog\'lanmagan. Avval @SMShisobot_bot ga /link_account yozing.'
             }), 400
 
         # 6 raqamli OTP yaratish va DBga saqlash
@@ -14245,10 +14245,10 @@ def get_settings():
             'auto_currency_update': False,
             'auto_backup': False,
             'default_reminder_time': '10:00',  # Qarz eslatma default vaqti
-            'telegram_group_name': 'DiamondCarAccesories',
-            'telegram_group_link': 'https://t.me/DiamondCarAccesories',
-            'telegram_bot_name': '@Sergeli143_bot',
-            'telegram_bot_link': 'https://t.me/Sergeli143_bot',
+            'telegram_group_name': '',
+            'telegram_group_link': '',
+            'telegram_bot_name': '@SMShisobot_bot',
+            'telegram_bot_link': 'https://t.me/SMShisobot_bot',
         }
 
         # Bazadan sozlamalarni olish

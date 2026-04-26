@@ -39,7 +39,7 @@ def main():
         logger.info("📅 Scheduler ishga tushirilmoqda...")
         scheduler = init_debt_scheduler(app, db)
         
-        # Asosiy bot (@Sergeli143_bot)
+        # Asosiy bot (@SMShisobot_bot)
         logger.info("📱 Telegram application yaratilmoqda...")
         application = create_telegram_app()
         
