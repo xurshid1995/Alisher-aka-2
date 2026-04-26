@@ -164,14 +164,9 @@
         <div class="header-left">
             <h1 style="display: flex; align-items: center; gap: 12px;">
                 <span class="telegram-links" style="display: inline-flex; align-items: center; gap: 12px;">
-                <a id="hdr-group-link" href="https://t.me/DiamondCarAccesories" target="_blank" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 5px;"><img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width: 28px; height: 28px; vertical-align: middle;"> <span id="hdr-group-name">DiamondCarAccesories</span></a>
-                <a href="javascript:void(0)" onclick="document.getElementById('qrModal').style.display='flex'" title="QR Code ko'rish" style="display: inline-flex; align-items: center; justify-content: center; background: white; padding: 4px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.25)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">
-                    <img id="hdr-group-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/DiamondCarAccesories&color=000000&bgcolor=ffffff" alt="QR Code" style="width: 32px; height: 32px; border-radius: 4px; display: block;">
-                </a>
-                <span style="color:#ccc; font-size:18px;">|</span>
-                <a id="hdr-bot-link" href="https://t.me/Sergeli143_bot" target="_blank" style="text-decoration: none; color: inherit; font-size: 16px; display: inline-flex; align-items: center; gap: 5px;"><img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width: 28px; height: 28px; vertical-align: middle;"> <span id="hdr-bot-name">@Sergeli143_bot</span></a>
+                <a id="hdr-bot-link" href="https://t.me/SMShisobot_bot" target="_blank" style="text-decoration: none; color: inherit; font-size: 16px; display: inline-flex; align-items: center; gap: 5px;"><img src="https://img.icons8.com/color/120/telegram-app.png" alt="Telegram" style="width: 28px; height: 28px; vertical-align: middle;"> <span id="hdr-bot-name">@SMShisobot_bot</span></a>
                 <a href="javascript:void(0)" onclick="document.getElementById('qrModalBot').style.display='flex'" title="Bot QR Code ko'rish" style="display: inline-flex; align-items: center; justify-content: center; background: white; padding: 4px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.25)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">
-                    <img id="hdr-bot-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/Sergeli143_bot&color=000000&bgcolor=ffffff" alt="QR Code" style="width: 32px; height: 32px; border-radius: 4px; display: block;">
+                    <img id="hdr-bot-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://t.me/SMShisobot_bot&color=000000&bgcolor=ffffff" alt="QR Code" style="width: 32px; height: 32px; border-radius: 4px; display: block;">
                 </a>
                 </span>
             </h1>
@@ -352,16 +347,16 @@
                 if (!res.ok) return;
                 const data = await res.json();
 
-                const groupName = data.telegram_group_name || 'DiamondCarAccesories';
-                const groupLink = data.telegram_group_link || 'https://t.me/DiamondCarAccesories';
-                const botName   = data.telegram_bot_name  || '@Sergeli143_bot';
-                const botLink   = data.telegram_bot_link  || 'https://t.me/Sergeli143_bot';
+                const groupName = data.telegram_group_name || '';
+                const groupLink = data.telegram_group_link || '';
+                const botName   = data.telegram_bot_name  || '@SMShisobot_bot';
+                const botLink   = data.telegram_bot_link  || 'https://t.me/SMShisobot_bot';
 
                 // Header
                 const hdrGL = document.getElementById('hdr-group-link');
-                if (hdrGL) { hdrGL.href = groupLink; }
+                if (hdrGL && groupLink) { hdrGL.href = groupLink; hdrGL.style.display = 'inline-flex'; } else if (hdrGL) { hdrGL.style.display = 'none'; }
                 const hdrGN = document.getElementById('hdr-group-name');
-                if (hdrGN) { hdrGN.textContent = groupName; }
+                if (hdrGN && groupName) { hdrGN.textContent = groupName; }
                 const hdrBL = document.getElementById('hdr-bot-link');
                 if (hdrBL) { hdrBL.href = botLink; }
                 const hdrBN = document.getElementById('hdr-bot-name');
@@ -370,17 +365,17 @@
                 // Header QR
                 const qrBase = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&color=000000&bgcolor=ffffff&data=';
                 const hdrGQ = document.getElementById('hdr-group-qr');
-                if (hdrGQ) hdrGQ.src = qrBase + encodeURIComponent(groupLink);
+                if (hdrGQ && groupLink) { hdrGQ.src = qrBase + encodeURIComponent(groupLink); hdrGQ.parentElement.style.display = 'inline-flex'; } else if (hdrGQ && hdrGQ.parentElement) { hdrGQ.parentElement.style.display = 'none'; }
                 const hdrBQ = document.getElementById('hdr-bot-qr');
                 if (hdrBQ) hdrBQ.src = qrBase + encodeURIComponent(botLink);
 
                 // Modal - group
                 const mGN = document.getElementById('modal-group-name');
-                if (mGN) mGN.textContent = groupName;
+                if (mGN && groupName) { mGN.textContent = groupName; }
                 const mGQ = document.getElementById('modal-group-qr');
-                if (mGQ) mGQ.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&color=000000&bgcolor=f8f9fa&data=' + encodeURIComponent(groupLink);
+                if (mGQ && groupLink) { mGQ.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&color=000000&bgcolor=f8f9fa&data=' + encodeURIComponent(groupLink); }
                 const mGB = document.getElementById('modal-group-btn');
-                if (mGB) mGB.href = groupLink;
+                if (mGB && groupLink) { mGB.href = groupLink; }
 
                 // Modal - bot
                 const mBN = document.getElementById('modal-bot-name');
@@ -775,14 +770,14 @@
             <button onclick="document.getElementById('qrModal').style.display='none'" style="position:absolute; top:10px; right:14px; background:none; border:none; font-size:22px; cursor:pointer; color:#999; line-height:1;">&times;</button>
             <div style="margin-bottom:16px;">
                 <img src="https://img.icons8.com/fluency/120/telegram-app.png" alt="Telegram" style="width:48px; height:48px;">
-                <h3 id="modal-group-name" style="margin:8px 0 4px; color:#333; font-size:18px;">DiamondCarAccesories</h3>
+                <h3 id="modal-group-name" style="margin:8px 0 4px; color:#333; font-size:18px;"></h3>
                 <p style="color:#888; font-size:13px; margin:0;">{{ t('qr_scan_channel') }}</p>
             </div>
             <div style="background:#f8f9fa; border-radius:12px; padding:20px; display:inline-block;">
-                <img id="modal-group-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://t.me/DiamondCarAccesories&color=000000&bgcolor=f8f9fa" alt="QR Code" style="width:200px; height:200px; display:block;">
+                <img id="modal-group-qr" src="" alt="QR Code" style="width:200px; height:200px; display:block;">
             </div>
             <div style="margin-top:16px;">
-                <a id="modal-group-btn" href="https://t.me/DiamondCarAccesories" target="_blank" style="display:inline-block; background:#0088cc; color:white; padding:10px 24px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; transition:background 0.2s;" onmouseover="this.style.background='#006da3'" onmouseout="this.style.background='#0088cc'">{{ t('open_telegram') }}</a>
+                <a id="modal-group-btn" href="#" target="_blank" style="display:inline-block; background:#0088cc; color:white; padding:10px 24px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; transition:background 0.2s;" onmouseover="this.style.background='#006da3'" onmouseout="this.style.background='#0088cc'">{{ t('open_telegram') }}</a>
             </div>
         </div>
     </div>
@@ -793,14 +788,14 @@
             <button onclick="document.getElementById('qrModalBot').style.display='none'" style="position:absolute; top:10px; right:14px; background:none; border:none; font-size:22px; cursor:pointer; color:#999; line-height:1;">&times;</button>
             <div style="margin-bottom:16px;">
                 <img src="https://img.icons8.com/fluency/120/telegram-app.png" alt="Telegram" style="width:48px; height:48px;">
-                <h3 id="modal-bot-name" style="margin:8px 0 4px; color:#333; font-size:18px;">@Sergeli143_bot</h3>
+                <h3 id="modal-bot-name" style="margin:8px 0 4px; color:#333; font-size:18px;">@SMShisobot_bot</h3>
                 <p style="color:#888; font-size:13px; margin:0;">{{ t('qr_scan_bot') }}</p>
             </div>
             <div style="background:#f8f9fa; border-radius:12px; padding:20px; display:inline-block;">
-                <img id="modal-bot-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://t.me/Sergeli143_bot&color=000000&bgcolor=f8f9fa" alt="QR Code" style="width:200px; height:200px; display:block;">
+                <img id="modal-bot-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://t.me/SMShisobot_bot&color=000000&bgcolor=f8f9fa" alt="QR Code" style="width:200px; height:200px; display:block;">
             </div>
             <div style="margin-top:16px;">
-                <a id="modal-bot-btn" href="https://t.me/Sergeli143_bot" target="_blank" style="display:inline-block; background:#0088cc; color:white; padding:10px 24px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; transition:background 0.2s;" onmouseover="this.style.background='#006da3'" onmouseout="this.style.background='#0088cc'">{{ t('open_telegram') }}</a>
+                <a id="modal-bot-btn" href="https://t.me/SMShisobot_bot" target="_blank" style="display:inline-block; background:#0088cc; color:white; padding:10px 24px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; transition:background 0.2s;" onmouseover="this.style.background='#006da3'" onmouseout="this.style.background='#0088cc'">{{ t('open_telegram') }}</a>
             </div>
         </div>
     </div>
