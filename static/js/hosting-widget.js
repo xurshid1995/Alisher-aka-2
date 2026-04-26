@@ -22,7 +22,34 @@
     }
 
     /**
-     * Widget HTML yaratish
+     * Floating button HTML
+     */
+    function createFloatingButtonHTML() {
+        return `
+            <button id="hosting-widget-btn" style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                color: white;
+                font-size: 28px;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+                transition: transform 0.3s, box-shadow 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            "
+            onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 30px rgba(102, 126, 234, 0.6)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(102, 126, 234, 0.4)'">
+                💻
+            </button>
+        `;
+    }
+
+    /**
+     * Widget Modal HTML yaratish
      */
     function createWidgetHTML(data) {
         const { client, recent_payments } = data;
@@ -36,6 +63,35 @@
                             client.balance > 0 ? '#f59e0b' : '#ef4444';
         
         return `
+            <!-- Modal Backdrop -->
+            <div id="hosting-modal-backdrop" style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 10000;
+                backdrop-filter: blur(4px);
+            " onclick="document.getElementById('hosting-modal-backdrop').style.display='none'"></div>
+            
+            <!-- Modal Content -->
+            <div id="hosting-modal-content" style="
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 10001;
+                animation: modalSlideIn 0.3s ease-out;
+            ">
+                <style>
+                    @keyframes modalSlideIn {
+                        from { transform: translate(-50%, -60%); opacity: 0; }
+                        to { transform: translate(-50%, -50%); opacity: 1; }
+                    }
+                </style>
             <div style="
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -62,7 +118,7 @@
                         <div style="font-size: 20px; font-weight: 600;">Hosting</div>
                         <div style="font-size: 14px; opacity: 0.9;">${client.name || ''}</div>
                     </div>
-                    <button onclick="this.parentElement.parentElement.style.display='none'" 
+                    <button onclick="document.getElementById('hosting-modal-backdrop').style.display='none'; document.getElementById('hosting-modal-content').style.display='none'" 
                             style="
                                 background: rgba(255,255,255,0.2);
                                 border: none;
@@ -162,6 +218,7 @@
                     📞 Biz bilan bog'laning: +998(94) 635-06-06
                 </div>
             </div>
+        </div>
         `;
     }
 
@@ -211,25 +268,38 @@
 
         try {
             const data = await loadWidgetData();
-            container.innerHTML = createWidgetHTML(data);
+            container.innerHTML = createFloatingButtonHTML() + createWidgetHTML(data);
+            
+            // Button'ga click event qo'shish
+            const btn = document.getElementById('hosting-widget-btn');
+            const backdrop = document.getElementById('hosting-modal-backdrop');
+            const content = document.getElementById('hosting-modal-content');
+            
+            if (btn && backdrop && content) {
+                btn.onclick = function() {
+                    backdrop.style.display = 'block';
+                    content.style.display = 'block';
+                };
+            }
         } catch (error) {
             container.innerHTML = `
-                <div style="
-                    font-family: sans-serif;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    border-radius: 16px;
-                    padding: 24px;
+                <button id="hosting-widget-btn" style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                    border: none;
                     color: white;
-                    text-align: center;
-                    max-width: 400px;
-                    margin: 20px;
-                ">
-                    <div style="font-size: 40px; margin-bottom: 16px;">❌</div>
-                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Mijoz topilmadi</div>
-                    <div style="font-size: 14px; opacity: 0.9;">
-                        ${error.message || 'Ma\'lumot yuklanmadi'}
-                    </div>
-                </div>
+                    font-size: 28px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                "
+                title="Xatolik: ${error.message || 'Ma\'lumot yuklanmadi'}">
+                    ❌
+                </button>
             `;
         }
     }
