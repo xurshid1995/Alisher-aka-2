@@ -36,9 +36,9 @@ if ($LASTEXITCODE -ne 0) {
 
 # 3. Deploy via SSH
 Write-Host ""
-Write-Host "[3/3] Serverga deploy (sergeli0606.uz)..." -ForegroundColor Cyan
-$sshCmd = "cd /var/www/xurshid && git pull origin main && source venv/bin/activate && sudo systemctl restart xurshid && sleep 2 && sudo systemctl status xurshid --no-pager -n 5"
-ssh root@sergeli0606.uz $sshCmd
+Write-Host "[3/3] Serverga deploy (206.81.17.211)..." -ForegroundColor Cyan
+$sshCmd = "cd /var/www/alisher && git pull origin main && source venv/bin/activate && sudo systemctl restart alisher && sleep 2 && sudo systemctl status alisher --no-pager -n 5"
+ssh root@206.81.17.211 $sshCmd
 if ($LASTEXITCODE -ne 0) {
     Write-Host "  Deploy xatosi!" -ForegroundColor Red
     exit 1

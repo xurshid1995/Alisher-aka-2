@@ -4642,14 +4642,8 @@
                 row.setAttribute('data-product-id', product.id);
                 row.setAttribute('data-cost-price', costPrice || 0);
                 
-                // Highlight qilish - qidiruv so'zlarini
+                // Highlight o'chirildi - oddiy matn
                 let highlightedName = htmlSafeProductName;
-                if (searchWords.length > 0) {
-                    const escapedWords = searchWords.map(word => escapeRegex(word));
-                    const combinedPattern = escapedWords.join('|');
-                    const regex = new RegExp(`(${combinedPattern})`, 'gi');
-                    highlightedName = highlightedName.replace(regex, '<span style="background-color: #ffeb3b; padding: 2px 4px; border-radius: 2px;">$1</span>');
-                }
                 
                 // Miqdori 0 bo'lsa qizil ranglar
                 const quantityBadgeColor = quantity <= 0 ? '#dc3545' : '#28a745';

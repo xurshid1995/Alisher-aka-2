@@ -1635,7 +1635,7 @@ async def reset_bot_contact(update, context):
                 db.session.commit()
                 await update.message.reply_text(
                     f"✅ Muvaffaqiyatli! Hisobingiz Telegram bilan bog'landi.\n\n"
-                    f"Endi sergeli0606.uz saytida parolni tiklashingiz mumkin.",
+                    f"Endi 206.81.17.211 saytida parolni tiklashingiz mumkin.",
                     reply_markup=ReplyKeyboardRemove()
                 )
                 logger.info(f"✅ Paroltiklash_bot: user {user.username} chat_id={chat_id} saqlandi")
