@@ -1,0 +1,15 @@
+{
+  "e88d2356c61bcb30a2212493f506b6d4": {
+    "name": "Test Mijoz",
+    "balance": 373140000,
+    "monthly_price": 360000,
+    "next_payment_date": "2025-06-15",
+    "server_status": "active",
+    "recent_payments": [
+      {
+        "amount": 31095000,
+        "date": "26.04.2026"
+      }
+    ]
+  }
+}

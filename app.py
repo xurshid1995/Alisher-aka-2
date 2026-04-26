@@ -1681,53 +1681,6 @@ class CurrencyRate(db.Model):
             'updated_by': self.updated_by}
 
 
-# ============================================
-# HOSTING WIDGET MODELLARI (faqat mijozlar uchun)
-# ============================================
-
-class HostingClient(db.Model):
-    """Hosting mijozlari - widget uchun"""
-    __tablename__ = 'hosting_clients'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    status_token = db.Column(db.String(64), unique=True, nullable=False)
-    monthly_price_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)
-    balance = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)
-    is_active = db.Column(db.Boolean, default=True)
-    server_status = db.Column(db.String(20), default='active')
-    next_payment_date = db.Column(db.Date, nullable=True)
-    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-
-    def to_dict(self):
-        return {
-            'name': self.name,
-            'monthly_price': float(self.monthly_price_uzs or 0),
-            'balance': float(self.balance or 0),
-            'is_active': self.is_active,
-            'server_status': self.server_status,
-            'next_payment_date': self.next_payment_date.isoformat() if self.next_payment_date else None
-        }
-
-
-class HostingPayment(db.Model):
-    """To'lovlar tarixi - widget uchun"""
-    __tablename__ = 'hosting_payments'
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey('hosting_clients.id', ondelete='CASCADE'), nullable=False)
-    amount_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False)
-    payment_date = db.Column(db.DateTime, default=lambda: get_tashkent_time())
-    notes = db.Column(db.Text, nullable=True)
-    client = db.relationship('HostingClient', backref='payments')
-
-    def to_dict(self):
-        return {
-            'amount': float(self.amount_uzs or 0),
-            'date': self.payment_date.strftime('%d.%m.%Y') if self.payment_date else None
-        }
-
-
 # API Test sahifasi
 @app.route('/api_test.html')
 def api_test():
@@ -15189,29 +15142,35 @@ except Exception as e:
 
 
 # ============================================
-# HOSTING WIDGET API
+# HOSTING WIDGET API (JSON fayldan o'qish)
 # ============================================
 
 @app.route('/api/hosting/widget/<token>')
 def api_hosting_widget(token):
-    """Widget uchun mijoz ma'lumotlarini berish"""
+    """Widget uchun mijoz ma'lumotlarini berish - JSON fayldan"""
     try:
-        client = HostingClient.query.filter_by(status_token=token, is_active=True).first()
+        # JSON fayldan o'qish
+        import json
+        json_path = os.path.join(app.root_path, 'static', 'hosting-clients.json')
         
-        if not client:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            clients = json.load(f)
+        
+        # Token bo'yicha mijozni topish
+        client_data = clients.get(token)
+        
+        if not client_data:
             return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
-        
-        # Oxirgi 5 ta to'lovni olish
-        recent_payments = HostingPayment.query.filter_by(
-            client_id=client.id
-        ).order_by(HostingPayment.payment_date.desc()).limit(5).all()
         
         return jsonify({
             'success': True,
-            'client': client.to_dict(),
-            'recent_payments': [p.to_dict() for p in recent_payments]
+            'client': client_data,
+            'recent_payments': client_data.get('recent_payments', [])
         })
         
+    except FileNotFoundError:
+        logger.error("hosting-clients.json fayli topilmadi")
+        return jsonify({'success': False, 'error': 'Konfiguratsiya fayli topilmadi'}), 500
     except Exception as e:
         logger.error(f"Widget API xatosi: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
