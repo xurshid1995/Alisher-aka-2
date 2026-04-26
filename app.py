@@ -1681,6 +1681,83 @@ class CurrencyRate(db.Model):
             'updated_by': self.updated_by}
 
 
+# ============================================
+# HOSTING TO'LOV TIZIMI MODELLARI
+# ============================================
+
+class HostingClient(db.Model):
+    """Hosting mijozlari"""
+    __tablename__ = 'hosting_clients'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    status_token = db.Column(db.String(64), unique=True, nullable=False)
+    
+    # To'lov ma'lumotlari
+    monthly_price_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)
+    balance = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False, default=0)
+    payment_day = db.Column(db.Integer, default=1)
+    
+    # Holat
+    is_active = db.Column(db.Boolean, default=True)
+    server_status = db.Column(db.String(20), default='active')
+    
+    # Server ma'lumotlari
+    server_ip = db.Column(db.String(50), nullable=True)
+    droplet_name = db.Column(db.String(200), nullable=True)
+    
+    # Vaqtlar
+    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
+    updated_at = db.Column(db.DateTime, default=lambda: get_tashkent_time(), onupdate=lambda: get_tashkent_time())
+    notes = db.Column(db.Text, nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'phone': self.phone,
+            'monthly_price_uzs': float(self.monthly_price_uzs or 0),
+            'balance': float(self.balance or 0),
+            'payment_day': self.payment_day,
+            'is_active': self.is_active,
+            'server_status': self.server_status,
+            'server_ip': self.server_ip,
+            'droplet_name': self.droplet_name,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
+
+class HostingPayment(db.Model):
+    """To'lovlar tarixi"""
+    __tablename__ = 'hosting_payments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('hosting_clients.id', ondelete='CASCADE'), nullable=False)
+    amount_uzs = db.Column(db.DECIMAL(precision=15, scale=2), nullable=False)
+    months_paid = db.Column(db.Integer, default=1)
+    payment_date = db.Column(db.DateTime, default=lambda: get_tashkent_time())
+    period_start = db.Column(db.Date, nullable=True)
+    period_end = db.Column(db.Date, nullable=True)
+    confirmed_by = db.Column(db.String(100), default='admin')
+    notes = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=lambda: get_tashkent_time())
+    
+    client = db.relationship('HostingClient', backref='payments')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'client_id': self.client_id,
+            'amount_uzs': float(self.amount_uzs or 0),
+            'months_paid': self.months_paid,
+            'payment_date': self.payment_date.strftime('%Y-%m-%d %H:%M') if self.payment_date else None,
+            'period_start': self.period_start.isoformat() if self.period_start else None,
+            'period_end': self.period_end.isoformat() if self.period_end else None
+        }
+
+
 # API Test sahifasi
 @app.route('/api_test.html')
 def api_test():
@@ -15139,6 +15216,74 @@ try:
     logger.info("✅ Monitoring tizimi ishga tushdi")
 except Exception as e:
     logger.warning(f"⚠️ Monitoring tizimi ishga tushmadi: {e}")
+
+
+# ============================================
+# HOSTING WIDGET API
+# ============================================
+
+@app.route('/api/hosting/widget/<token>')
+def hosting_widget_status(token):
+    """Widget uchun mijoz holatini qaytarish"""
+    try:
+        client = HostingClient.query.filter_by(status_token=token).first()
+        
+        if not client:
+            return jsonify({
+                'success': False,
+                'error': 'Mijoz topilmadi'
+            }), 404
+        
+        # Keyingi to'lov sanasini hisoblash
+        from datetime import datetime, timedelta
+        today = datetime.now().date()
+        
+        # Balansdan nechi oy to'langan
+        months_covered = 0
+        if client.monthly_price_uzs > 0:
+            months_covered = int(client.balance / client.monthly_price_uzs)
+        
+        # Keyingi to'lov sanasi
+        next_payment_date = today.replace(day=client.payment_day)
+        if today.day >= client.payment_day:
+            # Keyingi oy
+            if today.month == 12:
+                next_payment_date = next_payment_date.replace(year=today.year + 1, month=1)
+            else:
+                next_payment_date = next_payment_date.replace(month=today.month + 1)
+        
+        # Balans status
+        if months_covered >= 2:
+            balance_status = 'good'  # Yaxshi
+        elif months_covered >= 1:
+            balance_status = 'normal'  # Normal
+        elif client.balance > 0:
+            balance_status = 'low'  # Kam
+        else:
+            balance_status = 'zero'  # Nol
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'client_name': client.name,
+                'monthly_price': float(client.monthly_price_uzs or 0),
+                'balance': float(client.balance or 0),
+                'balance_status': balance_status,
+                'months_covered': months_covered,
+                'next_payment_date': next_payment_date.strftime('%Y-%m-%d'),
+                'payment_day': client.payment_day,
+                'server_status': client.server_status,
+                'is_active': client.is_active,
+                'server_ip': client.server_ip
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Widget API xatosi: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 if __name__ == '__main__':
