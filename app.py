@@ -15209,6 +15209,63 @@ def api_check_and_send_reminders():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+# ============================================
+# HOSTING WIDGET API
+# ============================================
+
+@app.route('/api/hosting/widget/<token>')
+def api_hosting_widget(token):
+    """Widget uchun mijoz ma'lumotlarini berish"""
+    try:
+        client = HostingClient.query.filter_by(status_token=token).first()
+        
+        if not client:
+            return jsonify({'success': False, 'error': 'Mijoz topilmadi'}), 404
+        
+        # Oxirgi 5 ta to'lovni olish
+        recent_payments = HostingPayment.query.filter_by(
+            client_id=client.id
+        ).order_by(HostingPayment.payment_date.desc()).limit(5).all()
+        
+        # Keyingi to'lov sanasini hisoblash
+        from datetime import datetime, timedelta
+        from dateutil.relativedelta import relativedelta
+        
+        next_payment_date = None
+        if recent_payments:
+            last_payment = recent_payments[0]
+            if last_payment.period_end:
+                next_payment_date = last_payment.period_end + timedelta(days=1)
+        
+        if not next_payment_date:
+            # Agar to'lovlar yo'q bo'lsa, oyning payment_day kunini ko'rsatish
+            today = datetime.now()
+            next_payment_date = datetime(today.year, today.month, client.payment_day)
+            if next_payment_date < today:
+                next_payment_date = next_payment_date + relativedelta(months=1)
+        
+        return jsonify({
+            'success': True,
+            'client': {
+                'name': client.name,
+                'phone': client.phone,
+                'monthly_price': float(client.monthly_price_uzs or 0),
+                'balance': float(client.balance or 0),
+                'payment_day': client.payment_day,
+                'is_active': client.is_active,
+                'server_status': client.server_status,
+                'server_ip': client.server_ip,
+                'droplet_name': client.droplet_name,
+                'next_payment_date': next_payment_date.strftime('%Y-%m-%d') if next_payment_date else None
+            },
+            'recent_payments': [p.to_dict() for p in recent_payments]
+        })
+        
+    except Exception as e:
+        logger.error(f"Widget API xatosi: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 # Monitoring routes qo'shish
 try:
     from monitoring import setup_monitoring_routes
