@@ -5464,7 +5464,7 @@ def api_store_stock(store_id):
             if stock.quantity == 0:
                 item_status = 'critical'
                 critical_stock_count += 1
-            elif min_stock > 0 and stock.quantity <= min_stock:
+            elif min_stock > 0 and stock.quantity < min_stock:
                 item_status = 'low'
 
             # Skip if status filter doesn't match
@@ -5869,7 +5869,7 @@ def api_warehouse_stock(warehouse_id):
             if stock.quantity == 0:
                 item_status = 'critical'
                 critical_stock_count += 1
-            elif min_stock > 0 and stock.quantity <= min_stock:
+            elif min_stock > 0 and stock.quantity < min_stock:
                 item_status = 'low'
 
             # Skip if status filter doesn't match
