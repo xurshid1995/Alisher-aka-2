@@ -5459,12 +5459,12 @@ def api_store_stock(store_id):
 
             # Determine status
             item_status = 'normal'
-            min_stock = stock.min_stock or 10
+            min_stock = stock.product.min_stock if stock.product.min_stock is not None else 0
 
             if stock.quantity == 0:
                 item_status = 'critical'
                 critical_stock_count += 1
-            elif stock.quantity <= min_stock:
+            elif min_stock > 0 and stock.quantity <= min_stock:
                 item_status = 'low'
 
             # Skip if status filter doesn't match
@@ -5864,12 +5864,12 @@ def api_warehouse_stock(warehouse_id):
 
             # Determine status
             item_status = 'normal'
-            min_stock = getattr(stock.product, 'min_stock', None) or 10
+            min_stock = stock.product.min_stock if stock.product.min_stock is not None else 0
 
             if stock.quantity == 0:
                 item_status = 'critical'
                 critical_stock_count += 1
-            elif stock.quantity <= min_stock:
+            elif min_stock > 0 and stock.quantity <= min_stock:
                 item_status = 'low'
 
             # Skip if status filter doesn't match
