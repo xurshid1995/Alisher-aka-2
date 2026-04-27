@@ -2897,40 +2897,28 @@
         const btn = event.target.closest('.add-to-cart-btn');
         const row = event.target.closest('tr');
         
-        // Mobilda butun qatorni bosish (agar tugma bosilmagan bo'lsa)
+        // Butun qatorni bosish (barcha ekran o'lchamlarida)
         if (!btn && row && row.hasAttribute('data-product-id')) {
-            // Faqat mobil ekranlarda ishlashi kerak (768px dan kichik)
-            if (window.innerWidth <= 768) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                const productId = parseInt(row.getAttribute('data-product-id'));
-                const productName = row.querySelector('td:first-child')?.getAttribute('data-original-text') || '';
-                const quantityBadge = row.querySelector('td:nth-child(2) span');
-                
-                // Miqdorni olish - unit type bilan birga
-                let quantity = 0;
-                if (quantityBadge) {
-                    const quantityText = quantityBadge.textContent.trim();
-                    quantity = parseFloat(quantityText.replace(/[^0-9.]/g, '')) || 0;
-                }
-                
-                // Narxni olish - button'ning data-price atributidan (to'g'ri qiymat)
-                const button = row.querySelector('.add-to-cart-btn');
-                let price = 0;
-                if (button && button.dataset.price) {
-                    price = parseFloat(button.dataset.price) || 0;
-                }
-                
-                const costPrice = parseFloat(row.getAttribute('data-cost-price')) || 0;
-                const unitType = row.getAttribute('data-unit-type') || 'dona';
-                
-                // Agar miqdor 0 dan katta bo'lsa, qo'shish
-                if (quantity > 0) {
-                    addToCart(productId, productName, quantity, price, costPrice, unitType);
-                }
-                return;
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const productId = parseInt(row.getAttribute('data-product-id'));
+            const productName = row.querySelector('td:first-child')?.getAttribute('data-original-text') || '';
+            
+            // Narxni olish - button'ning data-price atributidan (to'g'ri qiymat)
+            const button = row.querySelector('.add-to-cart-btn');
+            if (!button || button.disabled) return;
+            
+            const quantity = parseFloat(button.dataset.quantity) || 0;
+            const price = parseFloat(button.dataset.price) || 0;
+            const costPrice = parseFloat(row.getAttribute('data-cost-price')) || 0;
+            const unitType = row.getAttribute('data-unit-type') || 'dona';
+            
+            // Agar miqdor 0 dan katta bo'lsa, qo'shish
+            if (quantity > 0) {
+                addToCart(productId, productName, quantity, price, costPrice, unitType);
             }
+            return;
         }
         
         // Desktop yoki tugma bosilgan holda
@@ -3077,9 +3065,14 @@
                 
                 const row = document.createElement('tr');
                 row.style.borderBottom = '1px solid #f0f0f0';
+                row.style.cursor = quantity > 0 ? 'pointer' : 'default';
                 row.setAttribute('data-product-id', product.id);
                 row.setAttribute('data-cost-price', costPrice || 0);
                 row.setAttribute('data-unit-type', unitType);
+                if (quantity > 0) {
+                    row.addEventListener('mouseenter', function() { this.style.backgroundColor = '#f0f7ff'; });
+                    row.addEventListener('mouseleave', function() { this.style.backgroundColor = ''; });
+                }
                 
                 // Mahsulot nomlarini console ga chiqarish (faqat birinchi marta)
                 if (!window.productsLogged) {

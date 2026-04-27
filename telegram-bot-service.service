@@ -1,0 +1,20 @@
+[Unit]
+Description=Telegram Bot - Qarz eslatmalari  
+After=network.target postgresql.service alisher.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/var/www/alisher
+Environment="PATH=/var/www/alisher/venv/bin"
+Environment="PYTHONPATH=/var/www/alisher"
+ExecStart=/var/www/alisher/venv/bin/python3 /var/www/alisher/run_telegram_bot.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
