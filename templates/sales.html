@@ -6476,66 +6476,11 @@
                 }
             }
             
-            // Tab strategiyasi: 1 ta tab bo'lsa yangilash, ko'p bo'lsa yopish
+            // Tab strategiyasi: 1 ta tab bo'lsa sahifani yangilash, ko'p bo'lsa yopish
             if (salesTabs.length === 1) {
-                // Faqat 1 ta tab ochiq - to'liq yangilash
-                console.log('🔄 Yagona tab - ma\'lumotlarni tozalash');
-                
-                // Global o'zgaruvchilarni tozalash
-                cart = [];
-                currentProduct = null;
-                selectedLocationId = null;
-                selectedLocationType = null;
-                editingSaleId = null;
-                currentPendingSaleId = null;
-                
-                // Tab state'ni tozalash
-                const tabState = getTabState();
-                if (tabState) {
-                    tabState.cart = [];
-                    tabState.currentProduct = null;
-                    tabState.selectedLocationId = null;
-                    tabState.selectedLocationType = null;
-                    tabState.editingSaleId = null;
-                    tabState.currentPendingSaleId = null;
-                }
-                
-                // UI elementlarni tozalash
-                const locationSelect = getActiveTabElement('locationSelect');
-                const customerSearch = getActiveTabElement('customerSearch');
-                const selectedCustomerId = getActiveTabElement('selectedCustomerId');
-                const cartCustomerInfo = getActiveTabElement('cartCustomerInfo');
-                const productsTable = getActiveTabElement('productsTable');
-                
-                if (locationSelect) locationSelect.value = '';
-                if (customerSearch) customerSearch.value = '';
-                if (selectedCustomerId) selectedCustomerId.value = '';
-                if (cartCustomerInfo) cartCustomerInfo.innerHTML = '<h3 style="margin: 0; color: #333;">' + SLANG.sales_cart_header + '</h3>';
-                if (productsTable) productsTable.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">' + SLANG.select_location_msg + '</td></tr>';
-                
-                // Tab sarlavhasini tozalash
-                const activeTab = document.querySelector('.sales-tab.active');
-                if (activeTab) {
-                    const tabTitle = activeTab.querySelector('.tab-title');
-                    if (tabTitle) {
-                        const tabId = activeTab.dataset.tabId;
-                        tabTitle.textContent = `${SLANG.savdo} ${tabId}`;
-                        tabTitle.title = `${SLANG.savdo} ${tabId}`;
-                    }
-                    
-                    // Yangi mijoz qo'shish tugmasini qayta yoqish
-                    const addCustomerBtn = activeTab.querySelector('button[onclick="openAddCustomerModal()"]');
-                    if (addCustomerBtn) {
-                        addCustomerBtn.disabled = false;
-                        addCustomerBtn.style.opacity = '1';
-                        addCustomerBtn.style.cursor = 'pointer';
-                    }
-                }
-                
-                // Savatni yangilash
-                updateCart();
-                
-                console.log('✅ Tab to\'liq tozalandi');
+                // Faqat 1 ta tab ochiq - sahifani to'liq yangilash
+                console.log('🔄 Yagona tab - sahifani yangilash');
+                location.reload();
                 
             } else {
                 // Ko'p tab ochiq - hozirgi tabni yopish
