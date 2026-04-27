@@ -1001,12 +1001,13 @@
         } else {
             filteredProducts = allProducts.filter(product => {
                 const totalStock = getTotalStock(product, currentLocation);
+                const minStock = product.min_stock || 0;
                 
                 switch (statusFilter) {
                     case 'high':
-                        return totalStock >= 10;
+                        return totalStock > 0 && (minStock === 0 || totalStock >= minStock);
                     case 'medium': 
-                        return totalStock > 0 && totalStock < 10;
+                        return totalStock > 0 && minStock > 0 && totalStock < minStock;
                     case 'out':
                         return totalStock === 0;
                     default:
